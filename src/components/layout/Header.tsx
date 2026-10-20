@@ -4,421 +4,459 @@ import React, { useState, useCallback, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
-import { Search, Menu, X, Command, Github } from 'lucide-react';
+import { Search, Menu, X, ChevronDown, LayoutGrid, Sparkles, Workflow } from 'lucide-react';
 import { type Locale } from '@/lib/i18n/config';
-import { Button } from '@/components/ui/Button';
+import { Logo } from '@/components/brand/Logo';
 import { RecentFilesDropdown } from '@/components/common/RecentFilesDropdown';
-import { searchTools, SearchResult } from '@/lib/utils/search';
-import { getToolContent } from '@/config/tool-content';
-import { getAllTools } from '@/config/tools';
 import { ThemeToggle } from '@/components/ui/ThemeToggle';
-import { UpdateCheckButton } from '@/components/common/UpdateCheckButton';
+import { searchTools, SearchResult } from '@/lib/utils/search';
+import { getToolById, getToolsByCategory } from '@/config/tools';
+import { getToolIcon } from '@/config/icons';
+import { CATEGORY_META, CATEGORY_ORDER } from '@/config/categories';
+import { useLocalizedTools, type LocalizedToolMap } from '@/hooks/useLocalizedTools';
+import type { Tool } from '@/types/tool';
 
 export interface HeaderProps {
   locale: Locale;
   showSearch?: boolean;
 }
 
-export const Header: React.FC<HeaderProps> = ({ locale, showSearch = true }) => {
+/** Tools surfaced directly in the top bar, like iLovePDF (id -> short nav label key) */
+const QUICK_TOOLS: { id: string; labelKey: string }[] = [
+  { id: 'merge-pdf', labelKey: 'navigation.merge' },
+  { id: 'split-pdf', labelKey: 'navigation.split' },
+  { id: 'compress-pdf', labelKey: 'navigation.compress' },
+  { id: 'edit-pdf', labelKey: 'navigation.edit' },
+];
+const CONVERT_TO_IDS = ['jpg-to-pdf', 'word-to-pdf', 'pptx-to-pdf', 'excel-to-pdf', 'image-to-pdf', 'txt-to-pdf'];
+const CONVERT_FROM_IDS = ['pdf-to-jpg', 'pdf-to-docx', 'pdf-to-pptx', 'pdf-to-excel', 'pdf-to-png', 'pdf-to-pdfa'];
+/** How many tools to show per category in the mega menu */
+const MEGA_PER_CATEGORY = 7;
+
+const navLinkClass =
+  'inline-flex items-center gap-1 whitespace-nowrap rounded-lg px-3 py-2 text-[0.92rem] font-semibold text-[hsl(var(--color-foreground)/0.82)] transition-colors hover:bg-[hsl(var(--color-muted))] hover:text-[hsl(var(--color-foreground))]';
+
+function toolsFromIds(ids: string[]): Tool[] {
+  return ids.map((id) => getToolById(id)).filter((t): t is Tool => !!t);
+}
+
+/** A single tool row used in menus and search results */
+function ToolMenuItem({
+  tool,
+  title,
+  href,
+  onClick,
+  active = false,
+}: {
+  tool: Tool;
+  title: string;
+  href: string;
+  onClick?: () => void;
+  active?: boolean;
+}) {
+  const Icon = getToolIcon(tool.icon);
+  const meta = CATEGORY_META[tool.category];
+  return (
+    <Link
+      href={href}
+      onClick={onClick}
+      className={`${meta.colorClass} flex items-center gap-2.5 rounded-lg px-2 py-1.5 text-sm text-[hsl(var(--color-foreground)/0.85)] transition-colors hover:bg-[hsl(var(--color-muted))] hover:text-[hsl(var(--color-foreground))] ${active ? 'bg-[hsl(var(--color-muted))]' : ''}`}
+    >
+      <span className="cat-tile flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-lg" aria-hidden="true">
+        <Icon className="h-4 w-4" />
+      </span>
+      <span className="line-clamp-2 leading-snug">{title}</span>
+    </Link>
+  );
+}
+
+/** Hover/click dropdown wrapper */
+function Dropdown({
+  label,
+  open,
+  setOpen,
+  children,
+  panelClassName = '',
+  mega = false,
+}: {
+  label: React.ReactNode;
+  open: boolean;
+  setOpen: (v: boolean) => void;
+  children: React.ReactNode;
+  panelClassName?: string;
+  /** Centre the panel on the page instead of under the trigger */
+  mega?: boolean;
+}) {
+  const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const cancelClose = () => {
+    if (closeTimer.current) clearTimeout(closeTimer.current);
+  };
+  return (
+    <div
+      className={mega ? '' : 'relative'}
+      onMouseEnter={() => {
+        cancelClose();
+        setOpen(true);
+      }}
+      onMouseLeave={() => {
+        closeTimer.current = setTimeout(() => setOpen(false), 120);
+      }}
+    >
+      <button
+        type="button"
+        className={`${navLinkClass} ${open ? 'bg-[hsl(var(--color-muted))] text-[hsl(var(--color-foreground))]' : ''}`}
+        aria-expanded={open}
+        onClick={() => setOpen(!open)}
+      >
+        {label}
+        <ChevronDown className={`h-4 w-4 transition-transform ${open ? 'rotate-180' : ''}`} aria-hidden="true" />
+      </button>
+      {open && (
+        <div
+          className={`${mega ? 'fixed top-[60px]' : 'absolute top-full'} left-1/2 z-50 -translate-x-1/2 pt-2 ${panelClassName}`}
+          onMouseEnter={cancelClose}
+        >
+          <div className="rounded-[var(--radius-lg)] border border-[hsl(var(--color-border))] bg-[hsl(var(--color-card))] p-4 shadow-[var(--shadow-xl)]">
+            {children}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+/** ⌘K search palette */
+function SearchPalette({
+  locale,
+  localized,
+  onClose,
+}: {
+  locale: Locale;
+  localized: LocalizedToolMap;
+  onClose: () => void;
+}) {
   const t = useTranslations('common');
   const router = useRouter();
-  const [isSearchOpen, setIsSearchOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
-  const [selectedIndex, setSelectedIndex] = useState(-1);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
-  const [localizedTools, setLocalizedTools] = useState<Record<string, { title: string; description: string }>>({});
-  const searchInputRef = useRef<HTMLInputElement>(null);
-  const searchContainerRef = useRef<HTMLDivElement>(null);
+  const [query, setQuery] = useState('');
+  const [selected, setSelected] = useState(0);
+  const inputRef = useRef<HTMLInputElement>(null);
 
-  // Load localized tool content on mount
+  const results: SearchResult[] = query.trim() ? searchTools(query, localized).slice(0, 8) : [];
+  const suggestions = toolsFromIds(['merge-pdf', 'compress-pdf', 'pdf-to-docx', 'edit-pdf', 'sign-pdf', 'jpg-to-pdf']);
+  const list: Tool[] = query.trim() ? results.map((r) => r.tool) : suggestions;
+
   useEffect(() => {
-    const allTools = getAllTools();
-    const contentMap: Record<string, { title: string; description: string }> = {};
-
-    allTools.forEach(tool => {
-      const content = getToolContent(locale, tool.id);
-      if (content) {
-        contentMap[tool.id] = {
-          title: content.title,
-          description: content.metaDescription
-        };
-      }
-    });
-
-    setLocalizedTools(contentMap);
-  }, [locale]);
-
-  // Handle scroll effect
-  useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 10);
+    inputRef.current?.focus();
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = prev;
     };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Handle search query changes
-  useEffect(() => {
-    if (searchQuery.trim()) {
-      const results = searchTools(searchQuery, localizedTools); // Pass localized content
-      setSearchResults(results.slice(0, 8)); // Limit to 8 results
-      setSelectedIndex(-1);
-    } else {
-      setSearchResults([]);
-      setSelectedIndex(-1);
-    }
-  }, [searchQuery, localizedTools]);
+  useEffect(() => setSelected(0), [query]);
 
-  // Close search when clicking outside
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (searchContainerRef.current && !searchContainerRef.current.contains(event.target as Node)) {
-        setIsSearchOpen(false);
-        setSearchQuery('');
-        setSearchResults([]);
-      }
-    };
-
-    if (isSearchOpen) {
-      document.addEventListener('mousedown', handleClickOutside);
-      return () => document.removeEventListener('mousedown', handleClickOutside);
-    }
-  }, [isSearchOpen]);
-
-  // Handle keyboard navigation
-  const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
-    if (e.key === 'ArrowDown') {
-      e.preventDefault();
-      setSelectedIndex(prev => Math.min(prev + 1, searchResults.length - 1));
-    } else if (e.key === 'ArrowUp') {
-      e.preventDefault();
-      setSelectedIndex(prev => Math.max(prev - 1, -1));
-    } else if (e.key === 'Enter') {
-      e.preventDefault();
-      if (selectedIndex >= 0 && searchResults[selectedIndex]) {
-        navigateToTool(searchResults[selectedIndex].tool.slug);
-      } else if (searchResults.length > 0) {
-        navigateToTool(searchResults[0].tool.slug);
-      }
-    } else if (e.key === 'Escape') {
-      setIsSearchOpen(false);
-      setSearchQuery('');
-      setSearchResults([]);
-    }
-  }, [searchResults, selectedIndex]);
-
-  const navigateToTool = useCallback((slug: string) => {
-    router.push(`/${locale}/tools/${slug}`);
-    setIsSearchOpen(false);
-    setSearchQuery('');
-    setSearchResults([]);
-  }, [locale, router]);
-
-  const handleSearchToggle = useCallback(() => {
-    setIsSearchOpen((prev) => !prev);
-    if (!isSearchOpen) {
-      setTimeout(() => searchInputRef.current?.focus(), 100);
-    } else {
-      setSearchQuery('');
-      setSearchResults([]);
-    }
-  }, [isSearchOpen]);
-
-  // Keyboard shortcut for search
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
-        e.preventDefault();
-        setIsSearchOpen(true);
-        setTimeout(() => searchInputRef.current?.focus(), 100);
-      }
-    };
-    document.addEventListener('keydown', handleKeyDown);
-    return () => document.removeEventListener('keydown', handleKeyDown);
-  }, []);
-
-  const handleMobileMenuToggle = useCallback(() => {
-    setIsMobileMenuOpen((prev) => !prev);
-  }, []);
-
-  // Get tool icon based on category
-  const getToolIcon = (category: string) => {
-    const icons: Record<string, string> = {
-      'edit-annotate': '✏️',
-      'convert-to-pdf': '📄',
-      'convert-from-pdf': '🖼️',
-      'organize-manage': '📁',
-      'optimize-repair': '🔧',
-      'secure-pdf': '🔒',
-    };
-    return icons[category] || '📄';
+  const go = (tool: Tool) => {
+    router.push(`/${locale}/tools/${tool.slug}`);
+    onClose();
   };
 
-  const navItems = [
-    { href: `/${locale}`, label: t('navigation.home') },
-    { href: `/${locale}/studio`, label: 'Studio' },
-    { href: `/${locale}/tools`, label: t('navigation.tools') },
-    { href: `/${locale}/workflow`, label: t('navigation.workflow') || 'Workflow' },
-    { href: `/${locale}/about`, label: t('navigation.about') },
-    { href: `/${locale}/faq`, label: t('navigation.faq') },
-  ];
+  const onKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      setSelected((s) => Math.min(s + 1, list.length - 1));
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      setSelected((s) => Math.max(s - 1, 0));
+    } else if (e.key === 'Enter' && list[selected]) {
+      e.preventDefault();
+      go(list[selected]);
+    } else if (e.key === 'Escape') {
+      onClose();
+    }
+  };
 
   return (
-    <header
-      className={`fixed top-0 z-50 w-full transition-all duration-300 ${scrolled
-        ? 'bg-[hsl(var(--color-background))]/80 backdrop-blur-md border-b border-[hsl(var(--color-border))/0.5] shadow-sm'
-        : 'bg-transparent border-transparent'
+    <div className="fixed inset-0 z-[60] flex items-start justify-center bg-[hsl(245_40%_8%/0.45)] px-4 pt-[12vh] backdrop-blur-sm" onMouseDown={onClose}>
+      <div
+        className="w-full max-w-xl overflow-hidden rounded-[var(--radius-lg)] border border-[hsl(var(--color-border))] bg-[hsl(var(--color-card))] shadow-[var(--shadow-xl)]"
+        onMouseDown={(e) => e.stopPropagation()}
+        role="dialog"
+        aria-modal="true"
+        aria-label="Search tools"
+      >
+        <div className="flex items-center gap-3 border-b border-[hsl(var(--color-border))] px-4">
+          <Search className="h-5 w-5 text-[hsl(var(--color-primary))]" aria-hidden="true" />
+          <input
+            ref={inputRef}
+            type="search"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            onKeyDown={onKeyDown}
+            placeholder={t('search.placeholder') || 'Search tools...'}
+            className="h-14 flex-1 bg-transparent text-base outline-none placeholder:text-[hsl(var(--color-muted-foreground))]"
+            style={{ background: 'transparent' }}
+            aria-label="Search tools"
+            autoComplete="off"
+          />
+          <kbd className="hidden rounded border border-[hsl(var(--color-border))] px-1.5 py-0.5 text-[10px] font-semibold text-[hsl(var(--color-muted-foreground))] sm:block">ESC</kbd>
+        </div>
+        <div className="max-h-[55vh] overflow-y-auto p-2">
+          {!query.trim() && (
+            <p className="px-2 pb-1 pt-2 text-xs font-semibold uppercase tracking-wider text-[hsl(var(--color-muted-foreground))]">Popular</p>
+          )}
+          {list.length === 0 ? (
+            <p className="px-3 py-8 text-center text-sm text-[hsl(var(--color-muted-foreground))]">{t('search.noResults')}</p>
+          ) : (
+            <ul role="listbox">
+              {list.map((tool, i) => (
+                <li key={tool.id} role="option" aria-selected={i === selected} onMouseEnter={() => setSelected(i)}>
+                  <ToolMenuItem
+                    tool={tool}
+                    title={localized[tool.id]?.title || tool.id}
+                    href={`/${locale}/tools/${tool.slug}`}
+                    onClick={onClose}
+                    active={i === selected}
+                  />
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+        <div className="border-t border-[hsl(var(--color-border))] px-4 py-2 text-xs text-[hsl(var(--color-muted-foreground))]">
+          {t('search.hint')}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export const Header: React.FC<HeaderProps> = ({ locale, showSearch = true }) => {
+  const t = useTranslations('common');
+  const tHome = useTranslations('home');
+  const localized = useLocalizedTools(locale);
+  const [scrolled, setScrolled] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const [openMenu, setOpenMenu] = useState<'convert' | 'all' | null>(null);
+
+  const title = useCallback((id: string) => localized[id]?.title || id, [localized]);
+  const href = (tool: Tool) => `/${locale}/tools/${tool.slug}`;
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 8);
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+        e.preventDefault();
+        setSearchOpen(true);
+      }
+    };
+    document.addEventListener('keydown', onKey);
+    return () => document.removeEventListener('keydown', onKey);
+  }, []);
+
+  useEffect(() => {
+    document.body.style.overflow = mobileOpen ? 'hidden' : '';
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [mobileOpen]);
+
+  const closeMenus = () => setOpenMenu(null);
+
+  return (
+    <>
+      <header
+        className={`fixed top-0 z-50 w-full transition-all duration-300 ${
+          scrolled || mobileOpen
+            ? 'glass border-b border-[hsl(var(--color-border))] shadow-[var(--shadow-sm)]'
+            : 'border-b border-transparent bg-transparent'
         }`}
-      role="banner"
-    >
-      <div className="container mx-auto px-4">
-        <div className="flex h-20 items-center justify-between">
-          {/* Logo and Brand */}
-          <div className="flex flex-1 items-center gap-2">
-            <Link
-              href={`/${locale}`}
-              className="group flex items-center gap-2.5 text-xl font-bold text-[hsl(var(--color-foreground))] hover:opacity-90 transition-opacity"
-              aria-label={`${t('brand')} - ${t('navigation.home')}`}
-            >
-              <div className="relative flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-[hsl(var(--color-primary))] to-[hsl(var(--color-accent))] shadow-lg shadow-primary/25 transition-transform group-hover:scale-105">
-                <svg
-                  className="h-5 w-5 text-white"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z" />
-                  <polyline points="14 2 14 8 20 8" />
-                </svg>
-              </div>
-              <span className="text-xl tracking-tight" data-testid="brand-name">
-                {t('brand')}
-              </span>
-            </Link>
-          </div>
+        role="banner"
+      >
+        <div className="mx-auto flex h-[68px] max-w-7xl items-center gap-4 px-4 sm:px-6">
+          <Link href={`/${locale}`} className="flex-shrink-0 rounded-lg" aria-label={`${t('brand')} - ${t('navigation.home')}`}>
+            <Logo markClassName="h-9 w-9" />
+            <span className="sr-only" data-testid="brand-name">{t('brand')}</span>
+          </Link>
 
-          {/* Desktop Navigation */}
-          <nav
-            className={`hidden md:flex items-center gap-1 rounded-full border border-[hsl(var(--color-border))/0.4] bg-[hsl(var(--color-background))/0.5] p-1.5 backdrop-blur-sm shadow-sm transition-all duration-300 ${isSearchOpen ? 'opacity-0 translate-y-[-10px] pointer-events-none' : 'opacity-100 translate-y-0'
-              }`}
-            role="navigation"
-            aria-label="Main navigation"
-          >
-            {navItems.map((item) => {
-              const isStudio = item.href.endsWith('/studio');
-              return (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className={`px-4 py-1.5 text-sm font-medium rounded-full transition-all inline-flex items-center gap-1.5 ${
-                    isStudio
-                      ? 'text-[hsl(var(--color-primary))] hover:bg-[hsl(var(--color-primary)/0.1)]'
-                      : 'text-[hsl(var(--color-muted-foreground))] hover:text-[hsl(var(--color-foreground))] hover:bg-[hsl(var(--color-muted))/0.5]'
-                  }`}
-                >
-                  <span>{item.label}</span>
-                  {isStudio && (
-                    <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded-full bg-[hsl(var(--color-primary))] text-white leading-none">
-                      NEW
-                    </span>
-                  )}
+          {/* Desktop navigation */}
+          <nav className="ml-4 hidden items-center gap-0.5 lg:flex" aria-label="Main navigation">
+            {QUICK_TOOLS.map(({ id, labelKey }) => {
+              const tool = getToolById(id);
+              return tool ? (
+                <Link key={id} href={href(tool)} className={navLinkClass}>
+                  {t(labelKey)}
                 </Link>
-              );
+              ) : null;
             })}
-          </nav>
 
-          {/* Right side actions */}
-          <div className="flex flex-1 items-center justify-end gap-3">
-            {/* Search */}
-            {showSearch && (
-              <div className="relative" ref={searchContainerRef}>
-                {isSearchOpen ? (
-                  <div className="fixed md:absolute left-4 right-4 md:left-auto md:right-0 top-[22px] md:top-1/2 md:-translate-y-1/2 z-50 md:origin-right animate-in fade-in slide-in-from-right-4 duration-200">
-                    <div className="relative w-full md:w-96">
-                      <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[hsl(var(--color-muted-foreground))]" />
-                      <input
-                        ref={searchInputRef}
-                        type="search"
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                        onKeyDown={handleKeyDown}
-                        placeholder={t('search.placeholder') || 'Search tools...'}
-                        className="w-full pl-10 pr-10 py-2.5 text-sm rounded-xl border border-[hsl(var(--color-border))] bg-[hsl(var(--color-background))] shadow-lg focus:outline-none focus:ring-2 focus:ring-[hsl(var(--color-primary))]"
-                        aria-label="Search tools"
-                        autoComplete="off"
-                      />
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={handleSearchToggle}
-                        aria-label="Close search"
-                        className="absolute right-1 top-1/2 -translate-y-1/2 h-8 w-8 p-0 hover:bg-transparent"
-                      >
-                        <X className="h-4 w-4 text-[hsl(var(--color-muted-foreground))]" aria-hidden="true" />
-                      </Button>
+            <Dropdown
+              label={t('navigation.convert')}
+              open={openMenu === 'convert'}
+              setOpen={(v) => setOpenMenu(v ? 'convert' : null)}
+              panelClassName="w-[560px]"
+            >
+              <div className="grid grid-cols-2 gap-6">
+                {([
+                  ['convert-to-pdf', CONVERT_TO_IDS],
+                  ['convert-from-pdf', CONVERT_FROM_IDS],
+                ] as const).map(([cat, ids]) => (
+                  <div key={cat}>
+                    <p className={`${CATEGORY_META[cat].colorClass} cat-text mb-2 px-2 text-xs font-bold uppercase tracking-wider`}>
+                      {tHome(`categories.${CATEGORY_META[cat].i18nKey}`)}
+                    </p>
+                    {toolsFromIds([...ids]).map((tool) => (
+                      <ToolMenuItem key={tool.id} tool={tool} title={title(tool.id)} href={href(tool)} onClick={closeMenus} />
+                    ))}
+                  </div>
+                ))}
+              </div>
+            </Dropdown>
 
-                      {/* Search Results Dropdown */}
-                      {searchResults.length > 0 && (
-                        <div className="absolute top-full left-0 right-0 mt-2 bg-[hsl(var(--color-background))] border border-[hsl(var(--color-border))] rounded-xl shadow-xl overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200 max-h-[60vh] overflow-y-auto">
-                          <ul className="py-2" role="listbox">
-                            {searchResults.map((result, index) => {
-                              const localized = localizedTools[result.tool.id];
-                              const toolName = localized?.title || result.tool.id.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
-                              const toolDescription = localized?.description || result.tool.features.slice(0, 3).join(' • ');
-
-                              return (
-                                <li key={result.tool.id}>
-                                  <button
-                                    onClick={() => navigateToTool(result.tool.slug)}
-                                    onMouseEnter={() => setSelectedIndex(index)}
-                                    className={`
-                                      w-full px-4 py-2.5 text-left flex items-center gap-3 transition-colors
-                                      ${index === selectedIndex
-                                        ? 'bg-[hsl(var(--color-primary))/0.1] text-[hsl(var(--color-primary))]'
-                                        : 'hover:bg-[hsl(var(--color-muted))] text-[hsl(var(--color-foreground))]'
-                                      }
-                                    `}
-                                    role="option"
-                                    aria-selected={index === selectedIndex}
-                                  >
-                                    <span className="text-xl filter grayscale group-hover:grayscale-0">{getToolIcon(result.tool.category)}</span>
-                                    <div className="flex-1 min-w-0">
-                                      <div className="font-semibold text-sm truncate">
-                                        {toolName}
-                                      </div>
-                                      <div className="text-xs text-[hsl(var(--color-muted-foreground))] truncate">
-                                        {toolDescription}
-                                      </div>
-                                    </div>
-                                  </button>
-                                </li>
-                              );
-                            })}
-                          </ul>
-                        </div>
+            <Dropdown
+              label={t('navigation.tools')}
+              open={openMenu === 'all'}
+              setOpen={(v) => setOpenMenu(v ? 'all' : null)}
+              panelClassName="w-[min(1180px,96vw)]"
+              mega
+            >
+              <div className="grid grid-cols-3 gap-x-6 gap-y-5 xl:grid-cols-6">
+                {CATEGORY_ORDER.map((cat) => {
+                  const meta = CATEGORY_META[cat];
+                  const list = getToolsByCategory(cat);
+                  return (
+                    <div key={cat} className="min-w-0">
+                      <p className={`${meta.colorClass} cat-text mb-2 px-2 text-xs font-bold uppercase tracking-wider`}>
+                        {tHome(`categories.${meta.i18nKey}`)}
+                      </p>
+                      {list.slice(0, MEGA_PER_CATEGORY).map((tool) => (
+                        <ToolMenuItem key={tool.id} tool={tool} title={title(tool.id)} href={href(tool)} onClick={closeMenus} />
+                      ))}
+                      {list.length > MEGA_PER_CATEGORY && (
+                        <Link
+                          href={`/${locale}/tools?category=${cat}`}
+                          onClick={closeMenus}
+                          className="mt-1 block px-2 text-xs font-semibold text-[hsl(var(--color-primary))] hover:underline"
+                        >
+                          +{list.length - MEGA_PER_CATEGORY} more
+                        </Link>
                       )}
                     </div>
-                  </div>
-                ) : (
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={handleSearchToggle}
-                    aria-label="Open search"
-                    className="relative text-[hsl(var(--color-muted-foreground))] hover:text-[hsl(var(--color-foreground))]"
-                  >
-                    <Search className="h-5 w-5" aria-hidden="true" />
-                    <span className="ml-2 hidden lg:inline-block text-xs text-[hsl(var(--color-muted-foreground))/0.5] border border-[hsl(var(--color-border))] rounded px-1.5 py-0.5">⌘K</span>
-                  </Button>
-                )}
+                  );
+                })}
               </div>
+              <div className="mt-4 flex flex-wrap items-center gap-2 border-t border-[hsl(var(--color-border))] pt-4">
+                <Link href={`/${locale}/tools`} onClick={closeMenus} className="inline-flex items-center gap-2 rounded-lg bg-[hsl(var(--color-muted))] px-3 py-2 text-sm font-semibold hover:bg-[hsl(var(--color-secondary-hover))]">
+                  <LayoutGrid className="h-4 w-4" aria-hidden="true" /> Browse all tools
+                </Link>
+                <Link href={`/${locale}/studio`} onClick={closeMenus} className="inline-flex items-center gap-2 rounded-lg bg-[hsl(var(--color-muted))] px-3 py-2 text-sm font-semibold hover:bg-[hsl(var(--color-secondary-hover))]">
+                  <Sparkles className="h-4 w-4 text-[hsl(var(--color-primary))]" aria-hidden="true" /> PDF Studio
+                </Link>
+                <Link href={`/${locale}/workflow`} onClick={closeMenus} className="inline-flex items-center gap-2 rounded-lg bg-[hsl(var(--color-muted))] px-3 py-2 text-sm font-semibold hover:bg-[hsl(var(--color-secondary-hover))]">
+                  <Workflow className="h-4 w-4 text-[hsl(var(--color-primary))]" aria-hidden="true" /> {t('navigation.workflow')}
+                </Link>
+              </div>
+            </Dropdown>
+          </nav>
+
+          <div className="ml-auto flex items-center gap-1 sm:gap-2">
+            {showSearch && (
+              <button
+                type="button"
+                onClick={() => setSearchOpen(true)}
+                className="flex h-10 items-center gap-2 rounded-xl border border-[hsl(var(--color-border))] bg-[hsl(var(--color-card))] px-3 text-sm text-[hsl(var(--color-muted-foreground))] transition-colors hover:border-[hsl(var(--color-primary)/0.4)] hover:text-[hsl(var(--color-foreground))]"
+                aria-label="Open search"
+              >
+                <Search className="h-4 w-4" aria-hidden="true" />
+                <span className="hidden xl:inline">{t('search.placeholder')}</span>
+                <kbd className="hidden rounded border border-[hsl(var(--color-border))] px-1.5 text-[10px] font-semibold md:inline">Ctrl K</kbd>
+              </button>
             )}
 
-            {/* Recent Files Dropdown */}
-            <RecentFilesDropdown
-              locale={locale}
-              translations={{
-                title: t('recentFiles.title') || 'Recent Files',
-                empty: t('recentFiles.empty') || 'No recent files',
-                clearAll: t('recentFiles.clearAll') || 'Clear all',
-                processedWith: t('recentFiles.processedWith') || 'Processed with',
-              }}
-            />
+            <div className="hidden sm:block">
+              <RecentFilesDropdown
+                locale={locale}
+                translations={{
+                  title: t('recentFiles.title') || 'Recent Files',
+                  empty: t('recentFiles.empty') || 'No recent files',
+                  clearAll: t('recentFiles.clearAll') || 'Clear all',
+                  processedWith: t('recentFiles.processedWith') || 'Processed with',
+                }}
+              />
+            </div>
 
-            {/* Update Check Button */}
-            <UpdateCheckButton />
-
-            {/* GitHub Repository Link */}
-            <a
-              href="https://github.com/PDFCraftTool/pdfcraft"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hidden sm:flex items-center justify-center h-9 w-9 rounded-lg text-[hsl(var(--color-muted-foreground))] hover:text-[hsl(var(--color-foreground))] hover:bg-[hsl(var(--color-muted))/0.5] transition-all"
-              aria-label="GitHub Repository"
-            >
-              <Github className="h-5 w-5" aria-hidden="true" />
-            </a>
-
-            {/* Theme Toggle */}
             <ThemeToggle />
 
-            {/* Language Selector placeholder */}
-            <div id="language-selector-slot" />
-
-            {/* Mobile Menu Toggle */}
-            <Button
-              variant="ghost"
-              size="sm"
-              className="md:hidden"
-              onClick={handleMobileMenuToggle}
-              aria-label={isMobileMenuOpen ? 'Close menu' : 'Open menu'}
-              aria-expanded={isMobileMenuOpen}
+            <button
+              type="button"
+              className="flex h-10 w-10 items-center justify-center rounded-xl text-[hsl(var(--color-foreground))] hover:bg-[hsl(var(--color-muted))] lg:hidden"
+              onClick={() => setMobileOpen((v) => !v)}
+              aria-label={mobileOpen ? 'Close menu' : 'Open menu'}
+              aria-expanded={mobileOpen}
               aria-controls="mobile-menu"
             >
-              {isMobileMenuOpen ? (
-                <X className="h-5 w-5" aria-hidden="true" />
-              ) : (
-                <Menu className="h-5 w-5" aria-hidden="true" />
-              )}
-            </Button>
+              {mobileOpen ? <X className="h-5 w-5" aria-hidden="true" /> : <Menu className="h-5 w-5" aria-hidden="true" />}
+            </button>
           </div>
         </div>
 
-        {/* Mobile Navigation */}
-        {isMobileMenuOpen && (
+        {/* Mobile drawer */}
+        {mobileOpen && (
           <nav
             id="mobile-menu"
-            className="md:hidden py-4 border-t border-[hsl(var(--color-border))] bg-[hsl(var(--color-background))] backdrop-blur-xl shadow-lg"
-            role="navigation"
+            className="h-[calc(100dvh-68px)] overflow-y-auto border-t border-[hsl(var(--color-border))] bg-[hsl(var(--color-background))] px-4 pb-10 pt-4 lg:hidden"
             aria-label="Mobile navigation"
           >
-            <ul className="flex flex-col gap-2 p-2">
-              {navItems.map((item) => {
-                const isStudio = item.href.endsWith('/studio');
-                return (
-                  <li key={item.href}>
-                    <Link
-                      href={item.href}
-                      className={`flex items-center justify-between px-4 py-3 text-base font-medium rounded-lg transition-colors ${
-                        isStudio
-                          ? 'text-[hsl(var(--color-primary))] bg-[hsl(var(--color-primary)/0.06)] hover:bg-[hsl(var(--color-primary)/0.12)]'
-                          : 'text-[hsl(var(--color-foreground))] hover:bg-[hsl(var(--color-muted))]'
-                      }`}
-                      onClick={() => setIsMobileMenuOpen(false)}
-                    >
-                      <span>{item.label}</span>
-                      {isStudio && (
-                        <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-[hsl(var(--color-primary))] text-white">
-                          NEW
-                        </span>
-                      )}
-                    </Link>
-                  </li>
-                );
-              })}
-              {/* GitHub Link in Mobile Menu */}
-              <li>
-                <a
-                  href="https://github.com/PDFCraftTool/pdfcraft"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-3 px-4 py-3 text-base font-medium text-[hsl(var(--color-foreground))] hover:bg-[hsl(var(--color-muted))] rounded-lg transition-colors"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                >
-                  <Github className="h-5 w-5" aria-hidden="true" />
-                  GitHub
-                </a>
-              </li>
-            </ul>
+            <div className="mb-5 grid grid-cols-2 gap-2">
+              {[
+                { href: `/${locale}/tools`, label: t('navigation.tools'), icon: LayoutGrid },
+                { href: `/${locale}/studio`, label: 'PDF Studio', icon: Sparkles },
+              ].map(({ href: h, label, icon: Icon }) => (
+                <Link key={h} href={h} onClick={() => setMobileOpen(false)} className="flex items-center gap-2 rounded-xl border border-[hsl(var(--color-border))] bg-[hsl(var(--color-card))] px-3 py-3 text-sm font-semibold">
+                  <Icon className="h-4 w-4 text-[hsl(var(--color-primary))]" aria-hidden="true" /> {label}
+                </Link>
+              ))}
+            </div>
+            {CATEGORY_ORDER.map((cat) => {
+              const meta = CATEGORY_META[cat];
+              return (
+                <details key={cat} className="group border-b border-[hsl(var(--color-border))] py-1">
+                  <summary className={`${meta.colorClass} flex cursor-pointer list-none items-center justify-between py-3 font-display font-bold`}>
+                    <span className="flex items-center gap-2.5">
+                      <span className="cat-tile flex h-8 w-8 items-center justify-center rounded-lg" aria-hidden="true">
+                        <meta.icon className="h-4 w-4" />
+                      </span>
+                      {tHome(`categories.${meta.i18nKey}`)}
+                    </span>
+                    <ChevronDown className="h-4 w-4 transition-transform group-open:rotate-180" aria-hidden="true" />
+                  </summary>
+                  <div className="grid grid-cols-1 gap-0.5 pb-3 min-[420px]:grid-cols-2">
+                    {getToolsByCategory(cat).map((tool) => (
+                      <ToolMenuItem key={tool.id} tool={tool} title={title(tool.id)} href={href(tool)} onClick={() => setMobileOpen(false)} />
+                    ))}
+                  </div>
+                </details>
+              );
+            })}
+            <div className="mt-5 flex flex-wrap gap-x-5 gap-y-2 text-sm font-medium text-[hsl(var(--color-muted-foreground))]">
+              <Link href={`/${locale}/about`} onClick={() => setMobileOpen(false)}>{t('navigation.about')}</Link>
+              <Link href={`/${locale}/faq`} onClick={() => setMobileOpen(false)}>{t('navigation.faq')}</Link>
+              <Link href={`/${locale}/workflow`} onClick={() => setMobileOpen(false)}>{t('navigation.workflow')}</Link>
+              <Link href={`/${locale}/contact`} onClick={() => setMobileOpen(false)}>{t('navigation.contact')}</Link>
+            </div>
           </nav>
         )}
-      </div>
-    </header>
+      </header>
+
+      {searchOpen && <SearchPalette locale={locale} localized={localized} onClose={() => setSearchOpen(false)} />}
+    </>
   );
 };
 

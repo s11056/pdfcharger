@@ -1,8 +1,8 @@
 [package]
-name = "pdfcraft"
+name = "pdfcharger"
 version = "0.1.0"
-description = "PDFCraft Desktop Application"
-authors = ["PDFCraft"]
+description = "PDFCharger Desktop Application"
+authors = ["PDFCharger"]
 edition = "2021"
 
 [build-dependencies]

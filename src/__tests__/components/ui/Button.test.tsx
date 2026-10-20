@@ -12,7 +12,7 @@ describe('Button', () => {
     it('renders with default variant (primary)', () => {
       render(<Button>Primary</Button>);
       const button = screen.getByRole('button');
-      expect(button).toHaveClass('bg-[hsl(var(--color-primary))]');
+      expect(button).toHaveClass('pc-brand-gradient');
     });
 
     it('renders secondary variant', () => {
@@ -24,7 +24,7 @@ describe('Button', () => {
     it('renders outline variant', () => {
       render(<Button variant="outline">Outline</Button>);
       const button = screen.getByRole('button');
-      expect(button).toHaveClass('border-2');
+      expect(button).toHaveClass('border');
       expect(button).toHaveClass('bg-transparent');
     });
 
@@ -55,9 +55,9 @@ describe('Button', () => {
     it('renders large size', () => {
       render(<Button size="lg">Large</Button>);
       const button = screen.getByRole('button');
-      expect(button).toHaveClass('px-6');
-      expect(button).toHaveClass('py-3');
-      expect(button).toHaveClass('text-lg');
+      expect(button).toHaveClass('px-7');
+      expect(button).toHaveClass('py-3.5');
+      expect(button).toHaveClass('text-base');
     });
   });
 

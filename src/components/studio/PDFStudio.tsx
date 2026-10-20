@@ -128,7 +128,7 @@ export const PDFStudio: React.FC<PDFStudioProps> = ({
   // Restore sidebar collapse state
   useEffect(() => {
     try {
-      const saved = localStorage.getItem('pdfcraft_studio_sidebar_collapsed');
+      const saved = localStorage.getItem('pdfcharger_studio_sidebar_collapsed');
       if (saved !== null) {
         setIsSidebarCollapsed(saved === 'true');
       }
@@ -139,7 +139,7 @@ export const PDFStudio: React.FC<PDFStudioProps> = ({
     setIsSidebarCollapsed((prev) => {
       const next = !prev;
       try {
-        localStorage.setItem('pdfcraft_studio_sidebar_collapsed', String(next));
+        localStorage.setItem('pdfcharger_studio_sidebar_collapsed', String(next));
       } catch {}
       return next;
     });
@@ -434,7 +434,7 @@ export const PDFStudio: React.FC<PDFStudioProps> = ({
         zip.file(filename, doc.currentBlob);
       }
       const zipBlob = await zip.generateAsync({ type: 'blob' });
-      const zipName = `pdfcraft_studio_batch_${Date.now()}.zip`;
+      const zipName = `pdfcharger_studio_batch_${Date.now()}.zip`;
       await saveBlobFile(zipBlob, zipName);
       notify(
         'success',
@@ -549,7 +549,7 @@ export const PDFStudio: React.FC<PDFStudioProps> = ({
               <Sparkles className="h-4 w-4 text-white" />
             </div>
             <span className="font-bold text-sm tracking-tight hidden sm:inline text-[hsl(var(--color-foreground))]">
-              PDFCraft <span className="text-[hsl(var(--color-primary))] font-medium">Studio</span>
+              PDFCharger <span className="text-[hsl(var(--color-primary))] font-medium">Studio</span>
             </span>
           </Link>
 

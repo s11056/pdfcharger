@@ -544,7 +544,7 @@ pdfjs-editor-add-signature-draw-button = Disegna
     .title = Disegna
 pdfjs-editor-add-signature-image-button = Immagine
     .title = Immagine
-# PDFCraft: Scan is a verb (you can scan a photo of your signature)
+# PDFCharger: Scan is a verb (you can scan a photo of your signature)
 pdfjs-editor-add-signature-scan-button = Scansiona
     .title = Scansiona una foto della tua firma
 
@@ -566,7 +566,7 @@ pdfjs-editor-add-signature-image-browse-link =
        *[other] Oppure sfoglia i file immagine
     }
 
-## PDFCraft: Scan tab panel
+## PDFCharger: Scan tab panel
 
 pdfjs-editor-add-signature-scan-instructions = Firma su un foglio di carta bianca, scatta una foto e caricala qui.
 pdfjs-editor-add-signature-scan-tip = Per un risultato ottimale, usa il flash della fotocamera o una luce intensa e uniforme e tieni la fotocamera dritta sopra il foglio.

@@ -532,7 +532,7 @@ pdfjs-editor-add-signature-draw-button = 绘制
     .title = 绘制
 pdfjs-editor-add-signature-image-button = 图像
     .title = 图像
-# PDFCraft: Scan is a verb (you can scan a photo of your signature)
+# PDFCharger: Scan is a verb (you can scan a photo of your signature)
 pdfjs-editor-add-signature-scan-button = 扫描
     .title = 扫描您的签名照片
 
@@ -554,7 +554,7 @@ pdfjs-editor-add-signature-image-browse-link =
        *[other] 或浏览图像文件
     }
 
-## PDFCraft: Scan tab panel
+## PDFCharger: Scan tab panel
 
 pdfjs-editor-add-signature-scan-instructions = 在白纸上签名，拍下照片并上传到这里。
 pdfjs-editor-add-signature-scan-tip = 为获得最佳效果，请使用相机闪光灯或明亮均匀的光线，并将相机垂直对准纸面。

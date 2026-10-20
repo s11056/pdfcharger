@@ -23573,7 +23573,7 @@ class SignatureExtractor {
     });
   }
   static process(bitmap, pageWidth, pageHeight, rotation, innerMargin, options = null) {
-    // PDFCraft: `options.isClean` marks an image that is already dark ink on
+    // PDFCharger: `options.isClean` marks an image that is already dark ink on
     // white paper (the Scan tab cleans photos itself). Denoising and threshold
     // guessing are skipped, which would otherwise thicken the strokes;
     // `options.threshold` and `options.maxDim` control the stroke edge and

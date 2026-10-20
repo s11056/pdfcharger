@@ -17,7 +17,7 @@
  * See HEBREW_FIX.md for details.
  */
 
-import { Inter, JetBrains_Mono } from 'next/font/google';
+import { Inter, JetBrains_Mono, Plus_Jakarta_Sans } from 'next/font/google';
 
 /**
  * Inter font - Primary sans-serif font
@@ -47,6 +47,18 @@ export const inter = Inter({
 });
 
 /**
+ * Plus Jakarta Sans - display font for headings and the wordmark
+ */
+export const jakarta = Plus_Jakarta_Sans({
+  subsets: ['latin', 'latin-ext'],
+  display: 'swap',
+  variable: '--font-jakarta',
+  weight: ['600', '700', '800'],
+  preload: true,
+  fallback: ['Segoe UI', '-apple-system', 'system-ui', 'Arial', 'sans-serif'],
+});
+
+/**
  * JetBrains Mono font - Monospace font
  * Used for code snippets and technical content
  */
@@ -62,7 +74,7 @@ export const jetbrainsMono = JetBrains_Mono({
 /**
  * Combined font variables for use in className
  */
-export const fontVariables = `${inter.variable} ${jetbrainsMono.variable}`;
+export const fontVariables = `${inter.variable} ${jakarta.variable} ${jetbrainsMono.variable}`;
 
 /**
  * Font class names for direct usage

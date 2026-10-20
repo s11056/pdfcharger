@@ -121,7 +121,7 @@ describe('PDFReaderTool', () => {
     });
   });
 
-  it('responds to pdfcraft-print-requested message posted by viewer iframe', async () => {
+  it('responds to pdfcharger-print-requested message posted by viewer iframe', async () => {
     vi.spyOn(tauriBridge, 'isTauri').mockReturnValue(true);
     vi.spyOn(tauriBridge, 'getSystemPrinters').mockResolvedValue([
       { name: 'Office Printer', is_default: true, port_name: 'NET' },
@@ -138,7 +138,7 @@ describe('PDFReaderTool', () => {
     act(() => {
       window.dispatchEvent(
         new MessageEvent('message', {
-          data: { type: 'pdfcraft-print-requested' },
+          data: { type: 'pdfcharger-print-requested' },
         })
       );
     });
@@ -150,7 +150,7 @@ describe('PDFReaderTool', () => {
   });
 
   it('exports SELECTED_PRINTER_STORAGE_KEY with expected identifier', () => {
-    expect(SELECTED_PRINTER_STORAGE_KEY).toBe('pdfcraft-selected-printer');
+    expect(SELECTED_PRINTER_STORAGE_KEY).toBe('pdfcharger-selected-printer');
   });
 
   it('does NOT trigger print or preventDefault on Ctrl+P when no PDF file is loaded', () => {

@@ -2,8 +2,9 @@
 
 import React, { useCallback, useRef, useState, useEffect } from 'react';
 import { useTranslations } from 'next-intl';
-import { UploadCloud, File, Plus, X, Lock, Loader2 } from 'lucide-react';
+import { UploadCloud, File, Plus, X, Lock, Loader2, ShieldCheck } from 'lucide-react';
 import { isTauri } from '@/lib/tauri-bridge';
+import { takePendingFiles } from '@/lib/pending-files';
 
 export interface FileUploaderProps {
   /** Accepted file types (MIME types or extensions) */
@@ -460,6 +461,19 @@ export const FileUploader: React.FC<FileUploaderProps> = ({
   }, [disabled, handleFiles]);
 
   /**
+   * Pick up files handed off from the homepage drop zone
+   */
+  useEffect(() => {
+    if (disabled) return;
+    const handedOff = takePendingFiles();
+    if (handedOff.length > 0) {
+      handleFiles(handedOff);
+    }
+    // Run once on mount only
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  /**
    * Handle paste from clipboard
    */
   useEffect(() => {
@@ -520,9 +534,9 @@ export const FileUploader: React.FC<FileUploaderProps> = ({
 
   const baseStyles = `
     relative flex flex-col items-center justify-center
-    w-full min-h-[250px] p-10
+    w-full min-h-[260px] px-6 py-12 sm:p-12
     border-2 border-dashed
-    rounded-[2rem]
+    rounded-[var(--radius-xl)]
     transition-all duration-300
     cursor-pointer
     group
@@ -530,17 +544,14 @@ export const FileUploader: React.FC<FileUploaderProps> = ({
 
   // Dynamic styles based on state
   const stateStyles = disabled
-    ? 'border-[hsl(var(--color-muted))] bg-[hsl(var(--color-muted)/0.3)] cursor-not-allowed opacity-50'
+    ? 'border-[hsl(var(--color-border))] bg-[hsl(var(--color-muted)/0.4)] cursor-not-allowed opacity-50'
     : isDragging
-      ? 'border-[hsl(var(--color-primary))] bg-[hsl(var(--color-primary)/0.05)] scale-[1.01] shadow-2xl shadow-primary/10'
-      : `
-      border-[hsl(var(--color-border))] 
-      bg-[hsl(var(--color-card)/0.5)] 
-      hover:border-[hsl(var(--color-primary))] 
-      hover:bg-[hsl(var(--color-background))] 
-      hover:shadow-xl hover:shadow-[hsl(var(--color-primary)/0.05)]
-      glass-card
-    `;
+      ? 'border-[hsl(var(--color-primary))] bg-[hsl(var(--color-primary)/0.06)] scale-[1.005]'
+      : 'border-[hsl(var(--color-primary)/0.28)] bg-[hsl(var(--color-surface))] hover:border-[hsl(var(--color-primary)/0.6)] hover:bg-[hsl(var(--color-primary)/0.03)]';
+
+  const formatsLabel = accept && accept.length > 0
+    ? (accept.length > 6 ? `${accept.slice(0, 6).join(', ')} +${accept.length - 6}` : accept.join(', '))
+    : t('fileUploader.paste');
 
   return (
     <div
@@ -569,35 +580,33 @@ export const FileUploader: React.FC<FileUploaderProps> = ({
         disabled={disabled}
       />
 
-      {/* Decorative background blob */}
-      <div className="absolute inset-0 overflow-hidden rounded-[2rem] pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-[hsl(var(--color-primary)/0.03)] rounded-full blur-3xl" />
-      </div>
-
       {/* Upload icon */}
-      <div className={`
-        mb-6 p-4 rounded-full transition-transform duration-300 group-hover:scale-110
-        ${isDragging ? 'bg-[hsl(var(--color-primary)/0.1)] text-[hsl(var(--color-primary))]' : 'bg-[hsl(var(--color-muted))] text-[hsl(var(--color-muted-foreground))] group-hover:bg-[hsl(var(--color-primary)/0.1)] group-hover:text-[hsl(var(--color-primary))]'}
-      `}>
-        <UploadCloud className="w-10 h-10" aria-hidden="true" />
+      <div className="mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-[hsl(var(--color-primary)/0.1)] text-[hsl(var(--color-primary))] transition-transform duration-300 group-hover:-translate-y-1">
+        <UploadCloud className="h-7 w-7" aria-hidden="true" />
       </div>
 
-      {/* Label */}
-      <p className="text-xl font-semibold text-[hsl(var(--color-foreground))] mb-3 text-center">
+      {/* Primary call to action (iLovePDF-style big button) */}
+      <span className="pc-brand-gradient inline-flex items-center gap-2 rounded-2xl px-8 py-4 text-lg font-bold text-white shadow-[var(--shadow-xl)] transition-transform duration-200 group-hover:scale-[1.03]">
+        <Plus className="h-5 w-5" aria-hidden="true" />
         {label || t('buttons.upload')}
-      </p>
+      </span>
 
       {/* Description */}
-      <div className="text-sm text-[hsl(var(--color-muted-foreground))] text-center max-w-sm leading-relaxed">
+      <div className="mt-4 text-sm text-[hsl(var(--color-muted-foreground))] text-center max-w-md leading-relaxed">
         {description || (
           <>
-            <p className="mb-2">{t('fileUploader.dragDrop')}</p>
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[hsl(var(--color-muted)/0.5)] text-xs font-medium">
-              <span className="opacity-70">{t('fileUploader.support')}:</span>
-              <span>{accept && accept.length > 0 ? accept.join(', ') : t('fileUploader.paste')}</span>
-              {maxSize && maxSize !== Infinity && (
-                <span className="ml-1 opacity-70">
-                  ({Math.round(maxSize / (1024 * 1024))}MB)
+            <p className="mb-3">{t('fileUploader.dragDrop')}</p>
+            <div className="flex flex-wrap items-center justify-center gap-2 text-xs">
+              <span className="inline-flex items-center gap-1.5 rounded-full border border-[hsl(var(--color-border))] bg-[hsl(var(--color-card))] px-3 py-1">
+                <span className="opacity-70">{t('fileUploader.support')}:</span>
+                <span className="font-medium text-[hsl(var(--color-foreground))]">{formatsLabel}</span>
+                {maxSize && maxSize !== Infinity && (
+                  <span className="opacity-70">({Math.round(maxSize / (1024 * 1024))}MB)</span>
+                )}
+              </span>
+              {multiple && (
+                <span className="rounded-full border border-[hsl(var(--color-border))] bg-[hsl(var(--color-card))] px-3 py-1">
+                  Max files: {maxFiles}
                 </span>
               )}
             </div>
@@ -605,18 +614,14 @@ export const FileUploader: React.FC<FileUploaderProps> = ({
         )}
       </div>
 
-      {/* File info hints - only show when multiple files allowed */}
-      {multiple && (
-        <div className="mt-6 flex flex-wrap gap-2 justify-center">
-          <span className="text-xs px-2 py-1 rounded-md bg-[hsl(var(--color-muted))] text-[hsl(var(--color-muted-foreground))]">
-            Max files: {maxFiles}
-          </span>
-        </div>
-      )}
+      <p className="mt-5 inline-flex items-center gap-1.5 text-xs font-medium text-[hsl(var(--color-success))]">
+        <ShieldCheck className="h-3.5 w-3.5" aria-hidden="true" />
+        Files are processed in your browser — never uploaded
+      </p>
 
       {/* Drag overlay */}
       {isDragging && (
-        <div className="absolute inset-0 flex flex-col items-center justify-center bg-[hsl(var(--color-background)/0.9)] backdrop-blur-sm rounded-[2rem] z-10 transition-opacity duration-200">
+        <div className="absolute inset-0 flex flex-col items-center justify-center bg-[hsl(var(--color-background)/0.92)] backdrop-blur-sm rounded-[var(--radius-xl)] z-10 transition-opacity duration-200">
           <div className="p-4 rounded-full bg-[hsl(var(--color-primary)/0.1)] text-[hsl(var(--color-primary))] mb-4 motion-safe:animate-bounce">
             <Plus className="w-8 h-8" />
           </div>

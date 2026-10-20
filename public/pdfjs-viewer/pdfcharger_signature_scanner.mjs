@@ -1,4 +1,4 @@
-/* Copyright 2026 PDFCraft contributors
+/* Copyright 2026 PDFCharger contributors
  *
  * Licensed under the GNU Affero General Public License v3.0 (see LICENSE).
  *
@@ -694,7 +694,7 @@ class SignatureScanController {
     elements.cropFrame.replaceChildren(
       ...RESIZE_HANDLES.map(handle => {
         const div = document.createElement("div");
-        div.className = "pdfcraftScanHandle";
+        div.className = "pdfchargerScanHandle";
         div.dataset.handle = handle;
         return div;
       })

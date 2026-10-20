@@ -1,18 +1,19 @@
 'use client';
 
+import { useMemo } from 'react';
+import Link from 'next/link';
 import { useTranslations } from 'next-intl';
-import { Tool, ToolContent, HowToStep, UseCase, FAQ, ToolCategory } from '@/types/tool';
-import { Card } from '@/components/ui/Card';
+import { ChevronRight, ChevronDown, CheckCircle2, ShieldCheck } from 'lucide-react';
+import { Tool, ToolContent, HowToStep, UseCase, FAQ } from '@/types/tool';
 import { getToolById } from '@/config/tools';
+import { getToolIcon } from '@/config/icons';
+import { CATEGORY_META, humanizeToolId } from '@/config/categories';
 import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
+import { ToolCard } from '@/components/tools/ToolCard';
+import { FavoriteButton } from '@/components/ui/FavoriteButton';
 import { type Locale } from '@/lib/i18n/config';
 import { ToolProvider } from '@/lib/contexts/ToolContext';
-import { getToolIcon } from '@/config/icons';
-import Link from 'next/link';
-import { Home, ChevronRight } from 'lucide-react';
-import { FavoriteButton } from '@/components/ui/FavoriteButton';
-import { useMemo } from 'react';
 import { sanitizeHtml } from '@/lib/utils/html-sanitizer';
 
 export interface ToolPageProps {
@@ -28,99 +29,64 @@ export interface ToolPageProps {
   localizedRelatedTools?: Record<string, { title: string; description: string }>;
 }
 
-const categoryTranslationKeys: Record<ToolCategory, string> = {
-  'edit-annotate': 'editAnnotate',
-  'convert-to-pdf': 'convertToPdf',
-  'convert-from-pdf': 'convertFromPdf',
-  'organize-manage': 'organizeManage',
-  'optimize-repair': 'optimizeRepair',
-  'secure-pdf': 'securePdf',
-};
+const sectionTitle = 'font-display mb-6 text-2xl font-extrabold text-[hsl(var(--color-foreground))] sm:text-3xl';
 
 /**
- * ToolPage layout component provides the structure for individual tool pages.
- * Includes tool interface, description, how-to, use cases, FAQ, and related tools.
+ * Layout for individual tool pages: hero, tool workspace, then how-to,
+ * description, use cases, FAQ and related tools for SEO.
  */
 export function ToolPage({ tool, content, locale, children, localizedRelatedTools = {} }: ToolPageProps) {
-  // Get related tools data
-  const relatedTools = tool.relatedTools
-    .map(id => getToolById(id))
-    .filter((t): t is Tool => t !== undefined);
-
   const t = useTranslations();
-
-  // Get tool display name
-  const toolDisplayName = content.title || tool.id
-    .split('-')
-    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-    .join(' ');
+  const relatedTools = tool.relatedTools.map((id) => getToolById(id)).filter((x): x is Tool => x !== undefined);
+  const toolDisplayName = content.title || humanizeToolId(tool.id);
+  const meta = CATEGORY_META[tool.category];
+  const categoryName = t(`home.categories.${meta.i18nKey}`);
 
   return (
     <ToolProvider toolSlug={tool.slug} toolName={toolDisplayName}>
-      <div className="min-h-screen flex flex-col" data-testid="tool-page">
+      <div className="flex min-h-screen flex-col bg-[hsl(var(--color-background))]" data-testid="tool-page">
         <Header locale={locale as Locale} />
 
         <main id="main-content" className="flex-1" tabIndex={-1}>
-          <div className="max-w-7xl mx-auto px-4 pt-24 pb-8">
-            {/* Breadcrumb Navigation */}
-            <nav aria-label="Breadcrumb" className="mb-4 flex items-center text-sm text-[hsl(var(--color-muted-foreground))] animate-in fade-in slide-in-from-top-4 duration-500 delay-100">
-              <Link
-                href={`/${locale}`}
-                className="flex items-center hover:text-[hsl(var(--color-primary))] transition-colors"
-                title={t('common.navigation.home')}
-              >
-                <Home className="w-4 h-4" />
-              </Link>
-              <ChevronRight className="w-4 h-4 mx-2 text-[hsl(var(--color-border))]" />
-              <Link
-                href={`/${locale}/tools`}
-                className="hover:text-[hsl(var(--color-primary))] transition-colors"
-              >
-                {t('common.navigation.tools')}
-              </Link>
-              <ChevronRight className="w-4 h-4 mx-2 text-[hsl(var(--color-border))]" />
-              <Link
-                href={`/${locale}/tools/category/${tool.category}`}
-                className="hover:text-[hsl(var(--color-primary))] transition-colors"
-              >
-                {t(`home.categories.${categoryTranslationKeys[tool.category]}`)}
-              </Link>
-              <ChevronRight className="w-4 h-4 mx-2 text-[hsl(var(--color-border))]" />
-              <span className="font-medium text-[hsl(var(--color-foreground))] truncate max-w-[200px] sm:max-w-md" aria-current="page">
-                {content.title || toolDisplayName}
-              </span>
-            </nav>
+          {/* Hero */}
+          <div className="pc-hero-wash pb-8 pt-24 sm:pt-28">
+            <div className="mx-auto max-w-6xl px-4 sm:px-6">
+              <nav aria-label="Breadcrumb" className="mb-6 flex flex-wrap items-center justify-center gap-1 text-sm text-[hsl(var(--color-muted-foreground))]">
+                <Link href={`/${locale}`} className="hover:text-[hsl(var(--color-primary))]">
+                  {t('common.navigation.home')}
+                </Link>
+                <ChevronRight className="h-3.5 w-3.5" aria-hidden="true" />
+                <Link href={`/${locale}/tools/category/${tool.category}`} className="hover:text-[hsl(var(--color-primary))]">
+                  {categoryName}
+                </Link>
+                <ChevronRight className="h-3.5 w-3.5" aria-hidden="true" />
+                <span className="max-w-[200px] truncate font-medium text-[hsl(var(--color-foreground))] sm:max-w-md" aria-current="page">
+                  {toolDisplayName}
+                </span>
+              </nav>
 
-            {/* Tool Header */}
-            <ToolHeader tool={tool} content={content} />
+              <ToolHeader tool={tool} content={content} />
+            </div>
+          </div>
 
-            {/* Tool Interface Area */}
+          {/* Tool workspace */}
+          <div className="mx-auto max-w-6xl px-4 sm:px-6">
             <section
-              className="mt-6"
+              className="rounded-[var(--radius-xl)] border border-[hsl(var(--color-border))] bg-[hsl(var(--color-card))] p-4 shadow-[var(--shadow-lg)] sm:p-6"
               data-testid="tool-page-interface"
               aria-label="Tool interface"
             >
               {children}
             </section>
+          </div>
 
-            {/* Description Section */}
-            <DescriptionSection description={content.description} />
-
-            {/* How to Use Section */}
+          {/* Content for people and search engines */}
+          <div className="mx-auto max-w-6xl space-y-20 px-4 py-20 sm:px-6">
             <HowToUseSection steps={content.howToUse} />
-
-            {/* Use Cases Section */}
+            <DescriptionSection description={content.description} />
             <UseCasesSection useCases={content.useCases} />
-
-            {/* FAQ Section */}
             <FAQSection faq={content.faq} />
-
-            {/* Related Tools Section */}
-            <RelatedToolsSection
-              tools={relatedTools}
-              locale={locale}
-              localizedRelatedTools={localizedRelatedTools}
-            />
+            <RelatedToolsSection tools={relatedTools} locale={locale} localizedRelatedTools={localizedRelatedTools} />
           </div>
         </main>
 
@@ -130,121 +96,70 @@ export function ToolPage({ tool, content, locale, children, localizedRelatedTool
   );
 }
 
-/**
- * Tool header with icon, name, and brief description
- */
-interface ToolHeaderProps {
-  tool: Tool;
-  content: ToolContent;
-}
-
-function ToolHeader({ tool, content }: ToolHeaderProps) {
-  const toolName = tool.id
-    .split('-')
-    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-    .join(' ');
-
+function ToolHeader({ tool, content }: { tool: Tool; content: ToolContent }) {
+  const t = useTranslations();
   const IconComponent = getToolIcon(tool.icon);
+  const meta = CATEGORY_META[tool.category];
 
   return (
-    <header className="text-center" data-testid="tool-page-header" itemScope itemType="https://schema.org/SoftwareApplication">
+    <header className={`text-center ${meta.colorClass}`} data-testid="tool-page-header" itemScope itemType="https://schema.org/SoftwareApplication">
       <meta itemProp="applicationCategory" content="UtilitiesApplication" />
       <meta itemProp="operatingSystem" content="Web Browser" />
       <meta itemProp="offers" itemScope itemType="https://schema.org/Offer" content="" />
       <meta itemProp="price" content="0" />
       <meta itemProp="priceCurrency" content="USD" />
-      <div
-        className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-[hsl(var(--color-primary)/0.1)] to-[hsl(var(--color-accent)/0.1)] mb-4 shadow-inner"
-        aria-hidden="true"
-      >
-        <IconComponent className="w-8 h-8 text-[hsl(var(--color-primary))]" />
+      <div className="cat-solid mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-2xl shadow-[0_10px_24px_-10px_hsl(var(--cat))]" aria-hidden="true">
+        <IconComponent className="h-8 w-8" />
       </div>
-      <h1
-        className="text-3xl font-bold text-[hsl(var(--color-foreground))] mb-2"
-        data-testid="tool-page-title"
-        itemProp="name"
-      >
-        {content.title || toolName}
+      <h1 className="font-display mb-3 text-3xl font-extrabold text-[hsl(var(--color-foreground))] sm:text-5xl" data-testid="tool-page-title" itemProp="name">
+        {content.title || humanizeToolId(tool.id)}
       </h1>
-      <p
-        className="text-lg text-[hsl(var(--color-muted-foreground))] max-w-2xl mx-auto leading-relaxed mb-4"
-        data-testid="tool-page-subtitle"
-        itemProp="description"
-      >
+      <p className="mx-auto mb-5 max-w-2xl text-lg leading-relaxed text-[hsl(var(--color-muted-foreground))]" data-testid="tool-page-subtitle" itemProp="description">
         {content.metaDescription}
       </p>
-      <div className="flex items-center justify-center">
-        <FavoriteButton toolId={tool.id} size="lg" showLabel />
+      <div className="flex flex-wrap items-center justify-center gap-3">
+        <span className="inline-flex items-center gap-1.5 rounded-full bg-[hsl(var(--color-success)/0.1)] px-3 py-1.5 text-xs font-semibold text-[hsl(var(--color-success))]">
+          <ShieldCheck className="h-4 w-4" aria-hidden="true" />
+          {t('tools.pc.privateNote')}
+        </span>
+        <FavoriteButton toolId={tool.id} size="md" showLabel />
       </div>
     </header>
   );
 }
 
-/**
- * Description section with detailed tool information
- */
-interface DescriptionSectionProps {
-  description: string;
-}
-
-function DescriptionSection({ description }: DescriptionSectionProps) {
+function DescriptionSection({ description }: { description: string }) {
   const t = useTranslations();
   const sanitizedDescription = useMemo(() => sanitizeHtml(description), [description]);
   if (!description) return null;
 
   return (
-    <section
-      className="mt-10"
-      data-testid="tool-page-description"
-      aria-labelledby="description-heading"
-    >
-      <h2
-        id="description-heading"
-        className="text-2xl font-bold text-[hsl(var(--color-foreground))] mb-6"
-      >
+    <section data-testid="tool-page-description" aria-labelledby="description-heading">
+      <h2 id="description-heading" className={sectionTitle}>
         {t('tools.about')}
       </h2>
-      <Card variant="outlined" size="lg" className="glass-card">
-        <div
-          className="prose prose-sm max-w-none text-[hsl(var(--color-foreground))/0.8]"
-          dangerouslySetInnerHTML={{ __html: sanitizedDescription }}
-        />
-      </Card>
+      <div
+        className="prose prose-sm max-w-none rounded-[var(--radius-lg)] border border-[hsl(var(--color-border))] bg-[hsl(var(--color-surface))] p-6 leading-relaxed text-[hsl(var(--color-foreground)/0.85)] sm:p-8 sm:text-base"
+        dangerouslySetInnerHTML={{ __html: sanitizedDescription }}
+      />
     </section>
   );
 }
 
-/**
- * How to use section with numbered steps
- */
-interface HowToUseSectionProps {
-  steps: HowToStep[];
-}
-
-function HowToUseSection({ steps }: HowToUseSectionProps) {
+function HowToUseSection({ steps }: { steps: HowToStep[] }) {
   const t = useTranslations();
   if (!steps || steps.length === 0) return null;
 
   return (
-    <section
-      className="mt-10"
-      data-testid="tool-page-how-to-use"
-      aria-labelledby="how-to-use-heading"
-      itemScope
-      itemType="https://schema.org/HowTo"
-    >
-      <h2
-        id="how-to-use-heading"
-        className="text-2xl font-bold text-[hsl(var(--color-foreground))] mb-6"
-        itemProp="name"
-      >
+    <section data-testid="tool-page-how-to-use" aria-labelledby="how-to-use-heading" itemScope itemType="https://schema.org/HowTo">
+      <h2 id="how-to-use-heading" className={`${sectionTitle} text-center`} itemProp="name">
         {t('tools.howToUse')}
       </h2>
-      <ol className="grid gap-6 md:grid-cols-3" data-testid="how-to-use-steps">
+      <ol className={`grid gap-6 pt-4 ${steps.length >= 4 ? 'md:grid-cols-2 lg:grid-cols-4' : 'md:grid-cols-3'}`} data-testid="how-to-use-steps">
         {steps.map((step) => (
           <li
             key={step.step}
-            className="flex flex-col h-full"
+            className="relative rounded-[var(--radius-lg)] border border-[hsl(var(--color-border))] bg-[hsl(var(--color-card))] p-6 pt-8 text-center shadow-[var(--shadow-sm)]"
             data-testid={`how-to-step-${step.step}`}
             id={`step-${step.step}`}
             itemScope
@@ -252,20 +167,15 @@ function HowToUseSection({ steps }: HowToUseSectionProps) {
             itemType="https://schema.org/HowToStep"
           >
             <meta itemProp="position" content={String(step.step)} />
-            <Card className="flex-1 h-full glass-card border-[hsl(var(--color-border))/0.6] hover:border-[hsl(var(--color-primary)/0.3)] transition-colors">
-              <div
-                className="w-10 h-10 rounded-xl bg-[hsl(var(--color-primary)/0.1)] text-[hsl(var(--color-primary))] flex items-center justify-center font-bold text-lg mb-4"
-                aria-hidden="true"
-              >
-                {step.step}
-              </div>
-              <h3 className="text-lg font-semibold text-[hsl(var(--color-foreground))] mb-2" itemProp="name">
-                {step.title}
-              </h3>
-              <p className="text-sm text-[hsl(var(--color-muted-foreground))]" itemProp="text">
-                {step.description}
-              </p>
-            </Card>
+            <span className="pc-brand-gradient absolute -top-4 left-1/2 flex h-8 w-8 -translate-x-1/2 items-center justify-center rounded-full text-sm font-bold text-white shadow-md" aria-hidden="true">
+              {step.step}
+            </span>
+            <h3 className="font-display mb-2 text-lg font-bold" itemProp="name">
+              {step.title}
+            </h3>
+            <p className="text-sm leading-relaxed text-[hsl(var(--color-muted-foreground))]" itemProp="text">
+              {step.description}
+            </p>
           </li>
         ))}
       </ol>
@@ -273,183 +183,92 @@ function HowToUseSection({ steps }: HowToUseSectionProps) {
   );
 }
 
-/**
- * Use cases section with practical scenarios
- */
-interface UseCasesSectionProps {
-  useCases: UseCase[];
-}
-
-function UseCasesSection({ useCases }: UseCasesSectionProps) {
+function UseCasesSection({ useCases }: { useCases: UseCase[] }) {
   const t = useTranslations();
   if (!useCases || useCases.length === 0) return null;
 
   return (
-    <section
-      className="mt-10"
-      data-testid="tool-page-use-cases"
-      aria-labelledby="use-cases-heading"
-    >
-      <h2
-        id="use-cases-heading"
-        className="text-2xl font-bold text-[hsl(var(--color-foreground))] mb-6"
-      >
+    <section data-testid="tool-page-use-cases" aria-labelledby="use-cases-heading">
+      <h2 id="use-cases-heading" className={sectionTitle}>
         {t('tools.useCases')}
       </h2>
-      <div
-        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
-        data-testid="use-cases-grid"
-      >
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3" data-testid="use-cases-grid">
         {useCases.map((useCase, index) => (
-          <Card
+          <div
             key={index}
-            variant="default"
-            className="glass-card hover:shadow-lg transition-all duration-300"
+            className="flex gap-4 rounded-[var(--radius-lg)] border border-[hsl(var(--color-border))] bg-[hsl(var(--color-card))] p-5 shadow-[var(--shadow-sm)]"
             data-testid={`use-case-${index}`}
           >
-            <div className="flex items-start gap-4">
-              <div
-                className="flex-shrink-0 w-12 h-12 rounded-xl bg-[hsl(var(--color-secondary)/0.5)] flex items-center justify-center"
-                aria-hidden="true"
-              >
-                {/* We can map icons here too if needed, for now using a generic check */}
-                <div className="w-6 h-6 text-[hsl(var(--color-secondary-foreground))] flex items-center justify-center">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-full h-full"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-                </div>
-              </div>
-              <div>
-                <h3 className="font-semibold text-[hsl(var(--color-foreground))] mb-1">
-                  {useCase.title}
-                </h3>
-                <p className="text-sm text-[hsl(var(--color-muted-foreground))]">
-                  {useCase.description}
-                </p>
-              </div>
+            <CheckCircle2 className="mt-0.5 h-6 w-6 flex-shrink-0 text-[hsl(var(--color-primary))]" aria-hidden="true" />
+            <div>
+              <h3 className="mb-1 font-bold">{useCase.title}</h3>
+              <p className="text-sm leading-relaxed text-[hsl(var(--color-muted-foreground))]">{useCase.description}</p>
             </div>
-          </Card>
+          </div>
         ))}
       </div>
     </section>
   );
 }
 
-/**
- * FAQ section with common questions and answers
- */
-interface FAQSectionProps {
-  faq: FAQ[];
-}
-
-function FAQSection({ faq }: FAQSectionProps) {
+function FAQSection({ faq }: { faq: FAQ[] }) {
   const t = useTranslations();
   if (!faq || faq.length === 0) return null;
 
   return (
-    <section
-      className="mt-10"
-      data-testid="tool-page-faq"
-      aria-labelledby="faq-heading"
-      itemScope
-      itemType="https://schema.org/FAQPage"
-    >
-      <h2
-        id="faq-heading"
-        className="text-2xl font-bold text-[hsl(var(--color-foreground))] mb-6"
-      >
+    <section className="mx-auto max-w-3xl" data-testid="tool-page-faq" aria-labelledby="faq-heading" itemScope itemType="https://schema.org/FAQPage">
+      <h2 id="faq-heading" className={`${sectionTitle} text-center`}>
         {t('tools.faq')}
       </h2>
-      <div className="space-y-4" data-testid="faq-list">
+      <div className="space-y-3" data-testid="faq-list">
         {faq.map((item, index) => (
-          <Card
+          <details
             key={index}
-            variant="outlined"
-            className="glass-card"
+            className="group rounded-[var(--radius-lg)] border border-[hsl(var(--color-border))] bg-[hsl(var(--color-card))] px-5 shadow-[var(--shadow-sm)] open:shadow-[var(--shadow-md)]"
             data-testid={`faq-item-${index}`}
             itemScope
             itemProp="mainEntity"
             itemType="https://schema.org/Question"
           >
-            <h3 className="font-semibold text-[hsl(var(--color-foreground))]" itemProp="name">
-              {item.question}
-            </h3>
+            <summary className="flex cursor-pointer list-none items-center justify-between gap-4 py-4">
+              <h3 className="font-semibold" itemProp="name">
+                {item.question}
+              </h3>
+              <ChevronDown className="h-5 w-5 flex-shrink-0 text-[hsl(var(--color-muted-foreground))] transition-transform group-open:rotate-180" aria-hidden="true" />
+            </summary>
             <div itemScope itemProp="acceptedAnswer" itemType="https://schema.org/Answer">
-              <p className="mt-2 text-sm text-[hsl(var(--color-muted-foreground))]" itemProp="text">
+              <p className="pb-5 text-sm leading-relaxed text-[hsl(var(--color-muted-foreground))]" itemProp="text">
                 {item.answer}
               </p>
             </div>
-          </Card>
+          </details>
         ))}
       </div>
     </section>
   );
 }
 
-/**
- * Related tools section
- */
-interface RelatedToolsSectionProps {
+function RelatedToolsSection({
+  tools,
+  locale,
+  localizedRelatedTools,
+}: {
   tools: Tool[];
   locale: string;
   localizedRelatedTools: Record<string, { title: string; description: string }>;
-}
-
-function RelatedToolsSection({ tools, locale, localizedRelatedTools }: RelatedToolsSectionProps) {
+}) {
   const t = useTranslations();
   if (!tools || tools.length === 0) return null;
 
   return (
-    <section
-      className="mt-10"
-      data-testid="tool-page-related-tools"
-      aria-labelledby="related-tools-heading"
-    >
-      <h2
-        id="related-tools-heading"
-        className="text-2xl font-bold text-[hsl(var(--color-foreground))] mb-6"
-      >
+    <section data-testid="tool-page-related-tools" aria-labelledby="related-tools-heading">
+      <h2 id="related-tools-heading" className={sectionTitle}>
         {t('tools.relatedTools')}
       </h2>
-      <div
-        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
-        data-testid="related-tools-grid"
-      >
-        {tools.map(tool => {
-          const localized = localizedRelatedTools[tool.id];
-          const toolName = localized?.title || tool.id
-            .split('-')
-            .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-            .join(' ');
-
-          const IconComponent = getToolIcon(tool.icon);
-          const categoryName = t(`home.categories.${categoryTranslationKeys[tool.category]}`);
-
-          return (
-            <a
-              key={tool.id}
-              href={`/${locale}/tools/${tool.slug}`}
-              className="block group"
-            >
-              <Card hover clickable className="h-full glass-card transition-all duration-300 group-hover:-translate-y-1">
-                <div className="flex items-center gap-4">
-                  <div
-                    className="flex-shrink-0 w-12 h-12 rounded-xl bg-[hsl(var(--color-primary)/0.1)] flex items-center justify-center group-hover:bg-[hsl(var(--color-primary))] transition-colors duration-300"
-                    aria-hidden="true"
-                  >
-                    <IconComponent className="w-6 h-6 text-[hsl(var(--color-primary))] group-hover:text-white transition-colors duration-300" />
-                  </div>
-                  <div>
-                    <span className="font-semibold text-[hsl(var(--color-foreground))] block mb-1">
-                      {toolName}
-                    </span>
-                    <span className="text-xs text-[hsl(var(--color-muted-foreground))]">
-                      {categoryName}
-                    </span>
-                  </div>
-                </div>
-              </Card>
-            </a>
-          );
-        })}
+      <div className="grid grid-cols-1 gap-4 min-[480px]:grid-cols-2 lg:grid-cols-4" data-testid="related-tools-grid">
+        {tools.map((tool) => (
+          <ToolCard key={tool.id} tool={tool} locale={locale} localizedContent={localizedRelatedTools[tool.id]} />
+        ))}
       </div>
     </section>
   );

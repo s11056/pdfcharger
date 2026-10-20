@@ -1,5 +1,5 @@
 {
-  description = "PDFCraft - Professional PDF Tools, Free, Private & Browser-Based";
+  description = "PDFCharger - Professional PDF Tools, Free, Private & Browser-Based";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
@@ -10,19 +10,19 @@
     let
       supportedSystems = [ "x86_64-linux" "aarch64-linux" ];
 
-      # Overlay that provides pdfcraft package on any system
+      # Overlay that provides pdfcharger package on any system
       overlay = final: prev: {
-        pdfcraft = final.callPackage ./nix/package.nix { };
+        pdfcharger = final.callPackage ./nix/package.nix { };
       };
     in
     {
       # NixOS module
       nixosModules.default = import ./nix/nixos-module.nix;
-      nixosModules.pdfcraft = self.nixosModules.default;
+      nixosModules.pdfcharger = self.nixosModules.default;
 
       # Home-manager module
       homeManagerModules.default = import ./nix/hm-module.nix;
-      homeManagerModules.pdfcraft = self.homeManagerModules.default;
+      homeManagerModules.pdfcharger = self.homeManagerModules.default;
 
       # Overlay
       overlays.default = overlay;
@@ -37,8 +37,8 @@
       in
       {
         packages = {
-          pdfcraft = pkgs.pdfcraft;
-          default = pkgs.pdfcraft;
+          pdfcharger = pkgs.pdfcharger;
+          default = pkgs.pdfcharger;
         };
 
         devShells.default = pkgs.mkShell {

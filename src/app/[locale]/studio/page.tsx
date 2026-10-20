@@ -20,7 +20,7 @@ export async function generateMetadata({ params }: StudioPageProps): Promise<Met
   return generateBaseMetadata({
     locale: validLocale,
     path: '/studio',
-    title: isZh ? 'PDFCraft Studio - 紧凑一体化 PDF 编辑工作台' : 'PDFCraft Studio - All-in-One Compact PDF Editor Workspace',
+    title: isZh ? 'PDFCharger Studio - 紧凑一体化 PDF 编辑工作台' : 'PDFCharger Studio - All-in-One Compact PDF Editor Workspace',
     description: isZh
       ? '全新紧凑单视窗工作台：集中查看、就地链式编辑、旋转、水印、压缩与统一导出，无需反复上传跳转。'
       : 'Compact all-in-one PDF workspace: view, edit, rotate, watermark, compress, and export in a single view without re-uploading.',

@@ -11,7 +11,7 @@ import {
   rotateRectCounterClockwise,
   sensitivityToThreshold,
   toGrayscale,
-} from '../../../public/pdfjs-viewer/pdfcraft_signature_scanner.mjs';
+} from '../../../public/pdfjs-viewer/pdfcharger_signature_scanner.mjs';
 
 type Rect = { x: number; y: number; width: number; height: number };
 

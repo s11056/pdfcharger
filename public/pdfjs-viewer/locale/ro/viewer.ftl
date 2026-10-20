@@ -547,7 +547,7 @@ pdfjs-editor-add-signature-draw-button = Desenează
     .title = Desenează
 pdfjs-editor-add-signature-image-button = Imagine
     .title = Imagine
-# PDFCraft: Scan is a verb (you can scan a photo of your signature)
+# PDFCharger: Scan is a verb (you can scan a photo of your signature)
 pdfjs-editor-add-signature-scan-button = Scanează
     .title = Scanează o fotografie a semnăturii
 
@@ -569,7 +569,7 @@ pdfjs-editor-add-signature-image-browse-link =
        *[other] Sau răsfoiește prin fișiere de imagini
     }
 
-## PDFCraft: Scan tab panel
+## PDFCharger: Scan tab panel
 
 pdfjs-editor-add-signature-scan-instructions = Semnează pe o foaie de hârtie albă, fotografiaz-o și încarcă fotografia aici.
 pdfjs-editor-add-signature-scan-tip = Pentru cel mai bun rezultat, folosește blițul camerei sau o lumină puternică și uniformă și ține camera drept deasupra hârtiei.

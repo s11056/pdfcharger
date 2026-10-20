@@ -25,14 +25,14 @@ describe('Card', () => {
     it('renders elevated variant', () => {
       render(<Card variant="elevated">Elevated</Card>);
       const card = screen.getByText('Elevated');
-      expect(card).toHaveClass('shadow-[var(--shadow-md)]');
+      expect(card).toHaveClass('shadow-[var(--shadow-lg)]');
     });
 
     it('renders outlined variant', () => {
       render(<Card variant="outlined">Outlined</Card>);
       const card = screen.getByText('Outlined');
-      expect(card).toHaveClass('border-2');
-      expect(card).toHaveClass('bg-transparent');
+      expect(card).toHaveClass('border');
+      expect(card).toHaveClass('bg-[hsl(var(--color-card))]');
     });
   });
 

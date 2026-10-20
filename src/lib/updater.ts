@@ -7,11 +7,11 @@ import {
   UpdateSettings,
 } from '@/types/updater';
 
-export const GITHUB_REPO = 'PDFCraftTool/pdfcraft';
+export const GITHUB_REPO = 's11056/pdfcharger';
 export const DEFAULT_CURRENT_VERSION =
   process.env.NEXT_PUBLIC_APP_VERSION || '0.1.0';
 
-const STORAGE_KEY = 'pdfcraft_update_settings';
+const STORAGE_KEY = 'pdfcharger_update_settings';
 const DEFAULT_CHECK_INTERVAL_HOURS = 24;
 
 /**
@@ -269,7 +269,7 @@ export function isVersionIgnored(version: string): boolean {
   return settings.ignoredVersions.includes(version);
 }
 
-const SESSION_SNOOZE_KEY = 'pdfcraft_update_snoozed_version';
+const SESSION_SNOOZE_KEY = 'pdfcharger_update_snoozed_version';
 
 /**
  * Checks if a specific version has been snoozed (reminded later) in the current browser/app session.

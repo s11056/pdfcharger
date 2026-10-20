@@ -682,7 +682,7 @@ See https://github.com/adobe-type-tools/cmap-resources
                   <input id="addSignatureFilePicker" type="file"></input>
                 </div>
               </div>
-              <!-- PDFCraft: scan a photographed signature, driven by the pdfcraft_signature_scanner module -->
+              <!-- PDFCharger: scan a photographed signature, driven by the pdfcharger_signature_scanner module -->
               <div id="addSignatureScanContainer" role="tabpanel" aria-labelledby="addSignatureScanButton" tabindex="-1" hidden>
                 <div id="addSignatureScanPlaceholder">
                   <span id="addSignatureScanInstructions" data-l10n-id="pdfjs-editor-add-signature-scan-instructions"></span>
@@ -706,8 +706,8 @@ See https://github.com/adobe-type-tools/cmap-resources
                     </div>
                   </div>
                   <div id="addSignatureScanToolbar">
-                    <button id="addSignatureScanRotateLeft" type="button" class="pdfcraftScanIconButton" data-l10n-id="pdfjs-editor-add-signature-scan-rotate-left-button" tabindex="0"><span data-l10n-id="pdfjs-editor-add-signature-scan-rotate-left-button-label"></span></button>
-                    <button id="addSignatureScanRotateRight" type="button" class="pdfcraftScanIconButton" data-l10n-id="pdfjs-editor-add-signature-scan-rotate-right-button" tabindex="0"><span data-l10n-id="pdfjs-editor-add-signature-scan-rotate-right-button-label"></span></button>
+                    <button id="addSignatureScanRotateLeft" type="button" class="pdfchargerScanIconButton" data-l10n-id="pdfjs-editor-add-signature-scan-rotate-left-button" tabindex="0"><span data-l10n-id="pdfjs-editor-add-signature-scan-rotate-left-button-label"></span></button>
+                    <button id="addSignatureScanRotateRight" type="button" class="pdfchargerScanIconButton" data-l10n-id="pdfjs-editor-add-signature-scan-rotate-right-button" tabindex="0"><span data-l10n-id="pdfjs-editor-add-signature-scan-rotate-right-button-label"></span></button>
                     <label for="addSignatureScanSensitivity" data-l10n-id="pdfjs-editor-add-signature-scan-sensitivity-range-label"></label>
                     <input type="range" id="addSignatureScanSensitivity" min="0" max="100" step="1" value="50" data-l10n-id="pdfjs-editor-add-signature-scan-sensitivity-range" data-l10n-args='{ "sensitivity": 50 }' tabindex="0">
                     <button id="addSignatureScanChangePhoto" type="button" class="secondaryButton" tabindex="0"><span data-l10n-id="pdfjs-editor-add-signature-scan-change-photo-button"></span></button>
@@ -838,8 +838,8 @@ See https://github.com/adobe-type-tools/cmap-resources
         document.addEventListener('mouseup', syncSelectionToClipboard);
         document.addEventListener('touchend', syncSelectionToClipboard);
 
-        // PDFCraft bridge for importing extracted signatures
-        window.pdfcraftImportSignature = async function(blob, name) {
+        // PDFCharger bridge for importing extracted signatures
+        window.pdfchargerImportSignature = async function(blob, name) {
           try {
             const file = new File([blob], (name || 'signature') + '.png', { type: 'image/png' });
             const sigBtn = document.getElementById('editorSignatureButton');
@@ -880,7 +880,7 @@ See https://github.com/adobe-type-tools/cmap-resources
               }
             }
           } catch (err) {
-            console.error('pdfcraftImportSignature error:', err);
+            console.error('pdfchargerImportSignature error:', err);
           }
           return false;
         };

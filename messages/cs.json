@@ -1,7 +1,7 @@
 {
   "metadata": {
     "home": {
-      "title": "PDFCraft – profesionální nástroje pro PDF",
+      "title": "PDFCharger – profesionální nástroje pro PDF",
       "description": "Zdarma, soukromě a přímo v prohlížeči. Spojujte a upravujte soubory PDF online bez nahrávání na servery."
     },
     "tools": {
@@ -10,19 +10,19 @@
     },
     "about": {
       "title": "O aplikaci",
-      "description": "Seznamte se s PDFCraft – vaší bezplatnou, soukromou a výkonnou sadou nástrojů pro PDF. Veškeré zpracování probíhá ve vašem prohlížeči."
+      "description": "Seznamte se s PDFCharger – vaší bezplatnou, soukromou a výkonnou sadou nástrojů pro PDF. Veškeré zpracování probíhá ve vašem prohlížeči."
     },
     "faq": {
       "title": "Časté otázky",
-      "description": "Najděte odpovědi na časté otázky o PDFCraft. Zjistěte, jak efektivně používat naše nástroje pro PDF."
+      "description": "Najděte odpovědi na časté otázky o PDFCharger. Zjistěte, jak efektivně používat naše nástroje pro PDF."
     },
     "privacy": {
       "title": "Zásady ochrany osobních údajů",
-      "description": "Zásady ochrany osobních údajů PDFCraft. Vaše soubory nikdy neopustí vaše zařízení – veškeré zpracování probíhá lokálně ve vašem prohlížeči."
+      "description": "Zásady ochrany osobních údajů PDFCharger. Vaše soubory nikdy neopustí vaše zařízení – veškeré zpracování probíhá lokálně ve vašem prohlížeči."
     },
     "contact": {
       "title": "Kontakt",
-      "description": "Spojte se s týmem PDFCraft. Rádi se vám ozveme."
+      "description": "Spojte se s týmem PDFCharger. Rádi se vám ozveme."
     },
     "keywords": {
       "pdfTools": "nástroje pro PDF",
@@ -35,7 +35,7 @@
     }
   },
   "common": {
-    "brand": "PDFCraft",
+    "brand": "PDFCharger",
     "tagline": "Profesionální nástroje pro PDF – zdarma a soukromě",
     "navigation": {
       "home": "Domů",
@@ -44,7 +44,12 @@
       "about": "O aplikaci",
       "faq": "Časté otázky",
       "privacy": "Soukromí",
-      "contact": "Kontakt"
+      "contact": "Kontakt",
+      "convert": "Převést",
+      "merge": "Sloučit PDF",
+      "split": "Rozdělit PDF",
+      "compress": "Komprimovat PDF",
+      "edit": "Upravit PDF"
     },
     "buttons": {
       "upload": "Nahrát soubory",
@@ -83,8 +88,8 @@
       "loading": "Načítání…"
     },
     "footer": {
-      "footer": "© 2025 PDFCraft. Všechna práva vyhrazena.",
-      "copyright": "© {year} PDFCraft. Všechna práva vyhrazena.",
+      "footer": "© 2025 PDFCharger. Všechna práva vyhrazena.",
+      "copyright": "© {year} PDFCharger. Všechna práva vyhrazena.",
       "privacyBadge": "100% soukromí – soubory nikdy neopustí vaše zařízení",
       "madeWith": "Vytvořeno s <Heart /> a <Nextjs />"
     },
@@ -129,7 +134,7 @@
       "finish": "Dokončit",
       "skip": "Přeskočit",
       "stepOf": "z",
-      "welcomeTitle": "Vítejte v PDFCraft!",
+      "welcomeTitle": "Vítejte v PDFCharger!",
       "welcomeMessage": "Chcete krátkou prohlídku, která vám ukáže, jak používat naše nástroje pro PDF? Zabere jen minutu.",
       "helpButton": "Průvodce nápovědou"
     },
@@ -504,7 +509,7 @@
       "bronzeWax": "Starožitný karmínový bronz",
       "enableDoubleKey": "Povolit šifrování certifikátem s dvojitým klíčem (silný 256bitový zámek)",
       "decryptPasswordHelp": "Nastavit heslo k dešifrovacímu klíči PFX",
-      "passwordPlaceholder": "Výchozí heslo: pdfcraft",
+      "passwordPlaceholder": "Výchozí heslo: pdfcharger",
       "sealCoordinates": "Souřadnice pečeti: X: {x} px, Y: {y} px",
       "clickToReposition": "Kliknutím kamkoli přemístíte voskovou pečeť"
     },
@@ -680,7 +685,7 @@
       "copyText": "Kopírovat rozpoznaný text",
       "copied": "Zkopírováno do schránky!",
       "openInEditor": "Upravit v editoru PDF",
-      "openInEditorDesc": "Upravte text a rozvržení přímo v editoru PDFCraft bez stahování",
+      "openInEditorDesc": "Upravte text a rozvržení přímo v editoru PDFCharger bez stahování",
       "statsPages": "Stránky",
       "statsWords": "Slova",
       "statsChars": "Znaky",
@@ -940,7 +945,7 @@
       "errorTitle": "Aktualizace nelze zkontrolovat",
       "retry": "Zkusit znovu",
       "latest": "Máte nejnovější verzi!",
-      "latestDesc": "PDFCraft je aktuálně v nejnovější verzi ({version}).",
+      "latestDesc": "PDFCharger je aktuálně v nejnovější verzi ({version}).",
       "available": "K dispozici je nová verze",
       "currentVersion": "Aktuální verze",
       "released": "Vydáno",
@@ -998,16 +1003,16 @@
     "sections": {
       "general": {
         "whatIs": {
-          "question": "Co je PDFCraft?",
-          "answer": "PDFCraft je bezplatná sada nástrojů PDF zaměřená na soukromí, která běží výhradně ve vašem prohlížeči. Nabízí přes 80 profesionálních nástrojů pro úpravy, převod, spojování, rozdělování a zabezpečení souborů PDF bez nahrávání na jakýkoli server."
+          "question": "Co je PDFCharger?",
+          "answer": "PDFCharger je bezplatná sada nástrojů PDF zaměřená na soukromí, která běží výhradně ve vašem prohlížeči. Nabízí přes 80 profesionálních nástrojů pro úpravy, převod, spojování, rozdělování a zabezpečení souborů PDF bez nahrávání na jakýkoli server."
         },
         "isFree": {
-          "question": "Je PDFCraft opravdu zdarma?",
-          "answer": "Ano, PDFCraft je zcela zdarma. Neexistují žádné skryté poplatky, prémiové tarify ani nutnost registrace. Všechny funkce jsou dostupné všem."
+          "question": "Je PDFCharger opravdu zdarma?",
+          "answer": "Ano, PDFCharger je zcela zdarma. Neexistují žádné skryté poplatky, prémiové tarify ani nutnost registrace. Všechny funkce jsou dostupné všem."
         },
         "account": {
           "question": "Musím si vytvořit účet?",
-          "answer": "Ne, k používání PDFCraft nemusíte vytvářet účet ani se registrovat. Stačí navštívit web a ihned začít používat libovolný nástroj."
+          "answer": "Ne, k používání PDFCharger nemusíte vytvářet účet ani se registrovat. Stačí navštívit web a ihned začít používat libovolný nástroj."
         }
       },
       "privacy": {
@@ -1016,8 +1021,8 @@
           "answer": "Ne, vaše soubory se nikdy nenahrávají na žádný server. Veškeré zpracování PDF probíhá lokálně ve vašem prohlížeči pomocí JavaScriptu a WebAssembly. Vaše soubory nikdy neopustí vaše zařízení."
         },
         "safe": {
-          "question": "Je bezpečné používat PDFCraft s citlivými dokumenty?",
-          "answer": "Ano, PDFCraft je navržen s ohledem na soukromí. Protože veškeré zpracování probíhá lokálně ve vašem prohlížeči, vaše citlivé dokumenty zůstávají ve vašem zařízení a nikdy nejsou přenášeny přes internet."
+          "question": "Je bezpečné používat PDFCharger s citlivými dokumenty?",
+          "answer": "Ano, PDFCharger je navržen s ohledem na soukromí. Protože veškeré zpracování probíhá lokálně ve vašem prohlížeči, vaše citlivé dokumenty zůstávají ve vašem zařízení a nikdy nejsou přenášeny přes internet."
         },
         "storage": {
           "question": "Co se stane s mými soubory po zpracování?",
@@ -1027,7 +1032,7 @@
       "features": {
         "operations": {
           "question": "Jaké operace s PDF mohu provádět?",
-          "answer": "PDFCraft nabízí přes 67 nástrojů, mimo jiné: spojování, rozdělování, komprimaci, převod (z/do obrázků, textu, JSON), úpravy, anotace, podepisování, přidávání vodoznaků, šifrování/dešifrování, OCR a mnoho dalšího."
+          "answer": "PDFCharger nabízí přes 67 nástrojů, mimo jiné: spojování, rozdělování, komprimaci, převod (z/do obrázků, textu, JSON), úpravy, anotace, podepisování, přidávání vodoznaků, šifrování/dešifrování, OCR a mnoho dalšího."
         },
         "merge": {
           "question": "Mohu spojit více souborů PDF?",
@@ -1035,17 +1040,17 @@
         },
         "images": {
           "question": "Mohu převést obrázky do PDF?",
-          "answer": "Ano, PDFCraft podporuje převod různých formátů obrázků (JPG, PNG, WebP, BMP, TIFF, SVG, HEIC) do PDF. Převést můžete jeden i více obrázků najednou."
+          "answer": "Ano, PDFCharger podporuje převod různých formátů obrázků (JPG, PNG, WebP, BMP, TIFF, SVG, HEIC) do PDF. Převést můžete jeden i více obrázků najednou."
         },
         "edit": {
           "question": "Mohu upravovat text v PDF?",
-          "answer": "PDFCraft nabízí nástroje pro anotace a úpravy včetně zvýrazňování, přidávání textu, tvarů, obrázků a podpisů. Pro rozsáhlejší úpravy nabízí nástroj Editor PDF komplexní možnosti anotací."
+          "answer": "PDFCharger nabízí nástroje pro anotace a úpravy včetně zvýrazňování, přidávání textu, tvarů, obrázků a podpisů. Pro rozsáhlejší úpravy nabízí nástroj Editor PDF komplexní možnosti anotací."
         }
       },
       "technical": {
         "browsers": {
           "question": "Které prohlížeče jsou podporovány?",
-          "answer": "PDFCraft funguje ve všech moderních prohlížečích včetně Chrome, Firefox, Safari a Edge. Pro nejlepší zážitek doporučujeme používat nejnovější verzi prohlížeče."
+          "answer": "PDFCharger funguje ve všech moderních prohlížečích včetně Chrome, Firefox, Safari a Edge. Pro nejlepší zážitek doporučujeme používat nejnovější verzi prohlížeče."
         },
         "sizeLimit": {
           "question": "Existuje omezení velikosti souboru?",
@@ -1056,14 +1061,14 @@
           "answer": "Protože veškeré zpracování probíhá ve vašem prohlížeči, výkon závisí na možnostech vašeho zařízení. Velké soubory vyžadují více paměti a výpočetního výkonu. Pro nejlepší výsledky zavřete ostatní karty prohlížeče a aplikace."
         },
         "offline": {
-          "question": "Funguje PDFCraft offline?",
-          "answer": "V současnosti PDFCraft vyžaduje k načtení aplikace připojení k internetu. Po načtení však samotné zpracování PDF probíhá lokálně a připojení nevyžaduje."
+          "question": "Funguje PDFCharger offline?",
+          "answer": "V současnosti PDFCharger vyžaduje k načtení aplikace připojení k internetu. Po načtení však samotné zpracování PDF probíhá lokálně a připojení nevyžaduje."
         }
       },
       "languages": {
         "supported": {
           "question": "Jaké jazyky jsou podporovány?",
-          "answer": "PDFCraft je dostupný v 9 jazycích: angličtině, japonštině, korejštině, španělštině, francouzštině, němčině, čínštině, portugalštině a arabštině (s podporou RTL)."
+          "answer": "PDFCharger je dostupný v 9 jazycích: angličtině, japonštině, korejštině, španělštině, francouzštině, němčině, čínštině, portugalštině a arabštině (s podporou RTL)."
         },
         "change": {
           "question": "Jak změním jazyk?",
@@ -1094,7 +1099,7 @@
       },
       "fast": {
         "title": "Rychlé a efektivní",
-        "description": "Díky moderním webovým technologiím PDFCraft zpracovává PDF bleskově, bez nutnosti nahrávání či stahování."
+        "description": "Díky moderním webovým technologiím PDFCharger zpracovává PDF bleskově, bez nutnosti nahrávání či stahování."
       },
       "accessible": {
         "title": "Dostupné všude",
@@ -1102,7 +1107,7 @@
       },
       "free": {
         "title": "Navždy zdarma",
-        "description": "PDFCraft je zcela zdarma, bez skrytých poplatků, bez nutnosti registrace a bez omezení používání."
+        "description": "PDFCharger je zcela zdarma, bez skrytých poplatků, bez nutnosti registrace a bez omezení používání."
       },
       "openSource": {
         "title": "Open source",
@@ -1140,7 +1145,7 @@
       "email": {
         "title": "E-mail",
         "description": "Pošlete nám e-mail a odpovíme do 24–48 hodin.",
-        "action": "contact@pdfcraft.app"
+        "action": "contact@pdfcharger.com"
       },
       "github": {
         "title": "GitHub",
@@ -1150,7 +1155,7 @@
       "twitter": {
         "title": "Twitter",
         "description": "Sledujte nás a získejte novinky a oznámení.",
-        "action": "@pdfcraft"
+        "action": "@pdfcharger"
       }
     },
     "form": {
@@ -1277,12 +1282,82 @@
       "organizeManage": "Uspořádání a správa",
       "optimizeRepair": "Optimalizace a oprava",
       "securePdf": "Zabezpečení PDF"
+    },
+    "pc": {
+      "badge": "{count}+ bezplatných PDF nástrojů · Bez registrace",
+      "title": "Všechny PDF nástroje, které potřebujete,",
+      "highlight": "nabité energií.",
+      "subtitle": "Slučujte, rozdělujte, komprimujte, převádějte, upravujte a podepisujte PDF během pár sekund. Vše běží přímo ve vašem prohlížeči, takže soubory nikdy neopustí vaše zařízení.",
+      "select": "Vybrat soubory",
+      "orDrop": "nebo sem přetáhněte PDF, obrázky a dokumenty",
+      "whatNext": "Co chcete udělat?",
+      "trust": {
+        "1": "100% zdarma",
+        "2": "Žádné nahrávání, plné soukromí",
+        "3": "Funguje na každém zařízení"
+      },
+      "toolsTitle": "Vyberte nástroj a hotovo",
+      "toolsSubtitle": "Oblíbené nástroje hned na očích, všechny ostatní PDF úlohy na jedno kliknutí.",
+      "viewAll": "Zobrazit všech {count} nástrojů",
+      "howTitle": "Jak PDFCharger funguje",
+      "steps": {
+        "1": {
+          "title": "Vyberte soubory",
+          "body": "Klikněte na „Vybrat soubory“ nebo na stránku přetáhněte PDF, obrázky či dokumenty Office."
+        },
+        "2": {
+          "title": "Zvolte nástroj",
+          "body": "Sloučení, komprese, převod, podpis — nastavte, co potřebujete. Zpracování proběhne okamžitě ve vašem zařízení."
+        },
+        "3": {
+          "title": "Stáhněte výsledek",
+          "body": "Hotový soubor si ihned uložte. Nic se neukládá ani nenahrává na žádný server."
+        }
+      },
+      "whyTitle": "PDF nástroje, které nikdy nenahrávají vaše soubory",
+      "whyBody": "Většina online PDF služeb posílá vaše dokumenty na své servery. PDFCharger vše zpracuje přímo ve vašem prohlížeči pomocí WebAssembly, takže smlouvy, výpisy i doklady zůstanou ve vašem zařízení.",
+      "benefits": {
+        "fast": {
+          "title": "Bleskově rychlé",
+          "body": "Žádné čekání na nahrávání ani stahování — soubory se zpracují lokálně plnou rychlostí."
+        },
+        "anywhere": {
+          "title": "Funguje všude",
+          "body": "Windows, Mac, Linux, iPhone i Android. Stačí moderní prohlížeč."
+        }
+      },
+      "illustrationBadge": "Zpracováno ve vašem zařízení",
+      "faqTitle": "Často kladené otázky",
+      "faq": {
+        "1": {
+          "q": "Je PDFCharger opravdu zdarma?",
+          "a": "Ano. Všechny nástroje jsou zdarma, bez registrace, bez vodoznaků a bez denních limitů."
+        },
+        "2": {
+          "q": "Nahrávají se moje soubory někam?",
+          "a": "Ne. PDFCharger zpracovává soubory výhradně ve vašem prohlížeči. Dokumenty nikdy neopustí vaše zařízení, takže je bezpečný i pro důvěrné soubory."
+        },
+        "3": {
+          "q": "Existuje limit velikosti souboru?",
+          "a": "Pevný limit neexistuje. U velmi velkých souborů záleží na paměti vašeho zařízení, ale běžné dokumenty se stovkami stran fungují bez problémů."
+        },
+        "4": {
+          "q": "Funguje to na telefonu?",
+          "a": "Ano. PDFCharger funguje v každém moderním prohlížeči na počítači, tabletu i mobilu — bez instalace aplikace."
+        },
+        "5": {
+          "q": "Mohu převádět soubory Word, Excel a PowerPoint?",
+          "a": "Ano. Dokumenty Office můžete převést do PDF a PDF zpět do formátu Word, Excel, PowerPoint, obrázků a dalších."
+        }
+      },
+      "ctaTitle": "Připraveni nabít svá PDF?",
+      "ctaBody": "Zdarma, soukromě a okamžitě. Přetáhněte soubor a vyberte nástroj."
     }
   },
   "workflow": {
     "title": "Tvůrce pracovních postupů PDF",
     "subtitle": "Vytvářejte vlastní postupy zpracování PDF propojováním nástrojů",
-    "metaTitle": "Tvůrce pracovních postupů PDF – PDFCraft",
+    "metaTitle": "Tvůrce pracovních postupů PDF – PDFCharger",
     "metaDescription": "Vytvářejte vlastní postupy zpracování PDF vizuálním propojováním nástrojů. Sestavujte, ukládejte a znovu používejte své pracovní postupy.",
     "toolbox": "Sada nástrojů",
     "dragToAdd": "Přetažením nebo dvojklikem přidáte nástroj do pracovního postupu",
@@ -3269,6 +3344,10 @@
       "optionsTitle": "Možnosti směnných kurzů",
       "processButton": "Přeložit a přepočítat fakturu",
       "successMessage": "Zahraniční faktura byla úspěšně přeložena a opatřena přepočtem na místní měnu!"
+    },
+    "pc": {
+      "privateNote": "Vaše soubory se zpracovávají lokálně v prohlížeči a nikdy se nenahrávají.",
+      "moreIn": "Další nástroje: {category}"
     }
   }
 }

@@ -1,7 +1,7 @@
 {
-  "productName": "PDFCraft",
+  "productName": "PDFCharger",
   "version": "0.1.0",
-  "identifier": "com.pdfcraft.app",
+  "identifier": "com.pdfcharger.com",
   "build": {
     "beforeDevCommand": "npm run dev",
     "beforeBuildCommand": "npm run build",
@@ -13,7 +13,7 @@
     "windows": [
       {
         "label": "main",
-        "title": "PDFCraft",
+        "title": "PDFCharger",
         "width": 1200,
         "height": 800,
         "minWidth": 800,

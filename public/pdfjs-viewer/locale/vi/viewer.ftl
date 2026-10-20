@@ -532,7 +532,7 @@ pdfjs-editor-add-signature-draw-button = Vẽ
     .title = Vẽ
 pdfjs-editor-add-signature-image-button = Hình ảnh
     .title = Hình ảnh
-# PDFCraft: Scan is a verb (you can scan a photo of your signature)
+# PDFCharger: Scan is a verb (you can scan a photo of your signature)
 pdfjs-editor-add-signature-scan-button = Quét
     .title = Quét ảnh chụp chữ ký của bạn
 
@@ -554,7 +554,7 @@ pdfjs-editor-add-signature-image-browse-link =
        *[other] Hoặc chọn hình ảnh
     }
 
-## PDFCraft: Scan tab panel
+## PDFCharger: Scan tab panel
 
 pdfjs-editor-add-signature-scan-instructions = Ký lên một tờ giấy trắng, chụp ảnh tờ giấy và tải ảnh lên tại đây.
 pdfjs-editor-add-signature-scan-tip = Để có kết quả tốt nhất, hãy dùng đèn flash của máy ảnh hoặc ánh sáng mạnh, đều, và giữ máy ảnh thẳng phía trên tờ giấy.

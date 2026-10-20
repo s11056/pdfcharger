@@ -66,7 +66,7 @@ describe('PDFStudio Component', () => {
   it('renders initial empty workspace with upload dropzone and classic grid switch link in Chinese', () => {
     render(<PDFStudio locale="zh" />);
 
-    expect(screen.getByText(/PDFCraft/i)).toBeInTheDocument();
+    expect(screen.getByText(/PDFCharger/i)).toBeInTheDocument();
     expect(screen.getByText(/导入 PDF 开启 Studio 工作台/i)).toBeInTheDocument();
     expect(screen.getByText(/选择 PDF 文件/i)).toBeInTheDocument();
     expect(screen.getByText(/经典网格视图/i)).toBeInTheDocument();
@@ -75,7 +75,7 @@ describe('PDFStudio Component', () => {
   it('defaults to English when locale prop is omitted or unsupported', () => {
     render(<PDFStudio />);
 
-    expect(screen.getByText(/PDFCraft/i)).toBeInTheDocument();
+    expect(screen.getByText(/PDFCharger/i)).toBeInTheDocument();
     expect(screen.getByText(/Import PDF to Launch Studio Workspace/i)).toBeInTheDocument();
     expect(screen.getByText(/Select PDF Files/i)).toBeInTheDocument();
     expect(screen.getByText(/Back to All Tools/i)).toBeInTheDocument();

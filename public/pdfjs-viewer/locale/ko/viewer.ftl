@@ -532,7 +532,7 @@ pdfjs-editor-add-signature-draw-button = 그리기
     .title = 그리기
 pdfjs-editor-add-signature-image-button = 이미지
     .title = 이미지
-# PDFCraft: Scan is a verb (you can scan a photo of your signature)
+# PDFCharger: Scan is a verb (you can scan a photo of your signature)
 pdfjs-editor-add-signature-scan-button = 스캔
     .title = 서명 사진 스캔
 
@@ -554,7 +554,7 @@ pdfjs-editor-add-signature-image-browse-link =
        *[other] 또는 이미지 파일 찾아보기
     }
 
-## PDFCraft: Scan tab panel
+## PDFCharger: Scan tab panel
 
 pdfjs-editor-add-signature-scan-instructions = 흰 종이에 서명하고 사진을 찍어 여기에 업로드하세요.
 pdfjs-editor-add-signature-scan-tip = 최상의 결과를 얻으려면 카메라 플래시나 밝고 고른 조명을 사용하고 카메라를 종이 바로 위에서 수평으로 들어 주세요.

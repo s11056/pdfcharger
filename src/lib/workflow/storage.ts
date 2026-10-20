@@ -7,7 +7,7 @@ import { SavedWorkflow, WorkflowNode, WorkflowEdge } from '@/types/workflow';
 import { logger } from '@/lib/utils/logger';
 import { saveBlobFile } from '@/lib/tauri-bridge';
 
-const STORAGE_KEY = 'pdfcraft_workflows';
+const STORAGE_KEY = 'pdfcharger_workflows';
 const MAX_WORKFLOWS = 50;
 
 /**

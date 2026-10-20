@@ -2,7 +2,8 @@
 
 import React, { useMemo } from 'react';
 import { useTranslations } from 'next-intl';
-import { Tool, ToolCategory, CATEGORY_INFO } from '@/types/tool';
+import { Tool, ToolCategory } from '@/types/tool';
+import { CATEGORY_META, CATEGORY_ORDER } from '@/config/categories';
 import { ToolCard } from './ToolCard';
 
 export interface ToolGridProps {
@@ -20,14 +21,14 @@ export interface ToolGridProps {
   className?: string;
   /** localized tool content */
   localizedToolContent?: Record<string, { title: string; description: string }>;
+  /** Called when a tool card is clicked */
+  onSelectTool?: (tool: Tool) => void;
 }
 
+const GRID = 'grid grid-cols-1 min-[480px]:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4';
+
 /**
- * ToolGrid component displays a responsive grid of tool cards.
- * Supports filtering by category and responsive layout (1-4 columns).
- * 
- * Requirements: 6.1 - Organize tools into 7 categories
- * Requirements: 6.4 - Responsive grid layout adapting to screen sizes
+ * Responsive grid of tool cards, optionally grouped under category headers.
  */
 export function ToolGrid({
   tools,
@@ -37,39 +38,28 @@ export function ToolGrid({
   showCategoryHeaders = false,
   className = '',
   localizedToolContent,
+  onSelectTool,
 }: ToolGridProps) {
   const t = useTranslations();
 
-  const categoryTranslationKeys: Record<ToolCategory, string> = {
-    'edit-annotate': 'editAnnotate',
-    'convert-to-pdf': 'convertToPdf',
-    'convert-from-pdf': 'convertFromPdf',
-    'organize-manage': 'organizeManage',
-    'optimize-repair': 'optimizeRepair',
-    'secure-pdf': 'securePdf',
-  };
-
-  // Filter tools by category if specified
   const filteredTools = useMemo(() => {
     let result = tools;
 
     if (category) {
-      result = result.filter(tool => tool.category === category);
+      result = result.filter((tool) => tool.category === category);
     }
 
     if (searchQuery && searchQuery.trim()) {
       const query = searchQuery.toLowerCase().trim();
-      result = result.filter(tool => {
-        // Search in localized content if available
-        if (localizedToolContent && localizedToolContent[tool.id]) {
-          const { title, description } = localizedToolContent[tool.id];
-          if (title.toLowerCase().includes(query) || description.toLowerCase().includes(query)) {
+      result = result.filter((tool) => {
+        const localized = localizedToolContent?.[tool.id];
+        if (localized) {
+          if (localized.title.toLowerCase().includes(query) || localized.description.toLowerCase().includes(query)) {
             return true;
           }
         }
-
         const toolName = tool.id.replace(/-/g, ' ').toLowerCase();
-        const features = tool.features.map(f => f.replace(/-/g, ' ').toLowerCase()).join(' ');
+        const features = tool.features.map((f) => f.replace(/-/g, ' ').toLowerCase()).join(' ');
         return toolName.includes(query) || features.includes(query);
       });
     }
@@ -77,71 +67,53 @@ export function ToolGrid({
     return result;
   }, [tools, category, searchQuery, localizedToolContent]);
 
-  // Group tools by category if showing headers
-  const groupedTools = useMemo(() => {
-    if (!showCategoryHeaders) {
-      return null;
-    }
-
-    const groups: Record<ToolCategory, Tool[]> = {
-      'edit-annotate': [],
-      'convert-to-pdf': [],
-      'convert-from-pdf': [],
-      'organize-manage': [],
-      'optimize-repair': [],
-      'secure-pdf': [],
-    };
-
-    for (const tool of filteredTools) {
-      groups[tool.category].push(tool);
-    }
-
-    return groups;
-  }, [filteredTools, showCategoryHeaders]);
-
   if (filteredTools.length === 0) {
     return (
-      <div
-        className={`text-center py-12 ${className}`}
-        data-testid="tool-grid-empty"
-      >
-        <p className="text-[hsl(var(--color-muted-foreground))]">
-          No tools found
-        </p>
+      <div className={`py-12 text-center ${className}`} data-testid="tool-grid-empty">
+        <p className="text-[hsl(var(--color-muted-foreground))]">No tools found</p>
       </div>
     );
   }
 
-  // Render grouped by category
-  if (showCategoryHeaders && groupedTools) {
-    return (
-      <div className={`space-y-8 ${className}`} data-testid="tool-grid">
-        {Object.entries(groupedTools).map(([cat, categoryTools]) => {
-          if (categoryTools.length === 0) return null;
+  const renderCards = (list: Tool[]) =>
+    list.map((tool) => (
+      <ToolCard
+        key={tool.id}
+        tool={tool}
+        locale={locale}
+        localizedContent={localizedToolContent?.[tool.id]}
+        onSelect={onSelectTool}
+      />
+    ));
 
-          const categoryInfo = CATEGORY_INFO[cat as ToolCategory];
-          const categoryName = t(`home.categories.${categoryTranslationKeys[cat as ToolCategory]}`);
+  if (showCategoryHeaders) {
+    return (
+      <div className={`space-y-14 ${className}`} data-testid="tool-grid">
+        {CATEGORY_ORDER.map((cat) => {
+          const categoryTools = filteredTools.filter((tool) => tool.category === cat);
+          if (categoryTools.length === 0) return null;
+          const meta = CATEGORY_META[cat];
+          const Icon = meta.icon;
 
           return (
-            <section key={cat} data-testid={`tool-grid-category-${cat}`}>
-              <div className="mb-4">
-                <h2 className="text-xl font-semibold text-[hsl(var(--color-foreground))]">
-                  {categoryName}
-                </h2>
-                <p className="text-sm text-[hsl(var(--color-muted-foreground))]">
-                  {categoryInfo.description}
-                </p>
+            <section key={cat} id={cat} className={`scroll-mt-28 ${meta.colorClass}`} data-testid={`tool-grid-category-${cat}`}>
+              <div className="mb-5 flex items-center gap-3">
+                <span className="cat-solid flex h-10 w-10 items-center justify-center rounded-xl shadow-sm" aria-hidden="true">
+                  <Icon className="h-5 w-5" />
+                </span>
+                <div>
+                  <h2 className="font-display text-xl font-extrabold text-[hsl(var(--color-foreground))]">
+                    {t(`home.categories.${meta.i18nKey}`)}
+                    <span className="ml-2 align-middle text-sm font-semibold text-[hsl(var(--color-muted-foreground))]">
+                      {categoryTools.length}
+                    </span>
+                  </h2>
+                  <p className="text-sm text-[hsl(var(--color-muted-foreground))]">
+                    {t(`home.categoriesDescription.${meta.i18nKey}`)}
+                  </p>
+                </div>
               </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-                {categoryTools.map(tool => (
-                  <ToolCard
-                    key={tool.id}
-                    tool={tool}
-                    locale={locale}
-                    localizedContent={localizedToolContent?.[tool.id]}
-                  />
-                ))}
-              </div>
+              <div className={GRID}>{renderCards(categoryTools)}</div>
             </section>
           );
         })}
@@ -149,20 +121,9 @@ export function ToolGrid({
     );
   }
 
-  // Render flat grid
   return (
-    <div
-      className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 ${className}`}
-      data-testid="tool-grid"
-    >
-      {filteredTools.map(tool => (
-        <ToolCard
-          key={tool.id}
-          tool={tool}
-          locale={locale}
-          localizedContent={localizedToolContent?.[tool.id]}
-        />
-      ))}
+    <div className={`${GRID} ${className}`} data-testid="tool-grid">
+      {renderCards(filteredTools)}
     </div>
   );
 }

@@ -622,7 +622,7 @@ export function OrganizeToolOptions({
     case 'pdf-spine-bookbinder': {
       const pageCount = options.pageCount ?? totalPages;
       const paperGsm = options.paperGsm ?? 80;
-      const bookTitle = options.bookTitle || 'PDFCraft Book';
+      const bookTitle = options.bookTitle || 'PDFCharger Book';
 
       // Spine thickness approximate calculation (mm)
       const spineThicknessMm = ((pageCount / 2) * (paperGsm === 70 ? 0.09 : paperGsm === 80 ? 0.1 : paperGsm === 100 ? 0.12 : 0.15)).toFixed(1);
@@ -920,7 +920,7 @@ export function OrganizeToolOptions({
       const author = options.author || '';
       const subject = options.subject || '';
       const keywords = options.keywords || '';
-      const creator = options.creator || 'PDFCraft';
+      const creator = options.creator || 'PDFCharger';
 
       return (
         <div className="space-y-4">

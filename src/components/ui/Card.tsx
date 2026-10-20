@@ -23,14 +23,16 @@ const variantStyles: Record<CardVariant, string> = {
   default: `
     bg-[hsl(var(--color-card))]
     border border-[hsl(var(--color-border))]
+    shadow-[var(--shadow-sm)]
   `,
   elevated: `
     bg-[hsl(var(--color-card))]
-    shadow-[var(--shadow-md)]
+    border border-[hsl(var(--color-border))]
+    shadow-[var(--shadow-lg)]
   `,
   outlined: `
-    bg-transparent
-    border-2 border-[hsl(var(--color-border))]
+    bg-[hsl(var(--color-card))]
+    border border-[hsl(var(--color-border))]
   `,
 };
 
@@ -56,7 +58,7 @@ export const Card = forwardRef<HTMLDivElement, CardProps>(
     const hoverStyles = hover
       ? `
         hover:shadow-[var(--shadow-lg)]
-        hover:border-[hsl(var(--color-primary))]
+        hover:border-[hsl(var(--color-primary)/0.5)]
         hover:-translate-y-0.5
       `
       : '';

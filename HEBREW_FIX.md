@@ -1,8 +1,8 @@
-# Hebrew Character Display Fix for PDFCraft
+# Hebrew Character Display Fix for PDFCharger
 
 ## Problem
 
-Hebrew characters in PDFs were not displaying properly in the Windows version of PDFCraft. When users clicked on "edit text" or viewed Hebrew text, the characters appeared as rectangles instead of proper Hebrew letters.
+Hebrew characters in PDFs were not displaying properly in the Windows version of PDFCharger. When users clicked on "edit text" or viewed Hebrew text, the characters appeared as rectangles instead of proper Hebrew letters.
 
 ## Root Cause
 
@@ -139,7 +139,7 @@ Created a Hebrew messages file to support the Hebrew locale. Initially based on 
 ### On Windows Tauri App
 
 1. **PDF with Hebrew Text**:
-   - Open a PDF containing Hebrew text in PDFCraft
+   - Open a PDF containing Hebrew text in PDFCharger
    - Hebrew characters should display correctly (not as rectangles)
    - In edit mode, Hebrew text should be readable and editable
 

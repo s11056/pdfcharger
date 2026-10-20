@@ -6875,7 +6875,7 @@ export const toolContentCs: Record<string, ToolContent> = {
       },
       {
         "question": "Mohu si přizpůsobit vzhled razítka?",
-        "answer": "Ano. Nabízíme několik motivů, například vodoznak PDFCraft nebo královský erb, a v panelu můžete upravit poloměr rozteklého vosku i hloubku otisku normálové mapy."
+        "answer": "Ano. Nabízíme několik motivů, například vodoznak PDFCharger nebo královský erb, a v panelu můžete upravit poloměr rozteklého vosku i hloubku otisku normálové mapy."
       }
     ]
   },

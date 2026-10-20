@@ -1,6 +1,6 @@
 /**
  * Studio In-Memory Processors Runner
- * Bridges studio tool actions to PDFCraft's headless processors.
+ * Bridges studio tool actions to PDFCharger's headless processors.
  */
 
 import { tools as allTools } from '@/config/tools';
@@ -93,8 +93,8 @@ export function isZeroConfigTool(toolId: string): boolean {
   return ZERO_CONFIG_TOOL_IDS.has(normId);
 }
 
-const FAVORITES_STORAGE_KEY = 'pdfcraft_studio_favorites';
-const RECENT_STORAGE_KEY = 'pdfcraft_studio_recent';
+const FAVORITES_STORAGE_KEY = 'pdfcharger_studio_favorites';
+const RECENT_STORAGE_KEY = 'pdfcharger_studio_recent';
 
 export function getStudioFavorites(): string[] {
   if (typeof window === 'undefined') return [];
@@ -186,7 +186,7 @@ export const STUDIO_TOOLS: StudioToolConfig[] = allTools.map((tool) => {
     name: tool.id.replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase()),
     category: tool.category,
     icon: tool.icon,
-    description: tool.features?.slice(0, 3).join(' • ') || 'PDFCraft professional tool',
+    description: tool.features?.slice(0, 3).join(' • ') || 'PDFCharger professional tool',
     executionType: getToolExecutionType(tool.id),
     featured: STUDIO_FEATURED_TOOL_IDS.includes(tool.id),
   };

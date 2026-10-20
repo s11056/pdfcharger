@@ -1,17 +1,17 @@
 { config, lib, pkgs, ... }:
 
 let
-  cfg = config.services.pdfcraft;
+  cfg = config.services.pdfcharger;
 in
 {
-  options.services.pdfcraft = {
-    enable = lib.mkEnableOption "PDFCraft - Professional PDF Tools";
+  options.services.pdfcharger = {
+    enable = lib.mkEnableOption "PDFCharger - Professional PDF Tools";
 
     package = lib.mkOption {
       type = lib.types.package;
-      default = pkgs.pdfcraft;
-      defaultText = lib.literalExpression "pkgs.pdfcraft";
-      description = "The PDFCraft package to use.";
+      default = pkgs.pdfcharger;
+      defaultText = lib.literalExpression "pkgs.pdfcharger";
+      description = "The PDFCharger package to use.";
     };
 
     port = lib.mkOption {
@@ -30,25 +30,25 @@ in
   config = lib.mkIf cfg.enable {
     nixpkgs.overlays = [
       (final: prev: {
-        pdfcraft = final.callPackage ./package.nix { };
+        pdfcharger = final.callPackage ./package.nix { };
       })
     ];
 
-    systemd.services.pdfcraft = {
-      description = "PDFCraft PDF Tools";
+    systemd.services.pdfcharger = {
+      description = "PDFCharger PDF Tools";
       after = [ "network.target" ];
       wantedBy = [ "multi-user.target" ];
 
       environment = {
-        PDFCRAFT_PORT = toString cfg.port;
+        PDFCHARGER_PORT = toString cfg.port;
       };
 
       serviceConfig = {
-        ExecStart = "${cfg.package}/bin/pdfcraft";
+        ExecStart = "${cfg.package}/bin/pdfcharger";
         Restart = "on-failure";
         DynamicUser = true;
-        RuntimeDirectory = "pdfcraft";
-        StateDirectory = "pdfcraft";
+        RuntimeDirectory = "pdfcharger";
+        StateDirectory = "pdfcharger";
 
         # Hardening
         NoNewPrivileges = true;

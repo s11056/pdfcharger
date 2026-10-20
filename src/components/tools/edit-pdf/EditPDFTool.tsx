@@ -34,11 +34,11 @@ export function EditPDFTool({ className = '' }: EditPDFToolProps) {
     if (file) return;
 
     // Check in-memory transfer first
-    if (typeof window !== 'undefined' && (window as any).__PDFCRAFT_PENDING_EDIT_FILE__ instanceof File) {
-      const pendingFile = (window as any).__PDFCRAFT_PENDING_EDIT_FILE__ as File;
-      (window as any).__PDFCRAFT_PENDING_EDIT_FILE__ = null;
+    if (typeof window !== 'undefined' && (window as any).__PDFCHARGER_PENDING_EDIT_FILE__ instanceof File) {
+      const pendingFile = (window as any).__PDFCHARGER_PENDING_EDIT_FILE__ as File;
+      (window as any).__PDFCHARGER_PENDING_EDIT_FILE__ = null;
       try {
-        window.sessionStorage.removeItem('pdfcraft_pending_edit_file');
+        window.sessionStorage.removeItem('pdfcharger_pending_edit_file');
       } catch {}
       setFile(pendingFile);
       return;
@@ -47,9 +47,9 @@ export function EditPDFTool({ className = '' }: EditPDFToolProps) {
     // Check sessionStorage fallback
     if (typeof window !== 'undefined') {
       try {
-        const stored = window.sessionStorage.getItem('pdfcraft_pending_edit_file');
+        const stored = window.sessionStorage.getItem('pdfcharger_pending_edit_file');
         if (stored) {
-          window.sessionStorage.removeItem('pdfcraft_pending_edit_file');
+          window.sessionStorage.removeItem('pdfcharger_pending_edit_file');
           const parsed = JSON.parse(stored);
           if (parsed?.data) {
             fetch(parsed.data)
@@ -101,7 +101,7 @@ export function EditPDFTool({ className = '' }: EditPDFToolProps) {
       const buffer = await currentFile.arrayBuffer();
       iframeRef.current.contentWindow.postMessage(
         {
-          type: 'PDFCRAFT_LOAD_PDF',
+          type: 'PDFCHARGER_LOAD_PDF',
           payload: {
             name: currentFile.name,
             buffer,
@@ -120,7 +120,7 @@ export function EditPDFTool({ className = '' }: EditPDFToolProps) {
     const isDark = document.documentElement.classList.contains('dark');
     iframeRef.current.contentWindow.postMessage(
       {
-        type: 'PDFCRAFT_THEME_CHANGE',
+        type: 'PDFCHARGER_THEME_CHANGE',
         payload: { isDark },
       },
       '*'
@@ -155,17 +155,17 @@ export function EditPDFTool({ className = '' }: EditPDFToolProps) {
   useEffect(() => {
     const handleMessage = (event: MessageEvent) => {
       const { type, fileName, sizeKb } = event.data || {};
-      if (type === 'PDFCRAFT_EDITOR_READY') {
+      if (type === 'PDFCHARGER_EDITOR_READY') {
         sendThemeToIframe();
         sendPdfToIframe();
-      } else if (type === 'PDFCRAFT_LOADED_SUCCESS') {
+      } else if (type === 'PDFCHARGER_LOADED_SUCCESS') {
         setIsEditorReady(true);
-      } else if (type === 'PDFCRAFT_SAVE_SUCCESS') {
+      } else if (type === 'PDFCHARGER_SAVE_SUCCESS') {
         setSavedNotice(
           `${fileName || 'Document'} saved successfully! (${sizeKb ? sizeKb + ' KB' : 'downloaded'})`
         );
         setTimeout(() => setSavedNotice(null), 6000);
-      } else if (type === 'PDFCRAFT_EXIT_EDITOR') {
+      } else if (type === 'PDFCHARGER_EXIT_EDITOR') {
         handleClear();
       }
     };

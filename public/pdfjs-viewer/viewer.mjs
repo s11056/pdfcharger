@@ -24,7 +24,7 @@
  * pdfjsVersion = 5.4.296
  * pdfjsBuild = f56dc8601
  */
-import { SignatureScanController } from "./pdfcraft_signature_scanner.mjs";
+import { SignatureScanController } from "./pdfcharger_signature_scanner.mjs";
 /******/ // The require scope
 /******/ var __webpack_require__ = {};
 /******/ 
@@ -8806,7 +8806,7 @@ const print = window.print;
 window.print = function () {
   try {
     if (window.parent && window.parent !== window) {
-      window.parent.postMessage({ type: 'pdfcraft-print-requested' }, '*');
+      window.parent.postMessage({ type: 'pdfcharger-print-requested' }, '*');
     }
   } catch {}
   if (activeService) {

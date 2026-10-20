@@ -14,9 +14,10 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 
 const variantStyles: Record<ButtonVariant, string> = {
   primary: `
-    bg-[hsl(var(--color-primary))] 
-    text-[hsl(var(--color-primary-foreground))] 
-    hover:bg-[hsl(var(--color-primary-hover))]
+    pc-brand-gradient
+    text-white
+    shadow-[0_8px_20px_-8px_hsl(var(--color-primary)/0.7)]
+    hover:brightness-110
     focus-visible:ring-[hsl(var(--color-ring))]
   `,
   secondary: `
@@ -26,7 +27,7 @@ const variantStyles: Record<ButtonVariant, string> = {
     focus-visible:ring-[hsl(var(--color-ring))]
   `,
   outline: `
-    border-2 
+    border
     border-[hsl(var(--color-border))] 
     bg-transparent 
     text-[hsl(var(--color-foreground))]
@@ -44,7 +45,7 @@ const variantStyles: Record<ButtonVariant, string> = {
 const sizeStyles: Record<ButtonSize, string> = {
   sm: 'px-3 py-1.5 text-sm',
   md: 'px-4 py-2 text-base',
-  lg: 'px-6 py-3 text-lg',
+  lg: 'px-7 py-3.5 text-base',
   icon: 'h-9 w-9 p-0 flex items-center justify-center',
 };
 
@@ -91,7 +92,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
 
     const baseStyles = `
       inline-flex items-center justify-center gap-2
-      font-medium rounded-[var(--radius-md)]
+      font-semibold rounded-[var(--radius-md)]
       transition-all duration-[var(--transition-normal)]
       focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2
       disabled:opacity-50 disabled:cursor-not-allowed

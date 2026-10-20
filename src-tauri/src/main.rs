@@ -247,7 +247,7 @@ fn print_pdf_file(data: Vec<u8>, printer_name: Option<String>) -> Result<(), Str
         .duration_since(std::time::UNIX_EPOCH)
         .map(|d| d.as_millis())
         .unwrap_or(0);
-    let temp_file_path = env::temp_dir().join(format!("pdfcraft_print_{}.pdf", timestamp));
+    let temp_file_path = env::temp_dir().join(format!("pdfcharger_print_{}.pdf", timestamp));
     fs::write(&temp_file_path, &data).map_err(|e| e.to_string())?;
 
     let file_path_str = temp_file_path.to_string_lossy().to_string();
@@ -403,7 +403,7 @@ fn main() {
             if use_loopback {
                 if !wait_for_loopback(LOCALHOST_PORT, std::time::Duration::from_secs(5)) {
                     eprintln!(
-                        "pdfcraft: loopback asset server did not come up on port {LOCALHOST_PORT}"
+                        "pdfcharger: loopback asset server did not come up on port {LOCALHOST_PORT}"
                     );
                 }
                 let mut window_config = app.config().app.windows[0].clone();

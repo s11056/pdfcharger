@@ -1,5 +1,5 @@
 /**
- * PDFCraft Signature Image Loader
+ * PDFCharger Signature Image Loader
  *
  * Normalizes a user-provided signature image file into a PNG data URL.
  * The embedded PDF.js signature editor only handles raster images

@@ -2,15 +2,19 @@
  * Site configuration
  */
 export const siteConfig = {
-  name: 'PDFCraft',
-  description: 'Professional PDF Tools - Free, Private & Browser-Based. Merge, split, compress, convert, and edit PDF files online without uploading to servers.',
-  url: 'https://pdfcraft.devtoolcafe.com',
+  name: 'PDFCharger',
+  description: 'Every PDF tool you need, supercharged. Merge, split, compress, convert, edit and sign PDFs right in your browser — free, fast and private. Your files never leave your device.',
+  url: 'https://pdfcharger.com',
   ogImage: '/images/og-image.png',
   links: {
-    github: 'https://github.com/PDFCraftTool/pdfcraft',
-    twitter: 'https://twitter.com/pdfcraft',
+    // Source of this site (required by the AGPL-3.0 licence)
+    github: 'https://github.com/s11056/pdfcharger',
+    // Upstream project PDFCharger is built on
+    upstream: 'https://github.com/PDFCraftTool/pdfcraft',
+    twitter: 'https://x.com/pdfcharger',
+    email: 'mailto:hello@pdfcharger.com',
   },
-  creator: 'PDFCraft Team',
+  creator: 'PDFCharger',
   keywords: [
     'PDF tools',
     'PDF editor',
@@ -18,16 +22,16 @@ export const siteConfig = {
     'split PDF',
     'compress PDF',
     'convert PDF',
+    'PDF to Word',
     'free PDF tools',
     'online PDF editor',
-    'browser-based PDF',
     'private PDF processing',
+    'PDFCharger',
   ],
-  // SEO-related settings
   seo: {
-    titleTemplate: '%s | PDFCraft',
-    defaultTitle: 'PDFCraft - Professional PDF Tools',
-    twitterHandle: '@pdfcraft',
+    titleTemplate: '%s | PDFCharger',
+    defaultTitle: 'PDFCharger - Free Online PDF Tools, Supercharged',
+    twitterHandle: '@pdfcharger',
     locale: 'en_US',
   },
 };

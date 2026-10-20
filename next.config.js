@@ -33,8 +33,14 @@ function resolveAppVersion() {
 const nextConfig = {
   // Enable static export for deployment flexibility
   output: 'export',
-  
-  // Support deployment under a subpath (e.g., /pdfcraft/)
+
+  // Static generation renders ~2,600 pages in parallel workers. On low-memory
+  // machines set BUILD_CPUS=1 (e.g. `BUILD_CPUS=1 npm run build`) to avoid OOM.
+  ...(process.env.BUILD_CPUS
+    ? { experimental: { cpus: Number(process.env.BUILD_CPUS), workerThreads: false } }
+    : {}),
+
+  // Support deployment under a subpath (e.g., /pdfcharger/)
   // Use BASE_PATH or NEXT_PUBLIC_BASE_PATH environment variable
   basePath: process.env.BASE_PATH || process.env.NEXT_PUBLIC_BASE_PATH || '',
   

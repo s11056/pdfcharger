@@ -1,3 +1,4 @@
+import { humanizeToolId } from '@/config/categories';
 import { describe, it, expect, vi } from 'vitest';
 import * as fc from 'fast-check';
 import { render, screen } from '@testing-library/react';
@@ -78,10 +79,7 @@ describe('Tool Component Property Tests', () => {
             const { unmount } = render(<ToolCard tool={tool} locale="en" />);
             
             const nameElement = screen.getByTestId('tool-card-name');
-            const expectedName = tool.id
-              .split('-')
-              .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-              .join(' ');
+            const expectedName = humanizeToolId(tool.id);
             
             expect(nameElement.textContent).toBe(expectedName);
             

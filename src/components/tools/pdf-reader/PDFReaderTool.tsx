@@ -10,7 +10,7 @@ import { saveBlobFile, isTauri, getSystemPrinters, printPdfFile, type SystemPrin
 import { Modal } from '@/components/ui';
 import { withBasePath } from '@/lib/utils/path';
 
-export const SELECTED_PRINTER_STORAGE_KEY = 'pdfcraft-selected-printer';
+export const SELECTED_PRINTER_STORAGE_KEY = 'pdfcharger-selected-printer';
 
 export interface PDFReaderToolProps {
     className?: string;
@@ -179,7 +179,7 @@ export function PDFReaderTool({ className = '' }: PDFReaderToolProps) {
     // Listen for print requests emitted from PDF.js viewer iframe
     useEffect(() => {
         const handleMessage = (event: MessageEvent) => {
-            if (event.data?.type === 'pdfcraft-print-requested') {
+            if (event.data?.type === 'pdfcharger-print-requested') {
                 handleTriggerPrint();
             }
         };

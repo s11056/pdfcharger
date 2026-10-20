@@ -67,7 +67,7 @@ export const getToolDefaultOptions = (id: string, isZh: boolean = false): Record
     case 'pdf-two-column-reflower':
       return { middleGapRatio: 0.5, horizontalReading: false };
     case 'pdf-spine-bookbinder':
-      return { pageCount: 100, paperGsm: 80, bookTitle: 'PDFCraft Book' };
+      return { pageCount: 100, paperGsm: 80, bookTitle: 'PDFCharger Book' };
     case 'pdf-page-resizer-uniform':
       return { targetSize: 'A4', scaleMode: 'fit' };
     case 'pdf-scratchpad-canvas':
@@ -77,7 +77,7 @@ export const getToolDefaultOptions = (id: string, isZh: boolean = false): Record
     case 'bookmark':
       return { title: '', pageNumber: 1, level: 1 };
     case 'edit-metadata':
-      return { title: '', author: '', subject: '', keywords: '', creator: 'PDFCraft' };
+      return { title: '', author: '', subject: '', keywords: '', creator: 'PDFCharger' };
     case 'text-color':
       return { color: '#0000ff', mode: 'dark', threshold: 128 };
     case 'background-color':
@@ -87,7 +87,7 @@ export const getToolDefaultOptions = (id: string, isZh: boolean = false): Record
     case 'bookmarks-auto-generator':
       return { strategy: 'font-size', minFontSize: 14 };
     case 'batch-barcode-injector':
-      return { barcodeType: 'qrcode', value: 'https://pdfcraft.com', xPos: 0.8, yPos: 0.8, width: 80, height: 80, pageRange: 'all' };
+      return { barcodeType: 'qrcode', value: 'https://pdfcharger.com', xPos: 0.8, yPos: 0.8, width: 80, height: 80, pageRange: 'all' };
     case 'signature-ink-optimizer':
       return { threshold: 200, inkType: 'auto', contrast: 1.5 };
     case 'remove-blank-pages':

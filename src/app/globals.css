@@ -1,55 +1,56 @@
 @import "tailwindcss";
 
-/* PDFCraft Design System - CSS Variables for Theming */
+/* PDFCharger Design System - CSS Variables for Theming
+ * Values are bare HSL triplets so they can be used as hsl(var(--x) / alpha).
+ */
 :root {
-  /* Primary Colors - Deep Blue/Indigo for trust and modern tech feel */
-  --color-primary: 226 71% 55%; /* #3b82f6 - slightly more vibrant */
+  /* Brand: electric violet -> fuchsia */
+  --color-primary: 262 83% 58%;          /* #7c3aed */
   --color-primary-foreground: 0 0% 100%;
-  --color-primary-hover: 226 71% 45%;
-  
-  /* Secondary Colors - Slate for neutral elements */
-  --color-secondary: 215 20% 90%;
-  --color-secondary-foreground: 215 25% 15%;
-  --color-secondary-hover: 215 20% 80%;
-  
-  /* Accent Colors - Teal/Cyan for highlights */
-  --color-accent: 172 66% 50%;
+  --color-primary-hover: 262 83% 50%;
+  --color-brand-2: 322 81% 55%;          /* #e3359b */
+  --color-brand-3: 38 100% 55%;          /* charge spark */
+
+  --color-secondary: 250 30% 95%;
+  --color-secondary-foreground: 250 30% 18%;
+  --color-secondary-hover: 250 30% 90%;
+
+  --color-accent: 322 81% 55%;
   --color-accent-foreground: 0 0% 100%;
-  
-  /* Background Colors */
-  --color-background: 210 40% 98%; /* Slightly off-white for depth */
-  --color-foreground: 222 47% 11%;
-  
-  /* Muted Colors */
-  --color-muted: 210 40% 96%;
-  --color-muted-foreground: 215 16% 47%;
-  
-  /* Card Colors */
+
+  --color-background: 0 0% 100%;
+  --color-foreground: 245 40% 10%;
+  --color-surface: 250 50% 98.5%;        /* alternating section wash */
+
+  --color-muted: 250 30% 96%;
+  --color-muted-foreground: 245 12% 42%;
+
   --color-card: 0 0% 100%;
-  --color-card-foreground: 222 47% 11%;
-  
-  /* Border Colors */
-  --color-border: 214 32% 91%;
-  --color-input: 214 32% 91%;
-  --color-ring: 226 71% 55%;
-  
-  /* Destructive Colors */
+  --color-card-foreground: 245 40% 10%;
+
+  --color-border: 250 22% 90%;
+  --color-input: 250 22% 88%;
+  --color-ring: 262 83% 58%;
+
   --color-destructive: 0 84% 60%;
   --color-destructive-foreground: 0 0% 100%;
-  
-  /* Success Colors */
-  --color-success: 142 76% 36%;
+  --color-success: 152 69% 38%;
   --color-success-foreground: 0 0% 100%;
-  
-  /* Warning Colors */
   --color-warning: 38 92% 50%;
   --color-warning-foreground: 0 0% 100%;
-  
-  /* Typography */
+
+  /* Category colours (iLovePDF-style colour coding) */
+  --cat-organize: 22 92% 54%;
+  --cat-optimize: 152 64% 40%;
+  --cat-convert-to: 43 96% 48%;
+  --cat-convert-from: 214 90% 54%;
+  --cat-edit: 262 83% 58%;
+  --cat-secure: 346 80% 54%;
+
   --font-sans: var(--font-inter, 'Inter'), system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-display: var(--font-jakarta, var(--font-inter, 'Inter')), system-ui, sans-serif;
   --font-mono: var(--font-jetbrains-mono, 'JetBrains Mono'), 'Fira Code', Consolas, monospace;
-  
-  /* Spacing Scale */
+
   --spacing-xs: 0.25rem;
   --spacing-sm: 0.5rem;
   --spacing-md: 1rem;
@@ -57,53 +58,58 @@
   --spacing-xl: 2rem;
   --spacing-2xl: 3rem;
   --spacing-3xl: 4rem;
-  
-  /* Border Radius */
-  --radius-sm: 0.375rem;
+
+  --radius-sm: 0.5rem;
   --radius-md: 0.75rem;
-  --radius-lg: 1rem;
-  --radius-xl: 1.5rem;
+  --radius-lg: 1.125rem;
+  --radius-xl: 1.75rem;
   --radius-full: 9999px;
-  
-  /* Shadows - Layered, smoother shadows for depth */
-  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
-  --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+
+  --shadow-sm: 0 1px 2px 0 rgb(30 16 80 / 0.05);
+  --shadow-md: 0 4px 14px -4px rgb(30 16 80 / 0.10), 0 2px 4px -2px rgb(30 16 80 / 0.06);
+  --shadow-lg: 0 14px 34px -10px rgb(30 16 80 / 0.16), 0 4px 8px -4px rgb(30 16 80 / 0.06);
+  --shadow-xl: 0 28px 60px -18px rgb(76 29 149 / 0.28);
   --shadow-inner: inset 0 2px 4px 0 rgb(0 0 0 / 0.05);
-  
-  /* Transitions */
+
   --transition-fast: 150ms;
-  --transition-normal: 250ms;
+  --transition-normal: 220ms;
   --transition-slow: 350ms;
 }
 
-/* Dark Mode Theme */
 .dark {
   color-scheme: dark;
-  --color-primary: 226 71% 60%;
-  --color-primary-foreground: 222 47% 11%;
-  --color-primary-hover: 226 71% 70%;
-  
-  --color-secondary: 215 20% 20%;
-  --color-secondary-foreground: 210 40% 98%;
-  --color-secondary-hover: 215 20% 30%;
-  
-  --color-accent: 172 66% 50%;
-  --color-accent-foreground: 222 47% 11%;
-  
-  --color-background: 222 47% 7%; /* Darker background for more contrast */
-  --color-foreground: 210 40% 98%;
-  
-  --color-muted: 217 33% 13%;
-  --color-muted-foreground: 215 20% 65%;
-  
-  --color-card: 222 47% 10%;
-  --color-card-foreground: 210 40% 98%;
-  
-  --color-border: 217 33% 15%;
-  --color-input: 217 33% 15%;
-  --color-ring: 226 71% 60%;
+  --color-primary: 262 90% 68%;
+  --color-primary-foreground: 0 0% 100%;
+  --color-primary-hover: 262 90% 74%;
+  --color-brand-2: 322 85% 64%;
+
+  --color-secondary: 250 22% 18%;
+  --color-secondary-foreground: 250 30% 95%;
+  --color-secondary-hover: 250 22% 24%;
+
+  --color-accent: 322 85% 64%;
+  --color-accent-foreground: 0 0% 100%;
+
+  --color-background: 248 32% 7%;
+  --color-foreground: 250 30% 96%;
+  --color-surface: 248 30% 9%;
+
+  --color-muted: 248 24% 13%;
+  --color-muted-foreground: 248 14% 68%;
+
+  --color-card: 248 28% 11%;
+  --color-card-foreground: 250 30% 96%;
+
+  --color-border: 248 20% 19%;
+  --color-input: 248 20% 22%;
+  --color-ring: 262 90% 68%;
+
+  --cat-organize: 22 92% 60%;
+  --cat-optimize: 152 60% 50%;
+  --cat-convert-to: 43 96% 56%;
+  --cat-convert-from: 214 90% 64%;
+  --cat-edit: 262 90% 70%;
+  --cat-secure: 346 85% 64%;
 }
 
 /* Base Styles */
@@ -185,31 +191,60 @@ select option {
   outline: none;
 }
 
-/* Glassmorphism Utilities */
+/* Surfaces. `.glass` / `.glass-card` are kept as names because many tool
+ * components use them; in PDFCharger they are clean, solid cards. */
 .glass {
-  background: rgba(255, 255, 255, 0.7);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  background: hsl(var(--color-background) / 0.85);
+  backdrop-filter: saturate(180%) blur(14px);
+  -webkit-backdrop-filter: saturate(180%) blur(14px);
 }
 
-.dark .glass {
-  background: rgba(15, 23, 42, 0.6);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+.glass-card,
+.pc-card {
+  background: hsl(var(--color-card));
+  border: 1px solid hsl(var(--color-border));
+  box-shadow: var(--shadow-sm);
 }
 
-.glass-card {
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.4));
-  backdrop-filter: blur(5px);
-  border: 1px solid rgba(255, 255, 255, 0.5);
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+/* Soft brand wash used behind heroes (videodropper-style) */
+.pc-hero-wash {
+  background:
+    radial-gradient(60rem 28rem at 15% -10%, hsl(var(--color-primary) / 0.13), transparent 60%),
+    radial-gradient(50rem 26rem at 90% 0%, hsl(var(--color-brand-2) / 0.11), transparent 60%),
+    linear-gradient(180deg, hsl(var(--color-surface)), hsl(var(--color-background)));
 }
 
-.dark .glass-card {
-  background: linear-gradient(135deg, rgba(30, 41, 59, 0.7), rgba(15, 23, 42, 0.4));
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+.pc-brand-gradient {
+  background-image: linear-gradient(120deg, hsl(var(--color-primary)), hsl(var(--color-brand-2)));
 }
+
+.pc-dots {
+  background-image: radial-gradient(hsl(var(--color-foreground) / 0.07) 1px, transparent 1px);
+  background-size: 18px 18px;
+}
+
+.font-display {
+  font-family: var(--font-display);
+  letter-spacing: -0.025em;
+}
+
+/* Category colour helpers: set --cat on an element, then use these */
+.cat-organize { --cat: var(--cat-organize); }
+.cat-optimize { --cat: var(--cat-optimize); }
+.cat-convert-to { --cat: var(--cat-convert-to); }
+.cat-convert-from { --cat: var(--cat-convert-from); }
+.cat-edit { --cat: var(--cat-edit); }
+.cat-secure { --cat: var(--cat-secure); }
+.cat-tile { background: hsl(var(--cat) / 0.12); color: hsl(var(--cat)); }
+.cat-solid { background: hsl(var(--cat)); color: #fff; }
+.cat-text { color: hsl(var(--cat)); }
+.cat-border-hover:hover { border-color: hsl(var(--cat) / 0.55); }
+
+@keyframes pc-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+.animate-pc-float { animation: pc-float 5s ease-in-out infinite; }
 
 /* Animations */
 @keyframes blob {
@@ -236,7 +271,7 @@ select option {
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  background-image: linear-gradient(to right, hsl(var(--color-primary)), hsl(var(--color-accent)));
+  background-image: linear-gradient(110deg, hsl(var(--color-primary)), hsl(var(--color-brand-2)));
 }
 
 /* Screen reader only utility */

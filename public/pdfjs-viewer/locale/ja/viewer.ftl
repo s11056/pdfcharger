@@ -532,7 +532,7 @@ pdfjs-editor-add-signature-draw-button = 手書き
     .title = 手書き入力します
 pdfjs-editor-add-signature-image-button = 画像
     .title = 画像を指定します
-# PDFCraft: Scan is a verb (you can scan a photo of your signature)
+# PDFCharger: Scan is a verb (you can scan a photo of your signature)
 pdfjs-editor-add-signature-scan-button = スキャン
     .title = 署名の写真をスキャンします
 
@@ -554,7 +554,7 @@ pdfjs-editor-add-signature-image-browse-link =
        *[other] または画像ファイルを参照
     }
 
-## PDFCraft: Scan tab panel
+## PDFCharger: Scan tab panel
 
 pdfjs-editor-add-signature-scan-instructions = 白い紙に署名し、その写真を撮ってここにアップロードしてください。
 pdfjs-editor-add-signature-scan-tip = きれいに仕上げるには、カメラのフラッシュか明るく均一な照明を使い、カメラを紙の真上に構えてください。

@@ -226,7 +226,7 @@ export const UpdateModal: React.FC<UpdateModalProps> = ({
               <p className="text-sm text-[hsl(var(--color-muted-foreground))]">
                 {getMsg(
                   'latestDesc',
-                  'PDFCraft is currently at the latest version ({version}).',
+                  'PDFCharger is currently at the latest version ({version}).',
                   { version: result?.currentVersion || '' }
                 )}
               </p>

@@ -1,9 +1,9 @@
 /**
- * PDFCraft Local Signature Storage
+ * PDFCharger Local Signature Storage
  * Manages extracted and custom signatures stored in localStorage.
  */
 
-export interface PDFCraftSignature {
+export interface PDFChargerSignature {
   id: string;
   name: string;
   dataUrl: string; // Transparent PNG data URL
@@ -13,13 +13,13 @@ export interface PDFCraftSignature {
   sourceDoc?: string;
 }
 
-const STORAGE_KEY = 'pdfcraft.signatures';
+const STORAGE_KEY = 'pdfcharger.signatures';
 const MAX_SAVED_SIGNATURES = 20;
 
 /**
  * Retrieve all saved signatures from local storage
  */
-export function getSavedSignatures(): PDFCraftSignature[] {
+export function getSavedSignatures(): PDFChargerSignature[] {
   if (typeof window === 'undefined') return [];
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
@@ -35,9 +35,9 @@ export function getSavedSignatures(): PDFCraftSignature[] {
 /**
  * Save a new signature to local storage
  */
-export function saveSignature(sig: Omit<PDFCraftSignature, 'id' | 'createdAt'>): PDFCraftSignature {
+export function saveSignature(sig: Omit<PDFChargerSignature, 'id' | 'createdAt'>): PDFChargerSignature {
   const signatures = getSavedSignatures();
-  const newSig: PDFCraftSignature = {
+  const newSig: PDFChargerSignature = {
     ...sig,
     id: `sig_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`,
     createdAt: Date.now(),

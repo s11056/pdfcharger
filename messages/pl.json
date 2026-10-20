@@ -1,7 +1,7 @@
 {
   "metadata": {
     "home": {
-      "title": "PDFCraft — profesjonalne narzędzia PDF",
+      "title": "PDFCharger — profesjonalne narzędzia PDF",
       "description": "Bezpłatne, prywatne narzędzia działające w przeglądarce. Łącz, edytuj i przetwarzaj pliki PDF online bez przesyłania ich na serwery."
     },
     "tools": {
@@ -9,20 +9,20 @@
       "description": "Przeglądaj wszystkie ponad 67 profesjonalnych narzędzi PDF. Łącz, dziel, kompresuj, konwertuj, edytuj i zabezpieczaj swoje pliki PDF za darmo."
     },
     "about": {
-      "title": "O PDFCraft",
-      "description": "Dowiedz się o PDFCraft — darmowym, prywatnym i zaawansowanym zestawie narzędzi PDF. Całe przetwarzanie odbywa się w Twojej przeglądarce."
+      "title": "O PDFCharger",
+      "description": "Dowiedz się o PDFCharger — darmowym, prywatnym i zaawansowanym zestawie narzędzi PDF. Całe przetwarzanie odbywa się w Twojej przeglądarce."
     },
     "faq": {
       "title": "Często zadawane pytania",
-      "description": "Znajdź odpowiedzi na często zadawane pytania dotyczące PDFCraft. Dowiedz się, jak efektywnie korzystać z naszych narzędzi PDF."
+      "description": "Znajdź odpowiedzi na często zadawane pytania dotyczące PDFCharger. Dowiedz się, jak efektywnie korzystać z naszych narzędzi PDF."
     },
     "privacy": {
       "title": "Polityka prywatności",
-      "description": "Polityka prywatności PDFCraft. Twoje pliki nigdy nie opuszczają Twojego urządzenia – całe przetwarzanie odbywa się lokalnie w Twojej przeglądarce."
+      "description": "Polityka prywatności PDFCharger. Twoje pliki nigdy nie opuszczają Twojego urządzenia – całe przetwarzanie odbywa się lokalnie w Twojej przeglądarce."
     },
     "contact": {
       "title": "Skontaktuj się z nami",
-      "description": "Skontaktuj się z zespołem PDFCraft. Chcielibyśmy usłyszeć od ciebie."
+      "description": "Skontaktuj się z zespołem PDFCharger. Chcielibyśmy usłyszeć od ciebie."
     },
     "keywords": {
       "pdfTools": "narzędzia PDF",
@@ -35,16 +35,21 @@
     }
   },
   "common": {
-    "brand": "PDFCraft",
+    "brand": "PDFCharger",
     "tagline": "Profesjonalne narzędzia PDF — bezpłatne i prywatne",
     "navigation": {
       "home": "Strona główna",
       "tools": "Narzędzia",
       "workflow": "Przepływ pracy",
-      "about": "O PDFCraft",
+      "about": "O PDFCharger",
       "faq": "Często zadawane pytania",
       "privacy": "Prywatność",
-      "contact": "Kontakt"
+      "contact": "Kontakt",
+      "convert": "Konwertuj",
+      "merge": "Połącz PDF",
+      "split": "Podziel PDF",
+      "compress": "Kompresuj PDF",
+      "edit": "Edytuj PDF"
     },
     "buttons": {
       "upload": "Prześlij pliki",
@@ -83,8 +88,8 @@
       "loading": "Ładowanie..."
     },
     "footer": {
-      "footer": "© 2025 PDFCraft. Wszelkie prawa zastrzeżone.",
-      "copyright": "© {year} PDFCraft. Wszelkie prawa zastrzeżone.",
+      "footer": "© 2025 PDFCharger. Wszelkie prawa zastrzeżone.",
+      "copyright": "© {year} PDFCharger. Wszelkie prawa zastrzeżone.",
       "privacyBadge": "100% prywatności — pliki nigdy nie opuszczają Twojego urządzenia",
       "madeWith": "Wykonane z <Heart /> i <Nextjs />"
     },
@@ -129,7 +134,7 @@
       "finish": "Zakończ",
       "skip": "Pomiń",
       "stepOf": "z",
-      "welcomeTitle": "Witamy w PDFCraft!",
+      "welcomeTitle": "Witamy w PDFCharger!",
       "welcomeMessage": "Czy chcesz skorzystać z krótkiego przewodnika i dowiedzieć się, jak korzystać z naszych narzędzi PDF? To zajmie tylko minutę.",
       "helpButton": "Przewodnik po aplikacji"
     },
@@ -504,7 +509,7 @@
       "bronzeWax": "Antyczny karmazynowy brąz",
       "enableDoubleKey": "Włącz szyfrowanie podwójnym kluczem certyfikatu (256-bitowa silna blokada)",
       "decryptPasswordHelp": "Ustaw hasło klucza deszyfrującego PFX",
-      "passwordPlaceholder": "Domyślne hasło: pdfcraft",
+      "passwordPlaceholder": "Domyślne hasło: pdfcharger",
       "sealCoordinates": "Współrzędne pieczęci: X: {x}px, Y: {y}px",
       "clickToReposition": "Kliknij w dowolnym miejscu, aby zmienić położenie pieczęci woskowej"
     },
@@ -680,7 +685,7 @@
       "copyText": "Kopiuj rozpoznany tekst",
       "copied": "Skopiowano do schowka!",
       "openInEditor": "Edytuj w edytorze PDF",
-      "openInEditorDesc": "Bezpośrednio edytuj tekst i układ w edytorze PDFCraft bez pobierania",
+      "openInEditorDesc": "Bezpośrednio edytuj tekst i układ w edytorze PDFCharger bez pobierania",
       "statsPages": "Strony",
       "statsWords": "Słowa",
       "statsChars": "Znaki",
@@ -940,7 +945,7 @@
       "errorTitle": "Nie można sprawdzić aktualizacji",
       "retry": "Ponów próbę",
       "latest": "Wszystko jest aktualne!",
-      "latestDesc": "PDFCraft jest obecnie w najnowszej wersji ({version}).",
+      "latestDesc": "PDFCharger jest obecnie w najnowszej wersji ({version}).",
       "available": "Dostępna nowa wersja",
       "currentVersion": "Bieżąca wersja",
       "released": "Wydano",
@@ -998,16 +1003,16 @@
     "sections": {
       "general": {
         "whatIs": {
-          "question": "Co to jest PDFCraft?",
-          "answer": "PDFCraft to bezpłatny, dbający o prywatność zestaw narzędzi PDF, który działa całkowicie w przeglądarce. Oferuje ponad 80 profesjonalnych narzędzi do edycji, konwertowania, łączenia, dzielenia i zabezpieczania plików PDF bez przesyłania ich na jakikolwiek serwer."
+          "question": "Co to jest PDFCharger?",
+          "answer": "PDFCharger to bezpłatny, dbający o prywatność zestaw narzędzi PDF, który działa całkowicie w przeglądarce. Oferuje ponad 80 profesjonalnych narzędzi do edycji, konwertowania, łączenia, dzielenia i zabezpieczania plików PDF bez przesyłania ich na jakikolwiek serwer."
         },
         "isFree": {
-          "question": "Czy PDFCraft jest naprawdę darmowy?",
-          "answer": "Tak, korzystanie z PDFCraft jest całkowicie bezpłatne. Nie ma żadnych ukrytych kosztów, żadnych poziomów premium i nie jest wymagana rejestracja. Wszystkie funkcje są dostępne dla każdego."
+          "question": "Czy PDFCharger jest naprawdę darmowy?",
+          "answer": "Tak, korzystanie z PDFCharger jest całkowicie bezpłatne. Nie ma żadnych ukrytych kosztów, żadnych poziomów premium i nie jest wymagana rejestracja. Wszystkie funkcje są dostępne dla każdego."
         },
         "account": {
           "question": "Czy muszę zakładać konto?",
-          "answer": "Nie, nie musisz tworzyć konta ani rejestrować się, aby korzystać z PDFCraft. Wystarczy wejść na stronę i od razu zacząć korzystać z dowolnego narzędzia."
+          "answer": "Nie, nie musisz tworzyć konta ani rejestrować się, aby korzystać z PDFCharger. Wystarczy wejść na stronę i od razu zacząć korzystać z dowolnego narzędzia."
         }
       },
       "privacy": {
@@ -1016,8 +1021,8 @@
           "answer": "Nie, Twoje pliki nigdy nie są przesyłane na żaden serwer. Całe przetwarzanie PDF odbywa się lokalnie w Twojej przeglądarce przy użyciu JavaScript i WebAssembly. Twoje pliki nigdy nie opuszczają Twojego urządzenia."
         },
         "safe": {
-          "question": "Czy używanie PDFCraft w przypadku poufnych dokumentów jest bezpieczne?",
-          "answer": "Tak, PDFCraft został zaprojektowany z myślą o prywatności. Ponieważ całe przetwarzanie odbywa się lokalnie w Twojej przeglądarce, Twoje wrażliwe dokumenty pozostają na Twoim urządzeniu i nigdy nie są przesyłane przez Internet."
+          "question": "Czy używanie PDFCharger w przypadku poufnych dokumentów jest bezpieczne?",
+          "answer": "Tak, PDFCharger został zaprojektowany z myślą o prywatności. Ponieważ całe przetwarzanie odbywa się lokalnie w Twojej przeglądarce, Twoje wrażliwe dokumenty pozostają na Twoim urządzeniu i nigdy nie są przesyłane przez Internet."
         },
         "storage": {
           "question": "Co dzieje się z moimi plikami po przetworzeniu?",
@@ -1027,7 +1032,7 @@
       "features": {
         "operations": {
           "question": "Jakie operacje na plikach PDF mogę wykonać?",
-          "answer": "PDFCraft oferuje ponad 67 narzędzi, w tym: łączenie, dzielenie, kompresowanie, konwertowanie (do/z obrazów, tekstu, JSON), edytowanie, dodawanie adnotacji, podpisywanie, dodawanie znaków wodnych, szyfrowanie/deszyfrowanie, OCR i wiele innych."
+          "answer": "PDFCharger oferuje ponad 67 narzędzi, w tym: łączenie, dzielenie, kompresowanie, konwertowanie (do/z obrazów, tekstu, JSON), edytowanie, dodawanie adnotacji, podpisywanie, dodawanie znaków wodnych, szyfrowanie/deszyfrowanie, OCR i wiele innych."
         },
         "merge": {
           "question": "Czy mogę połączyć wiele plików PDF?",
@@ -1035,17 +1040,17 @@
         },
         "images": {
           "question": "Czy mogę przekonwertować obrazy na PDF?",
-          "answer": "Tak, PDFCraft obsługuje konwersję różnych formatów obrazów (JPG, PNG, WebP, BMP, TIFF, SVG, HEIC) do PDF. Możesz konwertować jeden lub wiele obrazów jednocześnie."
+          "answer": "Tak, PDFCharger obsługuje konwersję różnych formatów obrazów (JPG, PNG, WebP, BMP, TIFF, SVG, HEIC) do PDF. Możesz konwertować jeden lub wiele obrazów jednocześnie."
         },
         "edit": {
           "question": "Czy mogę edytować tekst w PDF?",
-          "answer": "PDFCraft zapewnia narzędzia do adnotacji i edycji, w tym wyróżnianie, dodawanie tekstu, kształtów, obrazów i podpisów. Do edycji pełnego tekstu narzędzie PDF Editor oferuje wszechstronne możliwości dodawania adnotacji."
+          "answer": "PDFCharger zapewnia narzędzia do adnotacji i edycji, w tym wyróżnianie, dodawanie tekstu, kształtów, obrazów i podpisów. Do edycji pełnego tekstu narzędzie PDF Editor oferuje wszechstronne możliwości dodawania adnotacji."
         }
       },
       "technical": {
         "browsers": {
           "question": "Jakie przeglądarki są obsługiwane?",
-          "answer": "PDFCraft działa we wszystkich nowoczesnych przeglądarkach, w tym Chrome, Firefox, Safari i Edge. Aby uzyskać najlepszą jakość, zalecamy korzystanie z najnowszej wersji przeglądarki."
+          "answer": "PDFCharger działa we wszystkich nowoczesnych przeglądarkach, w tym Chrome, Firefox, Safari i Edge. Aby uzyskać najlepszą jakość, zalecamy korzystanie z najnowszej wersji przeglądarki."
         },
         "sizeLimit": {
           "question": "Czy istnieje limit rozmiaru pliku?",
@@ -1056,14 +1061,14 @@
           "answer": "Ponieważ całe przetwarzanie odbywa się w Twojej przeglądarce, wydajność zależy od możliwości Twojego urządzenia. Duże pliki wymagają więcej pamięci i mocy obliczeniowej. Aby uzyskać najlepsze wyniki, zamknij inne karty i aplikacje przeglądarki."
         },
         "offline": {
-          "question": "Czy PDFCraft działa w trybie offline?",
-          "answer": "Obecnie PDFCraft wymaga połączenia internetowego, aby załadować aplikację. Jednak po załadowaniu samo przetwarzanie odbywa się lokalnie i nie wymaga połączenia."
+          "question": "Czy PDFCharger działa w trybie offline?",
+          "answer": "Obecnie PDFCharger wymaga połączenia internetowego, aby załadować aplikację. Jednak po załadowaniu samo przetwarzanie odbywa się lokalnie i nie wymaga połączenia."
         }
       },
       "languages": {
         "supported": {
           "question": "Jakie języki są obsługiwane?",
-          "answer": "PDFCraft jest dostępny w 9 językach: angielskim, japońskim, koreańskim, hiszpańskim, francuskim, niemieckim, chińskim, portugalskim i arabskim (z obsługą RTL)."
+          "answer": "PDFCharger jest dostępny w 9 językach: angielskim, japońskim, koreańskim, hiszpańskim, francuskim, niemieckim, chińskim, portugalskim i arabskim (z obsługą RTL)."
         },
         "change": {
           "question": "Jak zmienić język?",
@@ -1094,7 +1099,7 @@
       },
       "fast": {
         "title": "Szybki i wydajny",
-        "description": "Oparty na nowoczesnych technologiach internetowych, PDFCraft zapewnia błyskawiczne przetwarzanie PDF bez konieczności przesyłania lub pobierania."
+        "description": "Oparty na nowoczesnych technologiach internetowych, PDFCharger zapewnia błyskawiczne przetwarzanie PDF bez konieczności przesyłania lub pobierania."
       },
       "accessible": {
         "title": "Dostępne wszędzie",
@@ -1102,7 +1107,7 @@
       },
       "free": {
         "title": "Bezpłatne na zawsze",
-        "description": "PDFCraft jest całkowicie darmowy, bez ukrytych kosztów, bez wymaganej rejestracji i bez ograniczeń użytkowania."
+        "description": "PDFCharger jest całkowicie darmowy, bez ukrytych kosztów, bez wymaganej rejestracji i bez ograniczeń użytkowania."
       },
       "openSource": {
         "title": "Otwarte źródło",
@@ -1140,7 +1145,7 @@
       "email": {
         "title": "E-mail",
         "description": "Wyślij nam e-mail, a my odpowiemy w ciągu 24-48 godzin.",
-        "action": "kontakt@pdfcraft.app"
+        "action": "kontakt@pdfcharger.com"
       },
       "github": {
         "title": "GitHub",
@@ -1150,7 +1155,7 @@
       "twitter": {
         "title": "Twitter",
         "description": "Śledź nas, aby otrzymywać aktualizacje i ogłoszenia.",
-        "action": "@pdfcraft"
+        "action": "@pdfcharger"
       }
     },
     "form": {
@@ -1277,12 +1282,82 @@
       "organizeManage": "Organizuj i zarządzaj",
       "optimizeRepair": "Optymalizuj i napraw",
       "securePdf": "Zabezpiecz PDF"
+    },
+    "pc": {
+      "badge": "{count}+ darmowych narzędzi PDF · Bez rejestracji",
+      "title": "Wszystkie narzędzia PDF, których potrzebujesz,",
+      "highlight": "naładowane do pełna.",
+      "subtitle": "Łącz, dziel, kompresuj, konwertuj, edytuj i podpisuj pliki PDF w kilka sekund. Wszystko działa w Twojej przeglądarce, więc pliki nigdy nie opuszczają Twojego urządzenia.",
+      "select": "Wybierz pliki",
+      "orDrop": "lub upuść tutaj pliki PDF, obrazy i dokumenty",
+      "whatNext": "Co chcesz zrobić?",
+      "trust": {
+        "1": "100% za darmo",
+        "2": "Bez przesyłania, pełna prywatność",
+        "3": "Działa na każdym urządzeniu"
+      },
+      "toolsTitle": "Wybierz narzędzie i gotowe",
+      "toolsSubtitle": "Najpopularniejsze narzędzia na wierzchu, każde inne zadanie PDF o jedno kliknięcie dalej.",
+      "viewAll": "Zobacz wszystkie narzędzia ({count})",
+      "howTitle": "Jak działa PDFCharger",
+      "steps": {
+        "1": {
+          "title": "Wybierz pliki",
+          "body": "Kliknij „Wybierz pliki” albo przeciągnij na stronę pliki PDF, obrazy lub dokumenty Office."
+        },
+        "2": {
+          "title": "Wybierz narzędzie",
+          "body": "Łączenie, kompresja, konwersja, podpis — ustaw potrzebne opcje. Przetwarzanie odbywa się od razu na Twoim urządzeniu."
+        },
+        "3": {
+          "title": "Pobierz wynik",
+          "body": "Zapisz gotowy plik od razu. Nic nie jest przechowywane ani wysyłane na żaden serwer."
+        }
+      },
+      "whyTitle": "Narzędzia PDF, które nigdy nie wysyłają Twoich plików",
+      "whyBody": "Większość serwisów PDF online wysyła dokumenty na swoje serwery. PDFCharger wykonuje całą pracę w przeglądarce dzięki WebAssembly, więc umowy, wyciągi i dokumenty tożsamości zostają na Twoim urządzeniu.",
+      "benefits": {
+        "fast": {
+          "title": "Błyskawiczna szybkość",
+          "body": "Bez kolejek przesyłania i pobierania — pliki są przetwarzane lokalnie z pełną prędkością."
+        },
+        "anywhere": {
+          "title": "Działa wszędzie",
+          "body": "Windows, Mac, Linux, iPhone lub Android. Wystarczy nowoczesna przeglądarka."
+        }
+      },
+      "illustrationBadge": "Przetworzono na Twoim urządzeniu",
+      "faqTitle": "Najczęściej zadawane pytania",
+      "faq": {
+        "1": {
+          "q": "Czy PDFCharger jest naprawdę darmowy?",
+          "a": "Tak. Każde narzędzie jest darmowe — bez rejestracji, bez znaków wodnych i bez dziennych limitów."
+        },
+        "2": {
+          "q": "Czy moje pliki są gdzieś wysyłane?",
+          "a": "Nie. PDFCharger przetwarza pliki wyłącznie w przeglądarce. Dokumenty nigdy nie opuszczają Twojego urządzenia, więc jest bezpieczny także dla poufnych plików."
+        },
+        "3": {
+          "q": "Czy jest limit rozmiaru pliku?",
+          "a": "Nie ma sztywnego limitu. Bardzo duże pliki zależą od pamięci urządzenia, ale typowe dokumenty liczące setki stron działają płynnie."
+        },
+        "4": {
+          "q": "Czy działa na telefonie?",
+          "a": "Tak. PDFCharger działa w każdej nowoczesnej przeglądarce na komputerze, tablecie i telefonie — bez instalowania aplikacji."
+        },
+        "5": {
+          "q": "Czy mogę konwertować pliki Word, Excel i PowerPoint?",
+          "a": "Tak. Możesz konwertować dokumenty Office do PDF oraz PDF z powrotem do Worda, Excela, PowerPointa, obrazów i innych formatów."
+        }
+      },
+      "ctaTitle": "Gotowy, by naładować swoje PDF-y?",
+      "ctaBody": "Za darmo, prywatnie i natychmiast. Upuść plik i wybierz narzędzie."
     }
   },
   "workflow": {
     "title": "PDF Workflow Builder",
     "subtitle": "Create custom PDF processing pipelines by connecting tools",
-    "metaTitle": "PDF Workflow Builder - PDFCraft",
+    "metaTitle": "PDF Workflow Builder - PDFCharger",
     "metaDescription": "Create custom PDF processing pipelines by visually connecting tools. Build, save, and reuse your workflows.",
     "toolbox": "Tool Box",
     "dragToAdd": "Drag or double-click a tool to add it to the workflow",
@@ -3269,6 +3344,10 @@
       "optionsTitle": "Opcje kursów wymiany",
       "processButton": "Przetłumacz i przelicz fakturę",
       "successMessage": "Zagraniczna faktura została przetłumaczona i lokalna księga przeliczeniowa została pomyślnie ostemplowana!"
+    },
+    "pc": {
+      "privateNote": "Twoje pliki są przetwarzane lokalnie w przeglądarce i nigdy nie są wysyłane.",
+      "moreIn": "Więcej narzędzi: {category}"
     }
   }
 }

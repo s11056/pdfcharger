@@ -44,7 +44,7 @@ type PdfViewerWindow = Window & {
   pdfjsLib?: {
     AnnotationEditorType?: { NONE: number };
   };
-  pdfcraftImportSignature?: (blob: Blob, name?: string) => Promise<boolean>;
+  pdfchargerImportSignature?: (blob: Blob, name?: string) => Promise<boolean>;
 };
 
 const VIEWER_HTML = withBasePath('/pdfjs-viewer/viewer.html');
@@ -111,9 +111,9 @@ export function SignPDFTool({ className = '' }: SignPDFToolProps) {
     });
     setSavedSignatureCount(getSavedSignatures().length);
 
-    if (iframeRef.current?.contentWindow && (iframeRef.current.contentWindow as any).pdfcraftImportSignature) {
+    if (iframeRef.current?.contentWindow && (iframeRef.current.contentWindow as any).pdfchargerImportSignature) {
       const blob = dataUrlToBlob(loaded.dataUrl);
-      await (iframeRef.current.contentWindow as any).pdfcraftImportSignature(blob, saved.name);
+      await (iframeRef.current.contentWindow as any).pdfchargerImportSignature(blob, saved.name);
       setToastMessage(`签名“${saved.name}”已成功导入并在当前文档激活！可在页面点击放置并拖动边角自由缩放。`);
     } else {
       setToastMessage(`签名“${saved.name}”已存入签名库！打开 PDF 后即可随时选用盖章。`);

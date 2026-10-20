@@ -532,7 +532,7 @@ pdfjs-editor-add-signature-draw-button = Gambarkan
     .title = Gambarkan
 pdfjs-editor-add-signature-image-button = Gambar
     .title = Gambar
-# PDFCraft: Scan is a verb (you can scan a photo of your signature)
+# PDFCharger: Scan is a verb (you can scan a photo of your signature)
 pdfjs-editor-add-signature-scan-button = Pindai
     .title = Pindai foto tanda tangan Anda
 
@@ -554,7 +554,7 @@ pdfjs-editor-add-signature-image-browse-link =
        *[other] Atau cari berkas gambar
     }
 
-## PDFCraft: Scan tab panel
+## PDFCharger: Scan tab panel
 
 pdfjs-editor-add-signature-scan-instructions = Tanda tangani selembar kertas putih, foto kertasnya, lalu unggah fotonya di sini.
 pdfjs-editor-add-signature-scan-tip = Untuk hasil terbaik, gunakan lampu kilat kamera atau cahaya terang yang merata, dan pegang kamera tegak lurus di atas kertas.

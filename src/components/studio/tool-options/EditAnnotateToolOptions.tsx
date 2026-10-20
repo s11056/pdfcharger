@@ -249,7 +249,7 @@ export function EditAnnotateToolOptions({
 
     case 'batch-barcode-injector': {
       const barcodeType = options.barcodeType || 'qrcode';
-      const value = options.value || 'https://pdfcraft.com';
+      const value = options.value || 'https://pdfcharger.com';
       const xPos = options.xPos ?? 0.8;
       const yPos = options.yPos ?? 0.8;
       const width = options.width ?? 80;

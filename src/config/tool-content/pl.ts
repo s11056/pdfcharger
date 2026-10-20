@@ -2522,7 +2522,7 @@ export const toolContentPl: Record<string, ToolContent> = {
     faq: [
       { question: "Czy pieczęć woskowa to tylko obraz, czy prawdziwy podpis?", answer: "Obydwa. System renderuje niesamowicie realistyczny woskowy nadruk 3D z efektem głębi (warstwa wizualna) i koduje autentyczny, zabezpieczony przed manipulacją podpis kryptograficzny PKCS#7 wewnątrz pliku PDF (warstwa danych)." },
       { question: "Co to jest „szyfrowanie oparte na certyfikatach”?", answer: "Jest to technika szyfrowania bez hasła. Szyfrujesz plik przy użyciu klucza publicznego odbiorcy. Czytnik automatycznie wyszukuje lokalny prywatny certyfikat, aby sprawnie odszyfrować plik, zapewniając wysoki poziom bezpieczeństwa." },
-      { question: "Czy mogę dostosować projekt znaczka?", answer: "Tak. Oferujemy wiele projektów, takich jak znak wodny PDFCraft lub herb królewski, a także możesz dostosować promień topnienia wosku i głębokość tłoczenia w panelu." },
+      { question: "Czy mogę dostosować projekt znaczka?", answer: "Tak. Oferujemy wiele projektów, takich jak znak wodny PDFCharger lub herb królewski, a także możesz dostosować promień topnienia wosku i głębokość tłoczenia w panelu." },
     ],
   },
   'passport-id-composer': {

@@ -1328,7 +1328,7 @@ def resolve_embedded_font(page, span_font):
             if not content:
                 continue
             safe_extension = extension if extension in ("ttf", "otf", "cff", "cid") else "font"
-            extracted_path = f"/tmp/pdfcraft_original_{xref}.{safe_extension}"
+            extracted_path = f"/tmp/pdfcharger_original_{xref}.{safe_extension}"
             with open(extracted_path, "wb") as extracted_file:
                 extracted_file.write(content)
             temporary_fonts.append(extracted_path)
@@ -1413,7 +1413,7 @@ for item in prepared:
 
     page = doc[item["page_index"]]
     original_font_file = item["font_file"]
-    font_name = f"pdfcraftorig{item['font_xref']}" if original_font_file else item["font_name"]
+    font_name = f"pdfchargerorig{item['font_xref']}" if original_font_file else item["font_name"]
     font_file = original_font_file
     insertion_size = item["font_size"]
     lines = replacement_text.splitlines() or [""]
@@ -1467,7 +1467,7 @@ for item in prepared:
     except Exception:
         used_fallback_font = True
         fallback_file = font_path
-        fallback_name = "pdfcraft-unicode" if fallback_file else item["font_name"]
+        fallback_name = "pdfcharger-unicode" if fallback_file else item["font_name"]
         if len(lines) > 1 or fit_mode == "expand":
             page.insert_textbox(
                 insertion_rect,

@@ -343,14 +343,14 @@ export function OCRPDFTool({ className = '' }: OCRPDFToolProps) {
     const targetFile = new File([result], fileName, { type: 'application/pdf' });
     
     // Store in global memory
-    (window as any).__PDFCRAFT_PENDING_EDIT_FILE__ = targetFile;
+    (window as any).__PDFCHARGER_PENDING_EDIT_FILE__ = targetFile;
 
     // Fallback to sessionStorage
     try {
       const reader = new FileReader();
       reader.onloadend = () => {
         try {
-          window.sessionStorage.setItem('pdfcraft_pending_edit_file', JSON.stringify({
+          window.sessionStorage.setItem('pdfcharger_pending_edit_file', JSON.stringify({
             name: fileName,
             type: 'application/pdf',
             data: reader.result,
