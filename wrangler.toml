@@ -1,5 +1,9 @@
-# Cloudflare Pages — static asset deployment
-# This tells `wrangler deploy` to upload the `out/` directory as a static
-# Cloudflare Pages site instead of trying to wrap it in a Worker via OpenNext.
+# Cloudflare — static asset deployment
+# `pages_build_output_dir` is for `wrangler pages deploy` only.
+# The Cloudflare Pages deploy command runs `wrangler deploy`, so we use
+# the [assets] section which is what wrangler deploy expects for static files.
 name = "pdfcharger"
-pages_build_output_dir = "out"
+compatibility_date = "2026-10-20"
+
+[assets]
+directory = "./out"
