@@ -1,0 +1,5 @@
+# Cloudflare Pages — static asset deployment
+# This tells `wrangler deploy` to upload the `out/` directory as a static
+# Cloudflare Pages site instead of trying to wrap it in a Worker via OpenNext.
+name = "pdfcharger"
+pages_build_output_dir = "out"
