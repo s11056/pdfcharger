@@ -11,8 +11,8 @@ export const siteConfig = {
     github: 'https://github.com/s11056/pdfcharger',
     // Upstream project PDFCharger is built on
     upstream: 'https://github.com/PDFCraftTool/pdfcraft',
-    twitter: 'https://x.com/pdfcharger',
-    email: 'mailto:hello@pdfcharger.com',
+    twitter: '',
+    email: 'mailto:help@pdfcharger.com',
   },
   creator: 'PDFCharger',
   keywords: [

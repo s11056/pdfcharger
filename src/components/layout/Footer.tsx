@@ -4,7 +4,7 @@ import React from 'react';
 import Link from 'next/link';
 import { useRouter, usePathname } from 'next/navigation';
 import { useTranslations } from 'next-intl';
-import { Github, Twitter, Mail, Globe, ShieldCheck } from 'lucide-react';
+import { Github, Mail, Globe, ShieldCheck } from 'lucide-react';
 import { type Locale, locales, localeConfig, getLocalizedPath } from '@/lib/i18n/config';
 import { saveLanguagePreference } from './LanguageSelector';
 import { Logo } from '@/components/brand/Logo';
@@ -43,7 +43,6 @@ export const Footer: React.FC<FooterProps> = ({ locale }) => {
 
   const socials = [
     { href: siteConfig.links.github, label: 'GitHub', icon: Github },
-    { href: siteConfig.links.twitter, label: 'X (Twitter)', icon: Twitter },
     { href: siteConfig.links.email, label: 'Email', icon: Mail },
   ];
 
