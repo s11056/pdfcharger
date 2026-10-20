@@ -1884,10 +1884,15 @@
       "creatorPlaceholder": "Enter creator application",
       "producer": "PDF Producer",
       "producerPlaceholder": "Enter PDF producer",
+      "datesSection": "Document Dates",
+      "creationDate": "Creation Date",
+      "creationDateHelp": "The date the document was originally created.",
+      "modificationDate": "Modification Date",
+      "modificationDateHelp": "Leave empty to auto-set to current date/time on save.",
       "resetButton": "Reset",
       "saveButton": "Save Metadata",
       "editAnother": "Edit Another PDF",
-      "modificationNote": "The modification date will be updated automatically when you save.",
+      "modificationNote": "If modification date is left empty, it will be updated automatically when you save.",
       "successMessage": "Metadata updated successfully! Click the download button to save your file."
     },
     "editPdf": {
