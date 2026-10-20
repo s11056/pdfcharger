@@ -4,8 +4,8 @@ permissions:
   contents: write
 
 on:
-  schedule:
-    - cron: "0 0 * * *"
+  # Auto-sync disabled to protect custom PDFCharger rebrand from being overwritten.
+  # Trigger manually via workflow_dispatch when an upstream merge is intentional.
   workflow_dispatch:
 
 env:
