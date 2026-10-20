@@ -4,7 +4,7 @@
 export const siteConfig = {
   name: 'PDFCharger',
   description: 'Every PDF tool you need, supercharged. Merge, split, compress, convert, edit and sign PDFs right in your browser — free, fast and private. Your files never leave your device.',
-  url: 'https://pdfcharger.com',
+  url: 'https://www.pdfcharger.com',
   ogImage: '/images/og-image.png',
   links: {
     // Source of this site (required by the AGPL-3.0 licence)
