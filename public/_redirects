@@ -2,4 +2,4 @@
 # Redirect bare root to English — prevents Googlebot landing on /he/ or other
 # locales due to JS-based navigator.language detection.
 # Users can still switch language via the UI after landing on /en.
-/  /en  302
+/  /en  301
