@@ -1,7 +1,8 @@
 import type { Metadata } from 'next';
 import { setRequestLocale, getTranslations } from 'next-intl/server';
 import { locales, type Locale } from '@/lib/i18n/config';
-import { generateHomeMetadata } from '@/lib/seo';
+import { generateHomeMetadata, generateWebSiteSchema, generateOrganizationSchema, generateWebApplicationSchema } from '@/lib/seo';
+import { JsonLd } from '@/components/seo/JsonLd';
 import HomePageClient from './HomePageClient';
 
 export function generateStaticParams() {
@@ -25,6 +26,7 @@ export async function generateMetadata({ params }: HomePageProps): Promise<Metad
 
 export default async function HomePage({ params }: HomePageProps) {
   const { locale } = await params;
+  const validLocale = locales.includes(locale as Locale) ? (locale as Locale) : 'en';
 
   // Enable static rendering
   setRequestLocale(locale);
@@ -46,5 +48,14 @@ export default async function HomePage({ params }: HomePageProps) {
     return acc;
   }, {} as Record<string, { title: string; description: string }>);
 
-  return <HomePageClient locale={locale as Locale} localizedToolContent={localizedToolContent} />;
+  return (
+    <>
+      <JsonLd data={[
+        generateWebSiteSchema(validLocale),
+        generateOrganizationSchema(),
+        generateWebApplicationSchema(),
+      ]} />
+      <HomePageClient locale={locale as Locale} localizedToolContent={localizedToolContent} />
+    </>
+  );
 }

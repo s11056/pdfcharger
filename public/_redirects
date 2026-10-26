@@ -3,3 +3,4 @@
 # locales due to JS-based navigator.language detection.
 # Users can still switch language via the UI after landing on /en.
 /  /en  301
+/favicon.ico  /favicon.svg  301

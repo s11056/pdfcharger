@@ -1,5 +1,9 @@
 @import "tailwindcss";
 
+html {
+  scrollbar-gutter: stable;
+}
+
 /* PDFCharger Design System - CSS Variables for Theming
  * Values are bare HSL triplets so they can be used as hsl(var(--x) / alpha).
  */

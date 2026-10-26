@@ -1,0 +1,112 @@
+# PDFCharger
+
+> 130+ free PDF tools that run entirely in your browser using WebAssembly. No uploads, no account required, no file size limits. All processing happens locally on your device — your files never leave your computer.
+
+PDFCharger is a privacy-first, browser-based PDF toolkit. It supports merging, splitting, compressing, converting, editing, signing, redacting, OCR, and much more — all without installing any software.
+
+## Main Pages
+
+- [Home](https://www.pdfcharger.com/en): Landing page with tool search and drag-and-drop upload
+- [All Tools](https://www.pdfcharger.com/en/tools): Full list of 130+ PDF tools
+- [FAQ](https://www.pdfcharger.com/en/faq): Frequently asked questions
+- [About](https://www.pdfcharger.com/en/about): About PDFCharger
+- [Privacy Policy](https://www.pdfcharger.com/en/privacy): Privacy policy
+- [Contact](https://www.pdfcharger.com/en/contact): Contact us
+
+## Merge & Organize
+
+- [Merge PDF](https://www.pdfcharger.com/en/tools/merge-pdf): Combine multiple PDFs into one file
+- [Split PDF](https://www.pdfcharger.com/en/tools/split-pdf): Split a PDF into multiple files
+- [Organize PDF](https://www.pdfcharger.com/en/tools/organize-pdf): Reorder, rotate and delete pages visually
+- [Extract Pages](https://www.pdfcharger.com/en/tools/extract-pages): Extract selected pages into a new PDF
+- [Delete Pages](https://www.pdfcharger.com/en/tools/delete-pages): Remove unwanted pages
+- [Add Blank Page](https://www.pdfcharger.com/en/tools/add-blank-page): Insert blank pages anywhere
+- [Reverse Pages](https://www.pdfcharger.com/en/tools/reverse-pages): Reverse the page order
+- [Alternate Merge](https://www.pdfcharger.com/en/tools/alternate-merge): Interleave pages from two PDFs
+
+## Compress & Optimize
+
+- [Compress PDF](https://www.pdfcharger.com/en/tools/compress-pdf): Reduce PDF file size
+- [Linearize PDF](https://www.pdfcharger.com/en/tools/linearize-pdf): Optimize PDF for fast web viewing
+- [Fix Page Size](https://www.pdfcharger.com/en/tools/fix-page-size): Normalize all pages to the same size
+- [Repair PDF](https://www.pdfcharger.com/en/tools/repair-pdf): Fix corrupted or broken PDF files
+
+## Convert to PDF
+
+- [Word to PDF](https://www.pdfcharger.com/en/tools/word-to-pdf): Convert DOCX/DOC to PDF
+- [Excel to PDF](https://www.pdfcharger.com/en/tools/excel-to-pdf): Convert XLSX/XLS to PDF
+- [PowerPoint to PDF](https://www.pdfcharger.com/en/tools/pptx-to-pdf): Convert PPTX to PDF
+- [Image to PDF](https://www.pdfcharger.com/en/tools/image-to-pdf): Convert images to PDF
+- [JPG to PDF](https://www.pdfcharger.com/en/tools/jpg-to-pdf): Convert JPEG images to PDF
+- [PNG to PDF](https://www.pdfcharger.com/en/tools/png-to-pdf): Convert PNG images to PDF
+- [EPUB to PDF](https://www.pdfcharger.com/en/tools/epub-to-pdf): Convert eBooks to PDF
+- [Markdown to PDF](https://www.pdfcharger.com/en/tools/markdown-to-pdf): Convert Markdown to PDF
+- [HTML to PDF](https://www.pdfcharger.com/en/tools/email-to-pdf): Convert HTML/email to PDF
+- [SVG to PDF](https://www.pdfcharger.com/en/tools/svg-to-pdf): Convert SVG vector files to PDF
+- [TIFF to PDF](https://www.pdfcharger.com/en/tools/tiff-to-pdf): Convert TIFF images to PDF
+- [RTF to PDF](https://www.pdfcharger.com/en/tools/rtf-to-pdf): Convert RTF documents to PDF
+- [MOBI to PDF](https://www.pdfcharger.com/en/tools/mobi-to-pdf): Convert MOBI eBooks to PDF
+- [DjVu to PDF](https://www.pdfcharger.com/en/tools/djvu-to-pdf): Convert DjVu to PDF
+
+## Convert from PDF
+
+- [PDF to Word](https://www.pdfcharger.com/en/tools/pdf-to-docx): Convert PDF to editable DOCX
+- [PDF to Excel](https://www.pdfcharger.com/en/tools/pdf-to-excel): Convert PDF to XLSX
+- [PDF to PowerPoint](https://www.pdfcharger.com/en/tools/pdf-to-pptx): Convert PDF to PPTX
+- [PDF to JPG](https://www.pdfcharger.com/en/tools/pdf-to-jpg): Convert PDF pages to JPEG images
+- [PDF to PNG](https://www.pdfcharger.com/en/tools/pdf-to-png): Convert PDF pages to PNG images
+- [PDF to SVG](https://www.pdfcharger.com/en/tools/pdf-to-svg): Convert PDF to SVG vector
+- [PDF to TIFF](https://www.pdfcharger.com/en/tools/pdf-to-tiff): Convert PDF to TIFF images
+- [PDF to Markdown](https://www.pdfcharger.com/en/tools/pdf-to-markdown): Extract PDF text as Markdown
+- [PDF to JSON](https://www.pdfcharger.com/en/tools/pdf-to-json): Extract PDF content as JSON
+- [PDF to PDF/A](https://www.pdfcharger.com/en/tools/pdf-to-pdfa): Convert PDF to archival PDF/A format
+- [PDF to Greyscale](https://www.pdfcharger.com/en/tools/pdf-to-greyscale): Convert PDF to black and white
+
+## Edit & Annotate
+
+- [Edit PDF](https://www.pdfcharger.com/en/tools/edit-pdf): Edit text and images in a PDF
+- [OCR PDF](https://www.pdfcharger.com/en/tools/ocr-pdf): Make scanned PDFs searchable with OCR
+- [Add Watermark](https://www.pdfcharger.com/en/tools/add-watermark): Add text or image watermarks
+- [Page Numbers](https://www.pdfcharger.com/en/tools/page-numbers): Add page numbers to a PDF
+- [Header & Footer](https://www.pdfcharger.com/en/tools/header-footer): Add headers and footers
+- [Add Stamps](https://www.pdfcharger.com/en/tools/add-stamps): Stamp pages with text or images
+- [Rotate PDF](https://www.pdfcharger.com/en/tools/rotate-pdf): Rotate pages in a PDF
+- [Crop PDF](https://www.pdfcharger.com/en/tools/crop-pdf): Crop the visible area of pages
+- [Redact PDF](https://www.pdfcharger.com/en/tools/redact-pdf): Permanently redact sensitive content
+- [Find and Redact](https://www.pdfcharger.com/en/tools/find-and-redact): Search and redact text patterns
+- [Compare PDFs](https://www.pdfcharger.com/en/tools/compare-pdfs): Visually compare two PDFs
+- [Overlay PDF](https://www.pdfcharger.com/en/tools/overlay-pdf): Overlay two PDFs on top of each other
+
+## Sign & Secure
+
+- [Sign PDF](https://www.pdfcharger.com/en/tools/sign-pdf): Add a handwritten or typed signature
+- [Digital Sign PDF](https://www.pdfcharger.com/en/tools/digital-sign-pdf): Apply a digital certificate signature
+- [Encrypt PDF](https://www.pdfcharger.com/en/tools/encrypt-pdf): Password-protect a PDF
+- [Decrypt PDF](https://www.pdfcharger.com/en/tools/decrypt-pdf): Remove PDF password protection
+- [Sanitize PDF](https://www.pdfcharger.com/en/tools/sanitize-pdf): Remove hidden data and scripts
+- [Deep Sanitize](https://www.pdfcharger.com/en/tools/deep-sanitize): Thorough removal of embedded threats
+- [Remove Metadata](https://www.pdfcharger.com/en/tools/remove-metadata): Strip author and document metadata
+- [Change Permissions](https://www.pdfcharger.com/en/tools/change-permissions): Set PDF permission flags
+- [Remove Restrictions](https://www.pdfcharger.com/en/tools/remove-restrictions): Remove copy/print restrictions
+
+## Forms
+
+- [Fill Form](https://www.pdfcharger.com/en/tools/form-filler): Fill in PDF form fields
+- [Create Form](https://www.pdfcharger.com/en/tools/form-creator): Create fillable PDF forms
+
+## Metadata & Structure
+
+- [View Metadata](https://www.pdfcharger.com/en/tools/view-metadata): Inspect PDF document properties
+- [Edit Metadata](https://www.pdfcharger.com/en/tools/edit-metadata): Edit PDF document properties
+- [Bookmark](https://www.pdfcharger.com/en/tools/bookmark): Add and edit PDF bookmarks
+- [Table of Contents](https://www.pdfcharger.com/en/tools/table-of-contents): Generate a table of contents
+- [Add Page Labels](https://www.pdfcharger.com/en/tools/add-page-labels): Set custom page label formats
+
+## Key Facts
+
+- Privacy: All processing is done client-side in the browser using WebAssembly — no files are ever uploaded to any server
+- Cost: Completely free, no account required, no file size limits, no ads
+- Technology: WebAssembly (Wasm), runs in any modern browser
+- Languages: English, Spanish, French, German, Japanese, Korean, Chinese, Portuguese, Arabic, Hebrew, Italian, Indonesian, Vietnamese, Romanian, Polish, Czech, Hindi
+- Contact: help@pdfcharger.com
+- Source code: https://github.com/s11056/pdfcharger (AGPL-3.0)

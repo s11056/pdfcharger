@@ -132,8 +132,30 @@ export interface OrganizationSchema {
   '@type': 'Organization';
   name: string;
   url: string;
+  description?: string;
   logo?: string;
+  email?: string;
   sameAs?: string[];
+}
+
+/**
+ * WebApplication schema for the site as a whole (used as LocalBusiness equivalent for online tools)
+ * @see https://schema.org/WebApplication
+ */
+export interface WebApplicationSchema {
+  '@context': 'https://schema.org';
+  '@type': 'WebApplication';
+  name: string;
+  url: string;
+  description: string;
+  applicationCategory: string;
+  operatingSystem: string;
+  offers: {
+    '@type': 'Offer';
+    price: string;
+    priceCurrency: string;
+  };
+  browserRequirements: string;
 }
 
 /**
@@ -322,8 +344,34 @@ export function generateOrganizationSchema(): OrganizationSchema {
     '@type': 'Organization',
     name: siteConfig.name,
     url: siteConfig.url,
+    description: siteConfig.description,
     logo: `${siteConfig.url}/images/logo.png`,
-    sameAs: siteConfig.links.github ? [siteConfig.links.github] : [],
+    email: 'help@pdfcharger.com',
+    sameAs: [
+      ...(siteConfig.links.github ? [siteConfig.links.github] : []),
+    ],
+  };
+}
+
+/**
+ * Generate WebApplication schema for the site as a whole
+ * Satisfies "Local Business Schema" requirement for online-only services
+ */
+export function generateWebApplicationSchema(): WebApplicationSchema {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'WebApplication',
+    name: siteConfig.name,
+    url: siteConfig.url,
+    description: siteConfig.description,
+    applicationCategory: 'UtilitiesApplication',
+    operatingSystem: 'Windows, macOS, Linux, iOS, Android, Chrome OS',
+    offers: {
+      '@type': 'Offer',
+      price: '0',
+      priceCurrency: 'USD',
+    },
+    browserRequirements: 'Requires a modern browser with WebAssembly support',
   };
 }
 
