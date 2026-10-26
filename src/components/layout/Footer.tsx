@@ -77,6 +77,14 @@ export const Footer: React.FC<FooterProps> = ({ locale }) => {
                 </a>
               ))}
             </div>
+            <a
+              href="https://audiocharger.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 self-start rounded-full border border-[hsl(var(--color-border))] bg-[hsl(var(--color-card))] px-3 py-1.5 text-xs text-[hsl(var(--color-muted-foreground))] transition-colors hover:border-[hsl(var(--color-primary)/0.5)] hover:text-[hsl(var(--color-primary))]"
+            >
+              Need an audio tool? ↗
+            </a>
           </div>
 
           {/* Tool columns */}
