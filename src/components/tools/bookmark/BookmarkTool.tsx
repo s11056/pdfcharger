@@ -7,7 +7,7 @@ import { ProcessingProgress, ProcessingStatus } from '../ProcessingProgress';
 import { DownloadButton } from '../DownloadButton';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
-import { processBookmarks, BookmarkItem, BookmarkOptions } from '@/lib/pdf/processors/bookmark';
+import { processBookmarks, parseBookmarkDestination, BookmarkItem, BookmarkOptions } from '@/lib/pdf/processors/bookmark';
 import type { ProcessOutput } from '@/types/pdf';
 
 // Store pdfjs module reference
@@ -36,6 +36,7 @@ interface BookmarkNode {
   id: string;
   title: string;
   pageNumber: number;
+  destination?: BookmarkItem['destination'];
   children: BookmarkNode[];
   color?: string;
   style?: 'bold' | 'italic' | 'bold-italic';
@@ -145,6 +146,7 @@ export function BookmarkTool({ className = '' }: BookmarkToolProps) {
 
     for (const item of outline) {
       let pageNumber = 1;
+      let destination: BookmarkItem['destination'];
 
       // Get destination page
       if (item.dest) {
@@ -152,10 +154,14 @@ export function BookmarkTool({ className = '' }: BookmarkToolProps) {
           const dest = typeof item.dest === 'string'
             ? await doc.getDestination(item.dest)
             : item.dest;
-          if (dest && dest[0]) {
-            const pageRef = dest[0];
-            const pageIndex = await doc.getPageIndex(pageRef);
-            pageNumber = pageIndex + 1;
+          if (dest && dest[0] !== undefined && dest[0] !== null) {
+            const pageIndex = typeof dest[0] === 'number'
+              ? dest[0]
+              : await doc.getPageIndex(dest[0]);
+            if (Number.isInteger(pageIndex) && pageIndex >= 0 && pageIndex < doc.numPages) {
+              pageNumber = pageIndex + 1;
+              destination = parseBookmarkDestination({ type: dest[1]?.name, args: dest.slice(2) });
+            }
           }
         } catch (e) {
           console.warn('Failed to get destination for bookmark:', item.title);
@@ -181,6 +187,7 @@ export function BookmarkTool({ className = '' }: BookmarkToolProps) {
         id: `bm-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
         title: item.title || 'Untitled',
         pageNumber,
+        destination,
         children: [],
         color,
         style,
@@ -402,7 +409,13 @@ export function BookmarkTool({ className = '' }: BookmarkToolProps) {
     const updateIn = (nodes: BookmarkNode[]): BookmarkNode[] => {
       return nodes.map(node => {
         if (node.id === finalUpdate.id) {
-          return { ...finalUpdate, children: node.children };
+          return {
+            ...finalUpdate,
+            // A changed target page should start at its top, rather than reuse
+            // coordinates belonging to the old page.
+            destination: pageNum === node.pageNumber ? node.destination : undefined,
+            children: node.children,
+          };
         }
         return { ...node, children: updateIn(node.children) };
       });
@@ -558,6 +571,7 @@ export function BookmarkTool({ className = '' }: BookmarkToolProps) {
       id: node.id,
       title: node.title,
       pageNumber: node.pageNumber,
+      destination: node.destination,
       color: node.color,
       style: node.style,
       children: node.children.length > 0 ? convertToBookmarkItems(node.children) : undefined,

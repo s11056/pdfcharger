@@ -3,7 +3,7 @@ import { render, screen, fireEvent, waitFor, cleanup, within, createEvent, act }
 import React from 'react';
 import { PDFDocument, PDFDict, PDFArray, PDFName, PDFHexString, PDFRef } from 'pdf-lib';
 
-const persistence = vi.hoisted(() => ({ file: null as File | null, realProcessor: false }));
+const persistence = vi.hoisted(() => ({ file: null as File | null, realProcessor: false, outline: null as any[] | null, destinations: {} as Record<string, any[]> }));
 import { NextIntlClientProvider } from 'next-intl';
 import messages from '../../../../messages/en.json';
 import { BookmarkTool } from '@/components/tools/bookmark/BookmarkTool';
@@ -36,7 +36,8 @@ vi.mock('pdfjs-dist', () => ({
       numPages: 4,
       getPage: async () => ({}),
       getPageIndex: async (ref: { num: number }) => ref.num - 1,
-      getOutline: async () => [
+      getDestination: async (name: string) => persistence.destinations[name],
+      getOutline: async () => persistence.outline ?? [
         { title: 'Cover', items: [] },
         { title: 'Page 2', items: [] },
         { title: 'Page 3', items: [] },
@@ -49,7 +50,7 @@ vi.mock('pdfjs-dist', () => ({
 
 vi.mock('@/lib/pdf/processors/bookmark', async (importOriginal) => {
   const actual = await importOriginal<typeof import('@/lib/pdf/processors/bookmark')>();
-  return { processBookmarks: vi.fn((...args: Parameters<typeof actual.processBookmarks>) =>
+  return { ...actual, processBookmarks: vi.fn((...args: Parameters<typeof actual.processBookmarks>) =>
     persistence.realProcessor ? actual.processBookmarks(...args) :
       Promise.resolve({ success: true, result: new Blob(['%PDF']) })) };
 });
@@ -83,6 +84,8 @@ describe('BookmarkTool', () => {
   beforeEach(() => {
     persistence.file = null;
     persistence.realProcessor = false;
+    persistence.outline = null;
+    persistence.destinations = {};
     URL.createObjectURL = vi.fn(() => 'blob:mock-url');
     vi.spyOn(HTMLCanvasElement.prototype, 'getContext').mockReturnValue(null);
     vi.spyOn(window, 'confirm').mockReturnValue(true);
@@ -249,6 +252,47 @@ describe('BookmarkTool', () => {
     expect(child.lookup(PDFName.of('Dest'), PDFArray).get(0)).toEqual(reloaded.getPage(3).ref);
     expect(child.get(PDFName.of('F'))?.toString()).toBe('1');
     expect(child.get(PDFName.of('Parent'))).toEqual(reloaded.context.getObjectRef(contents!));
+  });
+
+  it.each([false, true])('keeps destination views while retargeting only an explicitly changed page (changed=%s)', async (changed) => {
+    const pdf = await PDFDocument.create();
+    for (let i = 0; i < 4; i++) pdf.addPage([612, 792]);
+    const bytes = new Uint8Array(await pdf.save());
+    persistence.file = new File([bytes], 'views.pdf', { type: 'application/pdf' });
+    Object.defineProperty(persistence.file, 'arrayBuffer', { value: async () => bytes.buffer });
+    persistence.realProcessor = true;
+    persistence.outline = [
+      { title: 'Cover', dest: [{ num: 2 }, { name: 'XYZ' }, 12, 240, 1.5], items: [] },
+      { title: 'Named', dest: 'chapter', items: [] },
+      { title: 'Indexed', dest: [3, { name: 'FitH' }, null], items: [] },
+    ];
+    persistence.destinations.chapter = [{ num: 3 }, { name: 'FitR' }, 10, 20, 300, 400];
+    await renderAndLoad();
+    fireEvent.click(screen.getAllByTitle('Edit')[0]);
+    fireEvent.change(screen.getByDisplayValue('Cover'), { target: { value: 'Renamed cover' } });
+    if (changed) fireEvent.change(screen.getByDisplayValue('2'), { target: { value: '4' } });
+    fireEvent.click(screen.getByTitle('Save'));
+    await act(async () => { fireEvent.click(screen.getByRole('button', { name: 'Save Bookmarks' })); });
+    const result = await vi.mocked(processBookmarks).mock.results[0].value;
+    const buffer = await new Promise<ArrayBuffer>((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result as ArrayBuffer);
+      reader.onerror = () => reject(reader.error);
+      reader.readAsArrayBuffer(result.result as Blob);
+    });
+    const saved = await PDFDocument.load(buffer);
+    let ref = saved.catalog.lookup(PDFName.of('Outlines'), PDFDict).get(PDFName.of('First'));
+    const destinations: string[][] = [];
+    const pages: number[] = [];
+    while (ref) {
+      const item = saved.context.lookup(ref, PDFDict);
+      const dest = item.lookup(PDFName.of('Dest'), PDFArray);
+      destinations.push(dest.asArray().slice(1).map(value => value.toString()));
+      pages.push(saved.getPages().findIndex(page => page.ref.toString() === dest.get(0).toString()) + 1);
+      ref = item.get(PDFName.of('Next'));
+    }
+    expect(destinations).toEqual([changed ? ['/XYZ', '0', '792', 'null'] : ['/XYZ', '12', '240', '1.5'], ['/FitR', '10', '20', '300', '400'], ['/FitH', 'null']]);
+    expect(pages).toEqual([changed ? 4 : 2, 3, 4]);
   });
 
 });
