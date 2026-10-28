@@ -395,5 +395,222 @@ describe('PDFStudio Component', () => {
     expect(screen.getByText('2-Up')).toBeInTheDocument();
     expect(screen.getByText('4-Up')).toBeInTheDocument();
   });
+
+  describe('Document Tab Cycling Keyboard Shortcuts', () => {
+    const setupThreeDocs = () => {
+      const file1 = createDummyPdfFile('doc1.pdf');
+      const file2 = createDummyPdfFile('doc2.pdf');
+      const file3 = createDummyPdfFile('doc3.pdf');
+      render(<PDFStudio locale="en" />);
+      const uploadInput = document.querySelector('input[type="file"]') as HTMLInputElement;
+      fireEvent.change(uploadInput, {
+        target: { files: [file1, file2, file3] },
+      });
+      expect(screen.getByTitle('doc1.pdf')).toBeInTheDocument();
+      return { file1, file2, file3 };
+    };
+
+    it('cycles forward with Ctrl+PageDown and Alt+] sequentially and wraps around', () => {
+      setupThreeDocs();
+
+      // Forward 1: doc1 -> doc2 with Ctrl+PageDown
+      fireEvent.keyDown(window, { key: 'PageDown', code: 'PageDown', ctrlKey: true });
+      expect(screen.getByTitle('doc2.pdf')).toBeInTheDocument();
+      expect(screen.queryByTitle('doc1.pdf')).not.toBeInTheDocument();
+
+      // Forward 2: doc2 -> doc3 with Alt+]
+      fireEvent.keyDown(window, { key: ']', altKey: true });
+      expect(screen.getByTitle('doc3.pdf')).toBeInTheDocument();
+      expect(screen.queryByTitle('doc2.pdf')).not.toBeInTheDocument();
+
+      // Forward wrap-around: doc3 -> doc1 with Ctrl+PageDown
+      fireEvent.keyDown(window, { key: 'PageDown', code: 'PageDown', ctrlKey: true });
+      expect(screen.getByTitle('doc1.pdf')).toBeInTheDocument();
+      expect(screen.queryByTitle('doc3.pdf')).not.toBeInTheDocument();
+    });
+
+    it('cycles backward with Ctrl+PageUp and Alt+[ sequentially and wraps around', () => {
+      setupThreeDocs();
+
+      // Backward wrap-around from first: doc1 -> doc3 with Ctrl+PageUp
+      fireEvent.keyDown(window, { key: 'PageUp', code: 'PageUp', ctrlKey: true });
+      expect(screen.getByTitle('doc3.pdf')).toBeInTheDocument();
+      expect(screen.queryByTitle('doc1.pdf')).not.toBeInTheDocument();
+
+      // Backward 1: doc3 -> doc2 with Alt+[
+      fireEvent.keyDown(window, { key: '[', altKey: true });
+      expect(screen.getByTitle('doc2.pdf')).toBeInTheDocument();
+      expect(screen.queryByTitle('doc3.pdf')).not.toBeInTheDocument();
+
+      // Backward 2: doc2 -> doc1 with Ctrl+PageUp
+      fireEvent.keyDown(window, { key: 'PageUp', code: 'PageUp', ctrlKey: true });
+      expect(screen.getByTitle('doc1.pdf')).toBeInTheDocument();
+      expect(screen.queryByTitle('doc2.pdf')).not.toBeInTheDocument();
+    });
+
+    it('cycles forward with Ctrl+Tab and backward with Shift+Ctrl+Tab in Tauri desktop environment', () => {
+      vi.spyOn(tauriBridge, 'isTauri').mockReturnValue(true);
+      setupThreeDocs();
+
+      // Ctrl+Tab forward: doc1 -> doc2
+      fireEvent.keyDown(window, { key: 'Tab', ctrlKey: true });
+      expect(screen.getByTitle('doc2.pdf')).toBeInTheDocument();
+
+      // Ctrl+Tab forward: doc2 -> doc3
+      fireEvent.keyDown(window, { key: 'Tab', ctrlKey: true });
+      expect(screen.getByTitle('doc3.pdf')).toBeInTheDocument();
+
+      // Ctrl+Tab forward wrap: doc3 -> doc1
+      fireEvent.keyDown(window, { key: 'Tab', ctrlKey: true });
+      expect(screen.getByTitle('doc1.pdf')).toBeInTheDocument();
+
+      // Shift+Ctrl+Tab backward wrap: doc1 -> doc3
+      fireEvent.keyDown(window, { key: 'Tab', ctrlKey: true, shiftKey: true });
+      expect(screen.getByTitle('doc3.pdf')).toBeInTheDocument();
+
+      // Shift+Ctrl+Tab backward: doc3 -> doc2
+      fireEvent.keyDown(window, { key: 'Tab', ctrlKey: true, shiftKey: true });
+      expect(screen.getByTitle('doc2.pdf')).toBeInTheDocument();
+    });
+
+    it('does not cycle with Ctrl+Tab in standard web browser environment (prevents browser tab clash)', () => {
+      vi.spyOn(tauriBridge, 'isTauri').mockReturnValue(false);
+      setupThreeDocs();
+
+      // Ctrl+Tab should be ignored in web mode
+      fireEvent.keyDown(window, { key: 'Tab', ctrlKey: true });
+      expect(screen.getByTitle('doc1.pdf')).toBeInTheDocument();
+      expect(screen.queryByTitle('doc2.pdf')).not.toBeInTheDocument();
+
+      // Shift+Ctrl+Tab should also be ignored in web mode
+      fireEvent.keyDown(window, { key: 'Tab', ctrlKey: true, shiftKey: true });
+      expect(screen.getByTitle('doc1.pdf')).toBeInTheDocument();
+    });
+
+    it('cycles forward and backward on macOS with Cmd+Shift+] and Cmd+Shift+[', () => {
+      const originalPlatform = navigator.platform;
+      try {
+        Object.defineProperty(navigator, 'platform', {
+          value: 'MacIntel',
+          configurable: true,
+        });
+
+        setupThreeDocs();
+
+        // Cmd+Shift+] forward: doc1 -> doc2
+        fireEvent.keyDown(window, { key: ']', metaKey: true, shiftKey: true });
+        expect(screen.getByTitle('doc2.pdf')).toBeInTheDocument();
+
+        // Cmd+Shift+] forward: doc2 -> doc3
+        fireEvent.keyDown(window, { key: ']', metaKey: true, shiftKey: true });
+        expect(screen.getByTitle('doc3.pdf')).toBeInTheDocument();
+
+        // Cmd+Shift+[ backward: doc3 -> doc2
+        fireEvent.keyDown(window, { key: '[', metaKey: true, shiftKey: true });
+        expect(screen.getByTitle('doc2.pdf')).toBeInTheDocument();
+
+        // Also test with '}' and '{' keys (real keyboard layout shift output)
+        fireEvent.keyDown(window, { key: '}', code: 'BracketRight', metaKey: true, shiftKey: true });
+        expect(screen.getByTitle('doc3.pdf')).toBeInTheDocument();
+
+        fireEvent.keyDown(window, { key: '{', code: 'BracketLeft', metaKey: true, shiftKey: true });
+        expect(screen.getByTitle('doc2.pdf')).toBeInTheDocument();
+      } finally {
+        Object.defineProperty(navigator, 'platform', {
+          value: originalPlatform,
+          configurable: true,
+        });
+      }
+    });
+
+    it('dismisses active tool drawer when cycling document tabs', () => {
+      setupThreeDocs();
+
+      // Open a tool drawer on doc1
+      const rotateBtn = screen.getAllByRole('button', { name: /旋转|Rotate/i })[0];
+      fireEvent.click(rotateBtn);
+      expect(screen.getByText(/应用更改|Apply Changes/i)).toBeInTheDocument();
+
+      // Cycle to next document
+      fireEvent.keyDown(window, { key: 'PageDown', code: 'PageDown', ctrlKey: true });
+      expect(screen.getByTitle('doc2.pdf')).toBeInTheDocument();
+
+      // Active tool drawer must be dismissed
+      expect(screen.queryByText(/应用更改|Apply Changes/i)).not.toBeInTheDocument();
+    });
+
+    it('safely performs no-op when single document is loaded', () => {
+      const file = createDummyPdfFile('single.pdf');
+      render(<PDFStudio locale="en" initialFile={file} />);
+
+      expect(screen.getByTitle('single.pdf')).toBeInTheDocument();
+
+      // Cycle forward and backward
+      fireEvent.keyDown(window, { key: 'PageDown', code: 'PageDown', ctrlKey: true });
+      expect(screen.getByTitle('single.pdf')).toBeInTheDocument();
+
+      fireEvent.keyDown(window, { key: 'PageUp', code: 'PageUp', ctrlKey: true });
+      expect(screen.getByTitle('single.pdf')).toBeInTheDocument();
+    });
+
+    it('safely performs no-op when no documents are loaded (empty workspace)', () => {
+      render(<PDFStudio locale="en" />);
+
+      // Cycle on empty workspace should not throw
+      expect(() => {
+        fireEvent.keyDown(window, { key: 'PageDown', code: 'PageDown', ctrlKey: true });
+        fireEvent.keyDown(window, { key: 'PageUp', code: 'PageUp', ctrlKey: true });
+      }).not.toThrow();
+    });
+
+    it('suppresses tab cycling when isApplying is true', async () => {
+      let resolveOperation: (blob: Blob) => void = () => {};
+      const pendingPromise = new Promise<Blob>((resolve) => {
+        resolveOperation = resolve;
+      });
+      vi.spyOn(studioProcessors, 'executeStudioOperation').mockImplementation(() => pendingPromise);
+
+      setupThreeDocs();
+
+      // Open tool and trigger apply
+      const rotateBtn = screen.getAllByRole('button', { name: /旋转|Rotate/i })[0];
+      fireEvent.click(rotateBtn);
+      const applyBtn = screen.getByText(/应用更改|Apply Changes/i);
+      fireEvent.click(applyBtn);
+
+      // Processing overlay should appear
+      await waitFor(() => {
+        expect(screen.getByText(/正在就地处理文档|Processing document in-place/i)).toBeInTheDocument();
+      });
+
+      // Try cycling forward while applying
+      fireEvent.keyDown(window, { key: 'PageDown', code: 'PageDown', ctrlKey: true });
+      // Should still be doc1.pdf!
+      expect(screen.getByTitle('doc1.pdf')).toBeInTheDocument();
+      expect(screen.queryByTitle('doc2.pdf')).not.toBeInTheDocument();
+
+      // Finish operation
+      resolveOperation(new Blob(['%PDF-1.4 done'], { type: 'application/pdf' }));
+      await waitFor(() => {
+        expect(screen.queryByText(/正在就地处理文档|Processing document in-place/i)).not.toBeInTheDocument();
+      });
+
+      // Now cycling works again
+      fireEvent.keyDown(window, { key: 'PageDown', code: 'PageDown', ctrlKey: true });
+      expect(screen.getByTitle('doc2.pdf')).toBeInTheDocument();
+    });
+
+    it('allows tab cycling even when an input element is focused', () => {
+      setupThreeDocs();
+
+      const searchInput = screen.getByTestId('studio-tool-search');
+      searchInput.focus();
+      expect(document.activeElement).toBe(searchInput);
+
+      // Cycle forward while focused inside input
+      fireEvent.keyDown(searchInput, { key: 'PageDown', code: 'PageDown', ctrlKey: true });
+      expect(screen.getByTitle('doc2.pdf')).toBeInTheDocument();
+    });
+  });
 });
 

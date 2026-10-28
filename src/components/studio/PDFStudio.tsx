@@ -125,6 +125,16 @@ export const PDFStudio: React.FC<PDFStudioProps> = ({
   const multiFileInputRef = useRef<HTMLInputElement>(null);
   const iframeRef = useRef<HTMLIFrameElement>(null);
 
+  // Synchronized state refs for stable event listeners
+  const documentsRef = useRef(documents);
+  documentsRef.current = documents;
+
+  const activeDocIdRef = useRef(activeDocId);
+  activeDocIdRef.current = activeDocId;
+
+  const isApplyingRef = useRef(isApplying);
+  isApplyingRef.current = isApplying;
+
   // Restore sidebar collapse state
   useEffect(() => {
     try {
@@ -216,6 +226,30 @@ export const PDFStudio: React.FC<PDFStudioProps> = ({
     setActiveDocId(docId);
     setActiveToolId(null);
   }, []);
+
+  // Sequentially cycle through open document tabs (wraps circularly, dismisses tool drawer)
+  const cycleDocumentTab = useCallback(
+    (direction: 'forward' | 'backward') => {
+      if (isApplyingRef.current) return;
+      const docs = documentsRef.current;
+      if (docs.length <= 1) return;
+
+      const currentId = activeDocIdRef.current;
+      const currentIndex = docs.findIndex((d) => d.id === currentId);
+      const validIndex = currentIndex === -1 ? 0 : currentIndex;
+
+      const nextIndex =
+        direction === 'forward'
+          ? (validIndex + 1) % docs.length
+          : (validIndex - 1 + docs.length) % docs.length;
+
+      const nextDoc = docs[nextIndex];
+      if (nextDoc) {
+        handleSelectDocument(nextDoc.id);
+      }
+    },
+    [handleSelectDocument]
+  );
 
   const handleCloseDocument = useCallback(
     (docId: string, e?: React.MouseEvent) => {
@@ -493,11 +527,51 @@ export const PDFStudio: React.FC<PDFStudioProps> = ({
     }
   }, [currentBlob, notify, isZh]);
 
-  // Keyboard shortcuts (Ctrl+Z, Ctrl+Y, Ctrl+S, Ctrl+P, Escape, /)
+  // Keyboard shortcuts (Ctrl+Z, Ctrl+Y, Ctrl+S, Ctrl+P, Escape, /, and tab cycling shortcuts)
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      const isMac = navigator.platform.toUpperCase().indexOf('MAC') >= 0;
+      const isMac =
+        typeof navigator !== 'undefined' &&
+        Boolean(
+          (navigator.platform && navigator.platform.toUpperCase().indexOf('MAC') >= 0) ||
+            (navigator.userAgent && navigator.userAgent.toUpperCase().indexOf('MAC') >= 0)
+        );
       const modKey = isMac ? e.metaKey : e.ctrlKey;
+
+      const isStandalone =
+        typeof window !== 'undefined' &&
+        Boolean(
+          window.matchMedia?.('(display-mode: standalone)').matches ||
+            (window.navigator as any)?.standalone
+        );
+      const isDesktopOrStandalone = isTauri() || isStandalone;
+
+      // Document Tab Cycling Shortcuts
+      const isForwardTabShortcut =
+        (isDesktopOrStandalone && e.ctrlKey && !e.shiftKey && !e.altKey && !e.metaKey && e.key === 'Tab') ||
+        (e.ctrlKey && !e.shiftKey && !e.altKey && !e.metaKey && (e.key === 'PageDown' || e.code === 'PageDown')) ||
+        (e.altKey && !e.ctrlKey && !e.metaKey && e.key === ']') ||
+        (isMac && e.metaKey && e.shiftKey && !e.ctrlKey && !e.altKey && (e.key === ']' || e.key === '}' || e.code === 'BracketRight'));
+
+      const isBackwardTabShortcut =
+        (isDesktopOrStandalone && e.ctrlKey && e.shiftKey && !e.altKey && !e.metaKey && e.key === 'Tab') ||
+        (e.ctrlKey && !e.shiftKey && !e.altKey && !e.metaKey && (e.key === 'PageUp' || e.code === 'PageUp')) ||
+        (e.altKey && !e.ctrlKey && !e.metaKey && e.key === '[') ||
+        (isMac && e.metaKey && e.shiftKey && !e.ctrlKey && !e.altKey && (e.key === '[' || e.key === '{' || e.code === 'BracketLeft'));
+
+      if (isForwardTabShortcut) {
+        e.preventDefault();
+        e.stopPropagation();
+        cycleDocumentTab('forward');
+        return;
+      }
+
+      if (isBackwardTabShortcut) {
+        e.preventDefault();
+        e.stopPropagation();
+        cycleDocumentTab('backward');
+        return;
+      }
 
       if (modKey && e.key.toLowerCase() === 'z') {
         e.preventDefault();
@@ -532,7 +606,7 @@ export const PDFStudio: React.FC<PDFStudioProps> = ({
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [handleUndo, handleRedo, handleExport, handlePrint]);
+  }, [handleUndo, handleRedo, handleExport, handlePrint, cycleDocumentTab]);
 
   return (
     <div className={`h-screen flex flex-col bg-[hsl(var(--color-background))] select-none ${className}`.trim()}>
