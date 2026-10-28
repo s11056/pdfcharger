@@ -983,6 +983,50 @@ describe('PDFStudio Component', () => {
         document.body.removeChild(textarea);
       }
     });
+
+    it('does not trigger search focus when / is pressed inside an input or textarea', () => {
+      setupThreeDocs();
+
+      const searchInput = screen.getByTestId('studio-tool-search');
+      const focusSpy = vi.spyOn(searchInput, 'focus');
+
+      // Create a dummy input simulating an input inside the viewer/iframe
+      const input = document.createElement('input');
+      document.body.appendChild(input);
+      input.focus();
+
+      try {
+        fireEvent.keyDown(input, { key: '/' });
+        expect(focusSpy).not.toHaveBeenCalled();
+
+        // Now test textarea
+        const textarea = document.createElement('textarea');
+        document.body.appendChild(textarea);
+        textarea.focus();
+
+        try {
+          fireEvent.keyDown(textarea, { key: '/' });
+          expect(focusSpy).not.toHaveBeenCalled();
+        } finally {
+          document.body.removeChild(textarea);
+        }
+      } finally {
+        document.body.removeChild(input);
+      }
+    });
+
+    it('focuses search input when / is pressed outside of input and textarea elements', () => {
+      setupThreeDocs();
+
+      const searchInput = screen.getByTestId('studio-tool-search');
+      const focusSpy = vi.spyOn(searchInput, 'focus');
+
+      // Focus on document body / window
+      document.body.focus();
+      fireEvent.keyDown(window, { key: '/' });
+
+      expect(focusSpy).toHaveBeenCalled();
+    });
   });
 });
 

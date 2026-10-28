@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useCallback, useRef, useEffect, useMemo } from 'react';
+import React, { useState, useCallback, useRef, useEffect, useLayoutEffect, useMemo } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import {
@@ -152,13 +152,16 @@ export const PDFStudio: React.FC<PDFStudioProps> = ({
 
   // Synchronized state refs for stable event listeners
   const documentsRef = useRef(documents);
-  documentsRef.current = documents;
-
   const activeDocIdRef = useRef(activeDocId);
-  activeDocIdRef.current = activeDocId;
-
   const isApplyingRef = useRef(isApplying);
-  isApplyingRef.current = isApplying;
+  const handleCloseDocumentRef = useRef<((docId: string, e?: React.MouseEvent) => void) | null>(null);
+
+  // Keep refs synchronized via layout effect (no mutations during render, synchronous before events)
+  useLayoutEffect(() => {
+    documentsRef.current = documents;
+    activeDocIdRef.current = activeDocId;
+    isApplyingRef.current = isApplying;
+  }, [documents, activeDocId, isApplying]);
 
   // Restore sidebar collapse state
   useEffect(() => {
@@ -227,6 +230,8 @@ export const PDFStudio: React.FC<PDFStudioProps> = ({
         redoStack: [],
       }));
 
+      documentsRef.current = [...documentsRef.current, ...newDocs];
+      activeDocIdRef.current = newDocs[0].id;
       setDocuments((prev) => [...prev, ...newDocs]);
       setActiveDocId(newDocs[0].id);
       setActiveToolId(null);
@@ -248,6 +253,7 @@ export const PDFStudio: React.FC<PDFStudioProps> = ({
   );
 
   const handleSelectDocument = useCallback((docId: string) => {
+    activeDocIdRef.current = docId;
     setActiveDocId(docId);
     setActiveToolId(null);
   }, []);
@@ -270,44 +276,54 @@ export const PDFStudio: React.FC<PDFStudioProps> = ({
 
       const nextDoc = docs[nextIndex];
       if (nextDoc) {
+        activeDocIdRef.current = nextDoc.id;
         handleSelectDocument(nextDoc.id);
       }
     },
     [handleSelectDocument]
   );
 
-  const handleCloseDocumentRef = useRef<((docId: string, e?: React.MouseEvent) => void) | null>(null);
-
   const handleCloseDocument = useCallback(
     (docId: string, e?: React.MouseEvent) => {
       if (e) e.stopPropagation();
       if (isApplyingRef.current) return;
-      setDocuments((prev) => {
-        const targetDoc = prev.find((d) => d.id === docId);
-        if (targetDoc && targetDoc.historyStack.length > 0) {
-          if (
-            !window.confirm(
-              isZh
-                ? `文档「${targetDoc.name}」包含未保存的修改，确定要关闭吗？`
-                : `Document "${targetDoc.name}" contains unsaved changes. Are you sure you want to close it?`
-            )
-          ) {
-            return prev;
-          }
+
+      const currentDocs = documentsRef.current;
+      const targetDoc = currentDocs.find((d) => d.id === docId);
+      if (!targetDoc) return;
+
+      if (targetDoc.historyStack.length > 0) {
+        if (
+          !window.confirm(
+            isZh
+              ? `文档「${targetDoc.name}」包含未保存的修改，确定要关闭吗？`
+              : `Document "${targetDoc.name}" contains unsaved changes. Are you sure you want to close it?`
+          )
+        ) {
+          return;
         }
-        const remaining = prev.filter((d) => d.id !== docId);
-        if (activeDocIdRef.current === docId) {
-          const closedIdx = prev.findIndex((d) => d.id === docId);
-          const next = remaining[Math.min(closedIdx, remaining.length - 1)] || null;
-          setActiveDocId(next ? next.id : null);
-          setActiveToolId(null);
-        }
-        return remaining;
-      });
+      }
+
+      const closedIdx = currentDocs.findIndex((d) => d.id === docId);
+      const remaining = currentDocs.filter((d) => d.id !== docId);
+
+      if (activeDocIdRef.current === docId) {
+        const next = remaining.length > 0 ? remaining[Math.min(closedIdx, remaining.length - 1)] : null;
+        const nextDocId = next ? next.id : null;
+        activeDocIdRef.current = nextDocId;
+        setActiveDocId(nextDocId);
+        setActiveToolId(null);
+      }
+
+      documentsRef.current = remaining;
+      setDocuments(remaining);
     },
     [isZh]
   );
-  handleCloseDocumentRef.current = handleCloseDocument;
+
+  useLayoutEffect(() => {
+    handleCloseDocumentRef.current = handleCloseDocument;
+  }, [handleCloseDocument]);
 
   // Handle Drag & Drop on Empty State and View Area
   const handleDrop = useCallback(
@@ -645,7 +661,11 @@ export const PDFStudio: React.FC<PDFStudioProps> = ({
         setIsExportMenuOpen(false);
       } else if (
         (modKey && e.key.toLowerCase() === 'k') ||
-        (e.key === '/' && document.activeElement?.tagName !== 'INPUT' && document.activeElement?.tagName !== 'TEXTAREA')
+        (e.key === '/' &&
+          document.activeElement?.tagName !== 'INPUT' &&
+          document.activeElement?.tagName !== 'TEXTAREA' &&
+          (e.target as HTMLElement)?.tagName !== 'INPUT' &&
+          (e.target as HTMLElement)?.tagName !== 'TEXTAREA')
       ) {
         e.preventDefault();
         const searchInput = document.querySelector<HTMLInputElement>('input[data-testid="studio-tool-search"]');
