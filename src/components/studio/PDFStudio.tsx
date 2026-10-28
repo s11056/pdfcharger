@@ -147,6 +147,8 @@ export const PDFStudio: React.FC<PDFStudioProps> = ({
   const fileInputRef = useRef<HTMLInputElement>(null);
   const multiFileInputRef = useRef<HTMLInputElement>(null);
   const iframeRef = useRef<HTMLIFrameElement>(null);
+  const iframeCleanupRef = useRef<(() => void) | null>(null);
+  const handleKeyDownRef = useRef<((e: KeyboardEvent) => void) | null>(null);
 
   // Synchronized state refs for stable event listeners
   const documentsRef = useRef(documents);
@@ -652,9 +654,51 @@ export const PDFStudio: React.FC<PDFStudioProps> = ({
       }
     };
 
+    handleKeyDownRef.current = handleKeyDown;
     window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+      if (handleKeyDownRef.current === handleKeyDown) {
+        handleKeyDownRef.current = null;
+      }
+    };
   }, [handleUndo, handleRedo, handleExport, handlePrint, cycleDocumentTab]);
+
+  // PDF Viewer Iframe Keystroke Relay Bridge
+  const attachIframeListener = useCallback(() => {
+    // Clean up any previously attached listener first
+    if (iframeCleanupRef.current) {
+      iframeCleanupRef.current();
+      iframeCleanupRef.current = null;
+    }
+
+    const iframeWin = iframeRef.current?.contentWindow;
+    if (!iframeWin) return;
+
+    const handleIframeKeyDown = (e: KeyboardEvent) => {
+      handleKeyDownRef.current?.(e);
+    };
+
+    try {
+      iframeWin.addEventListener('keydown', handleIframeKeyDown);
+      iframeCleanupRef.current = () => {
+        try {
+          iframeWin.removeEventListener('keydown', handleIframeKeyDown);
+        } catch {}
+      };
+    } catch {}
+  }, []);
+
+  // Sync iframe listener when active document or pdfUrl changes, and clean up on unmount
+  useEffect(() => {
+    attachIframeListener();
+    return () => {
+      if (iframeCleanupRef.current) {
+        iframeCleanupRef.current();
+        iframeCleanupRef.current = null;
+      }
+    };
+  }, [activeDocId, pdfUrl, attachIframeListener]);
 
   return (
     <div className={`h-screen flex flex-col bg-[hsl(var(--color-background))] select-none ${className}`.trim()}>
@@ -1008,6 +1052,7 @@ export const PDFStudio: React.FC<PDFStudioProps> = ({
             <main className="flex-1 relative bg-zinc-900/10 dark:bg-black/40 overflow-hidden">
               <iframe
                 ref={iframeRef}
+                onLoad={attachIframeListener}
                 src={withBasePath(`/pdfjs-viewer/viewer.html?file=${encodeURIComponent(pdfUrl)}`)}
                 className="w-full h-full border-0 absolute inset-0"
                 title={file.name}

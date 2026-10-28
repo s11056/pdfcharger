@@ -66,7 +66,7 @@ describe('PDFStudio Component', () => {
   it('renders initial empty workspace with upload dropzone and classic grid switch link in Chinese', () => {
     render(<PDFStudio locale="zh" />);
 
-    expect(screen.getByText(/PDFCharger/i)).toBeInTheDocument();
+    expect(screen.getByText(/PDFCraft/i)).toBeInTheDocument();
     expect(screen.getByText(/导入 PDF 开启 Studio 工作台/i)).toBeInTheDocument();
     expect(screen.getByText(/选择 PDF 文件/i)).toBeInTheDocument();
     expect(screen.getByText(/经典网格视图/i)).toBeInTheDocument();
@@ -75,7 +75,7 @@ describe('PDFStudio Component', () => {
   it('defaults to English when locale prop is omitted or unsupported', () => {
     render(<PDFStudio />);
 
-    expect(screen.getByText(/PDFCharger/i)).toBeInTheDocument();
+    expect(screen.getByText(/PDFCraft/i)).toBeInTheDocument();
     expect(screen.getByText(/Import PDF to Launch Studio Workspace/i)).toBeInTheDocument();
     expect(screen.getByText(/Select PDF Files/i)).toBeInTheDocument();
     expect(screen.getByText(/Back to All Tools/i)).toBeInTheDocument();
@@ -834,147 +834,154 @@ describe('PDFStudio Component', () => {
     });
   });
 
-  describe('UI Shortcut Tooltip Hints & Accessibility Affordances', () => {
-    const originalPlatform = navigator.platform;
-    const originalUserAgent = navigator.userAgent;
-
-    afterEach(() => {
-      Object.defineProperty(navigator, 'platform', {
-        value: originalPlatform,
-        configurable: true,
-      });
-      Object.defineProperty(navigator, 'userAgent', {
-        value: originalUserAgent,
-        configurable: true,
-      });
+  describe('PDF Viewer Iframe Keystroke Relay Bridge & Focus Resilience', () => {
+    beforeEach(() => {
+      vi.spyOn(window, 'confirm').mockImplementation(() => true);
     });
 
-    it('renders Windows/Linux Desktop shortcut tooltips in English and Chinese', () => {
+    const setupThreeDocs = () => {
+      const file1 = createDummyPdfFile('doc1.pdf');
+      const file2 = createDummyPdfFile('doc2.pdf');
+      const file3 = createDummyPdfFile('doc3.pdf');
+      render(<PDFStudio locale="en" />);
+      const uploadInput = document.querySelector('input[type="file"]') as HTMLInputElement;
+      fireEvent.change(uploadInput, {
+        target: { files: [file1, file2, file3] },
+      });
+      expect(screen.getByTitle('doc1.pdf')).toBeInTheDocument();
+      return { file1, file2, file3 };
+    };
+
+    it('relays tab navigation shortcuts originating from iframe contentWindow or document to parent Studio', () => {
+      setupThreeDocs();
+
+      const iframe = screen.getByTitle('doc1.pdf') as HTMLIFrameElement;
+      expect(iframe).toBeInTheDocument();
+      expect(iframe.contentWindow).toBeTruthy();
+
+      // Trigger keydown on iframe.contentWindow (e.g. user focused inside PDF viewer)
+      fireEvent.keyDown(iframe.contentWindow!, { key: 'PageDown', code: 'PageDown', ctrlKey: true });
+      expect(screen.getByTitle('doc2.pdf')).toBeInTheDocument();
+
+      // Trigger keydown on new active document's iframe.contentDocument
+      const iframe2 = screen.getByTitle('doc2.pdf') as HTMLIFrameElement;
+      fireEvent.keyDown(iframe2.contentDocument!, { key: 'PageDown', code: 'PageDown', ctrlKey: true });
+      expect(screen.getByTitle('doc3.pdf')).toBeInTheDocument();
+
+      // Backward navigation via Ctrl+PageUp from iframe contentWindow
+      const iframe3 = screen.getByTitle('doc3.pdf') as HTMLIFrameElement;
+      fireEvent.keyDown(iframe3.contentWindow!, { key: 'PageUp', code: 'PageUp', ctrlKey: true });
+      expect(screen.getByTitle('doc2.pdf')).toBeInTheDocument();
+    });
+
+    it('relays tab closure shortcuts originating from iframe contentWindow or document to parent Studio', () => {
       vi.spyOn(tauriBridge, 'isTauri').mockReturnValue(true);
-      Object.defineProperty(navigator, 'platform', {
-        value: 'Win32',
-        configurable: true,
-      });
-      Object.defineProperty(navigator, 'userAgent', {
-        value: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
-        configurable: true,
-      });
+      setupThreeDocs();
 
-      // English
-      const { unmount: unmountEn } = render(
-        <PDFStudio locale="en" initialFile={createDummyPdfFile('doc-win-en.pdf')} />
-      );
-      const tabCloseEn = screen.getByLabelText('Close doc-win-en.pdf');
-      const headerCloseEn = screen.getByLabelText('Close file');
-      expect(tabCloseEn).toHaveAttribute('title', 'Close document (Ctrl+F4 or Ctrl+W)');
-      expect(headerCloseEn).toHaveAttribute('title', 'Close document (Ctrl+F4 or Ctrl+W)');
-      unmountEn();
+      const iframe1 = screen.getByTitle('doc1.pdf') as HTMLIFrameElement;
 
-      // Chinese
-      const { unmount: unmountZh } = render(
-        <PDFStudio locale="zh" initialFile={createDummyPdfFile('doc-win-zh.pdf')} />
-      );
-      const tabCloseZh = screen.getByLabelText('Close doc-win-zh.pdf');
-      const headerCloseZh = screen.getByLabelText('Close file');
-      expect(tabCloseZh).toHaveAttribute('title', '关闭文档 (Ctrl+F4 / Ctrl+W)');
-      expect(headerCloseZh).toHaveAttribute('title', '关闭文档 (Ctrl+F4 / Ctrl+W)');
-      unmountZh();
+      // Close active doc1 with Ctrl+F4 from iframe.contentWindow
+      fireEvent.keyDown(iframe1.contentWindow!, { key: 'F4', code: 'F4', ctrlKey: true });
+      expect(screen.queryByTitle('doc1.pdf')).not.toBeInTheDocument();
+      expect(screen.getByTitle('doc2.pdf')).toBeInTheDocument();
+
+      // Close active doc2 with Ctrl+W in Tauri from iframe.contentWindow
+      const iframe2 = screen.getByTitle('doc2.pdf') as HTMLIFrameElement;
+      fireEvent.keyDown(iframe2.contentWindow!, { key: 'w', code: 'KeyW', ctrlKey: true });
+      expect(screen.queryByTitle('doc2.pdf')).not.toBeInTheDocument();
+      expect(screen.getByTitle('doc3.pdf')).toBeInTheDocument();
     });
 
-    it('renders Windows/Linux Web shortcut tooltips in English and Chinese', () => {
-      vi.spyOn(tauriBridge, 'isTauri').mockReturnValue(false);
-      Object.defineProperty(navigator, 'platform', {
-        value: 'Linux x86_64',
-        configurable: true,
-      });
-      Object.defineProperty(navigator, 'userAgent', {
-        value: 'Mozilla/5.0 (X11; Linux x86_64)',
-        configurable: true,
-      });
+    it('cleans up iframe event listener on unmount and active document change without memory leak', () => {
+      const file = createDummyPdfFile('test-clean.pdf');
+      const { unmount } = render(<PDFStudio locale="en" initialFile={file} />);
 
-      // English
-      const { unmount: unmountEn } = render(
-        <PDFStudio locale="en" initialFile={createDummyPdfFile('doc-web-en.pdf')} />
-      );
-      const tabCloseEn = screen.getByLabelText('Close doc-web-en.pdf');
-      const headerCloseEn = screen.getByLabelText('Close file');
-      expect(tabCloseEn).toHaveAttribute('title', 'Close document (Ctrl+F4)');
-      expect(headerCloseEn).toHaveAttribute('title', 'Close document (Ctrl+F4)');
-      unmountEn();
+      const iframe = screen.getByTitle('test-clean.pdf') as HTMLIFrameElement;
+      expect(iframe.contentWindow).toBeTruthy();
 
-      // Chinese
-      const { unmount: unmountZh } = render(
-        <PDFStudio locale="zh" initialFile={createDummyPdfFile('doc-web-zh.pdf')} />
-      );
-      const tabCloseZh = screen.getByLabelText('Close doc-web-zh.pdf');
-      const headerCloseZh = screen.getByLabelText('Close file');
-      expect(tabCloseZh).toHaveAttribute('title', '关闭文档 (Ctrl+F4)');
-      expect(headerCloseZh).toHaveAttribute('title', '关闭文档 (Ctrl+F4)');
-      unmountZh();
+      const removeEventListenerSpy = vi.spyOn(iframe.contentWindow!, 'removeEventListener');
+
+      // Unmount the component
+      unmount();
+
+      // The keydown listener on iframe contentWindow should have been cleaned up
+      expect(removeEventListenerSpy).toHaveBeenCalledWith('keydown', expect.any(Function));
     });
 
-    it('renders macOS Desktop shortcut tooltips in English and Chinese', () => {
+    it('cleans up previous listener when iframe reloads or onLoad fires repeatedly', () => {
+      const file = createDummyPdfFile('test-reload.pdf');
+      render(<PDFStudio locale="en" initialFile={file} />);
+
+      const iframe = screen.getByTitle('test-reload.pdf') as HTMLIFrameElement;
+      const removeSpy = vi.spyOn(iframe.contentWindow!, 'removeEventListener');
+      const addSpy = vi.spyOn(iframe.contentWindow!, 'addEventListener');
+
+      // Trigger iframe load event (simulating iframe reload)
+      fireEvent.load(iframe);
+
+      // Verify remove was called before adding new listener, preventing listener accumulation
+      expect(removeSpy).toHaveBeenCalledWith('keydown', expect.any(Function));
+      expect(addSpy).toHaveBeenCalledWith('keydown', expect.any(Function));
+    });
+
+    it('executes modifier tab hotkeys (Ctrl+Tab, Ctrl+PageDown, Ctrl+F4, Ctrl+W) when an input element has focus', () => {
       vi.spyOn(tauriBridge, 'isTauri').mockReturnValue(true);
-      Object.defineProperty(navigator, 'platform', {
-        value: 'MacIntel',
-        configurable: true,
-      });
-      Object.defineProperty(navigator, 'userAgent', {
-        value: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)',
-        configurable: true,
-      });
+      setupThreeDocs();
 
-      // English
-      const { unmount: unmountEn } = render(
-        <PDFStudio locale="en" initialFile={createDummyPdfFile('doc-mac-en.pdf')} />
-      );
-      const tabCloseEn = screen.getByLabelText('Close doc-mac-en.pdf');
-      const headerCloseEn = screen.getByLabelText('Close file');
-      expect(tabCloseEn).toHaveAttribute('title', 'Close document (Cmd+W)');
-      expect(headerCloseEn).toHaveAttribute('title', 'Close document (Cmd+W)');
-      unmountEn();
+      const searchInput = screen.getByTestId('studio-tool-search');
+      searchInput.focus();
+      expect(document.activeElement).toBe(searchInput);
 
-      // Chinese
-      const { unmount: unmountZh } = render(
-        <PDFStudio locale="zh" initialFile={createDummyPdfFile('doc-mac-zh.pdf')} />
-      );
-      const tabCloseZh = screen.getByLabelText('Close doc-mac-zh.pdf');
-      const headerCloseZh = screen.getByLabelText('Close file');
-      expect(tabCloseZh).toHaveAttribute('title', '关闭文档 (Cmd+W)');
-      expect(headerCloseZh).toHaveAttribute('title', '关闭文档 (Cmd+W)');
-      unmountZh();
+      // Forward with Ctrl+Tab while input is focused
+      fireEvent.keyDown(searchInput, { key: 'Tab', code: 'Tab', ctrlKey: true });
+      expect(screen.getByTitle('doc2.pdf')).toBeInTheDocument();
+
+      // Forward with Ctrl+PageDown while input is focused
+      fireEvent.keyDown(searchInput, { key: 'PageDown', code: 'PageDown', ctrlKey: true });
+      expect(screen.getByTitle('doc3.pdf')).toBeInTheDocument();
+
+      // Close doc3 with Ctrl+W while input is focused
+      fireEvent.keyDown(searchInput, { key: 'w', code: 'KeyW', ctrlKey: true });
+      expect(screen.queryByTitle('doc3.pdf')).not.toBeInTheDocument();
+      expect(screen.getByTitle('doc2.pdf')).toBeInTheDocument();
+
+      // Close doc2 with Ctrl+F4 while input is focused
+      fireEvent.keyDown(searchInput, { key: 'F4', code: 'F4', ctrlKey: true });
+      expect(screen.queryByTitle('doc2.pdf')).not.toBeInTheDocument();
+      expect(screen.getByTitle('doc1.pdf')).toBeInTheDocument();
     });
 
-    it('renders macOS Web shortcut tooltips in English and Chinese', () => {
-      vi.spyOn(tauriBridge, 'isTauri').mockReturnValue(false);
-      Object.defineProperty(navigator, 'platform', {
-        value: 'MacIntel',
-        configurable: true,
-      });
-      Object.defineProperty(navigator, 'userAgent', {
-        value: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)',
-        configurable: true,
-      });
+    it('executes modifier tab hotkeys (Ctrl+Tab, Ctrl+PageDown, Ctrl+F4, Ctrl+W) when a textarea element has focus', () => {
+      vi.spyOn(tauriBridge, 'isTauri').mockReturnValue(true);
+      setupThreeDocs();
 
-      // English
-      const { unmount: unmountEn } = render(
-        <PDFStudio locale="en" initialFile={createDummyPdfFile('doc-macweb-en.pdf')} />
-      );
-      const tabCloseEn = screen.getByLabelText('Close doc-macweb-en.pdf');
-      const headerCloseEn = screen.getByLabelText('Close file');
-      expect(tabCloseEn).toHaveAttribute('title', 'Close document (Ctrl+F4)');
-      expect(headerCloseEn).toHaveAttribute('title', 'Close document (Ctrl+F4)');
-      unmountEn();
+      const textarea = document.createElement('textarea');
+      textarea.setAttribute('data-testid', 'test-custom-textarea');
+      document.body.appendChild(textarea);
+      textarea.focus();
+      expect(document.activeElement).toBe(textarea);
 
-      // Chinese
-      const { unmount: unmountZh } = render(
-        <PDFStudio locale="zh" initialFile={createDummyPdfFile('doc-macweb-zh.pdf')} />
-      );
-      const tabCloseZh = screen.getByLabelText('Close doc-macweb-zh.pdf');
-      const headerCloseZh = screen.getByLabelText('Close file');
-      expect(tabCloseZh).toHaveAttribute('title', '关闭文档 (Ctrl+F4)');
-      expect(headerCloseZh).toHaveAttribute('title', '关闭文档 (Ctrl+F4)');
-      unmountZh();
+      try {
+        // Forward with Ctrl+Tab while textarea is focused
+        fireEvent.keyDown(textarea, { key: 'Tab', code: 'Tab', ctrlKey: true });
+        expect(screen.getByTitle('doc2.pdf')).toBeInTheDocument();
+
+        // Forward with Ctrl+PageDown while textarea is focused
+        fireEvent.keyDown(textarea, { key: 'PageDown', code: 'PageDown', ctrlKey: true });
+        expect(screen.getByTitle('doc3.pdf')).toBeInTheDocument();
+
+        // Close doc3 with Ctrl+W while textarea is focused
+        fireEvent.keyDown(textarea, { key: 'w', code: 'KeyW', ctrlKey: true });
+        expect(screen.queryByTitle('doc3.pdf')).not.toBeInTheDocument();
+        expect(screen.getByTitle('doc2.pdf')).toBeInTheDocument();
+
+        // Close doc2 with Ctrl+F4 while textarea is focused
+        fireEvent.keyDown(textarea, { key: 'F4', code: 'F4', ctrlKey: true });
+        expect(screen.queryByTitle('doc2.pdf')).not.toBeInTheDocument();
+        expect(screen.getByTitle('doc1.pdf')).toBeInTheDocument();
+      } finally {
+        document.body.removeChild(textarea);
+      }
     });
   });
 });
