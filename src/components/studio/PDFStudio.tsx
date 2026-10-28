@@ -251,9 +251,12 @@ export const PDFStudio: React.FC<PDFStudioProps> = ({
     [handleSelectDocument]
   );
 
+  const handleCloseDocumentRef = useRef<((docId: string, e?: React.MouseEvent) => void) | null>(null);
+
   const handleCloseDocument = useCallback(
     (docId: string, e?: React.MouseEvent) => {
       if (e) e.stopPropagation();
+      if (isApplyingRef.current) return;
       setDocuments((prev) => {
         const targetDoc = prev.find((d) => d.id === docId);
         if (targetDoc && targetDoc.historyStack.length > 0) {
@@ -268,16 +271,18 @@ export const PDFStudio: React.FC<PDFStudioProps> = ({
           }
         }
         const remaining = prev.filter((d) => d.id !== docId);
-        if (activeDocId === docId) {
+        if (activeDocIdRef.current === docId) {
           const closedIdx = prev.findIndex((d) => d.id === docId);
           const next = remaining[Math.min(closedIdx, remaining.length - 1)] || null;
           setActiveDocId(next ? next.id : null);
+          setActiveToolId(null);
         }
         return remaining;
       });
     },
-    [activeDocId]
+    [isZh]
   );
+  handleCloseDocumentRef.current = handleCloseDocument;
 
   // Handle Drag & Drop on Empty State and View Area
   const handleDrop = useCallback(
@@ -559,6 +564,20 @@ export const PDFStudio: React.FC<PDFStudioProps> = ({
         (e.altKey && !e.ctrlKey && !e.metaKey && e.key === '[') ||
         (isMac && e.metaKey && e.shiftKey && !e.ctrlKey && !e.altKey && (e.key === '[' || e.key === '{' || e.code === 'BracketLeft'));
 
+      // Document Tab Closing Shortcuts
+      const isF4Close =
+        (e.ctrlKey || (isMac && e.metaKey)) && !e.altKey && !e.shiftKey && (e.key === 'F4' || e.code === 'F4');
+
+      const isTauriWClose =
+        isTauri() &&
+        modKey &&
+        !e.altKey &&
+        !e.shiftKey &&
+        !(isMac ? e.ctrlKey : e.metaKey) &&
+        (e.key.toLowerCase() === 'w' || e.code === 'KeyW');
+
+      const isTabCloseShortcut = isF4Close || isTauriWClose;
+
       if (isForwardTabShortcut) {
         e.preventDefault();
         e.stopPropagation();
@@ -570,6 +589,17 @@ export const PDFStudio: React.FC<PDFStudioProps> = ({
         e.preventDefault();
         e.stopPropagation();
         cycleDocumentTab('backward');
+        return;
+      }
+
+      if (isTabCloseShortcut) {
+        e.preventDefault();
+        e.stopPropagation();
+        if (isApplyingRef.current) return;
+        const currentDocId = activeDocIdRef.current;
+        if (currentDocId && handleCloseDocumentRef.current) {
+          handleCloseDocumentRef.current(currentDocId);
+        }
         return;
       }
 

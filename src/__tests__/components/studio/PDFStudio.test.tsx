@@ -612,5 +612,227 @@ describe('PDFStudio Component', () => {
       expect(screen.getByTitle('doc2.pdf')).toBeInTheDocument();
     });
   });
+
+  describe('Active Document Tab Closing Shortcuts', () => {
+    beforeEach(() => {
+      vi.spyOn(window, 'confirm').mockImplementation(() => true);
+    });
+
+    const setupThreeDocs = () => {
+      const file1 = createDummyPdfFile('doc1.pdf');
+      const file2 = createDummyPdfFile('doc2.pdf');
+      const file3 = createDummyPdfFile('doc3.pdf');
+      render(<PDFStudio locale="en" />);
+      const uploadInput = document.querySelector('input[type="file"]') as HTMLInputElement;
+      fireEvent.change(uploadInput, {
+        target: { files: [file1, file2, file3] },
+      });
+      expect(screen.getByTitle('doc1.pdf')).toBeInTheDocument();
+      return { file1, file2, file3 };
+    };
+
+    it('closes active document tab with Ctrl+F4 in web mode', () => {
+      vi.spyOn(tauriBridge, 'isTauri').mockReturnValue(false);
+      setupThreeDocs();
+
+      // Ctrl+F4 closes active doc1.pdf
+      fireEvent.keyDown(window, { key: 'F4', code: 'F4', ctrlKey: true });
+      expect(screen.queryByTitle('doc1.pdf')).not.toBeInTheDocument();
+      expect(screen.getByTitle('doc2.pdf')).toBeInTheDocument();
+    });
+
+    it('closes active document tab with Ctrl+W in Tauri desktop environment on Windows/Linux', () => {
+      vi.spyOn(tauriBridge, 'isTauri').mockReturnValue(true);
+      setupThreeDocs();
+
+      // Ctrl+W closes active doc1.pdf
+      fireEvent.keyDown(window, { key: 'w', code: 'KeyW', ctrlKey: true });
+      expect(screen.queryByTitle('doc1.pdf')).not.toBeInTheDocument();
+      expect(screen.getByTitle('doc2.pdf')).toBeInTheDocument();
+
+      // Ctrl+W again closes active doc2.pdf
+      fireEvent.keyDown(window, { key: 'w', code: 'KeyW', ctrlKey: true });
+      expect(screen.queryByTitle('doc2.pdf')).not.toBeInTheDocument();
+      expect(screen.getByTitle('doc3.pdf')).toBeInTheDocument();
+    });
+
+    it('does not close active document tab with Ctrl+W in web browser mode (prevents native browser hijack)', () => {
+      vi.spyOn(tauriBridge, 'isTauri').mockReturnValue(false);
+      setupThreeDocs();
+
+      // Ctrl+W in web should be ignored
+      fireEvent.keyDown(window, { key: 'w', code: 'KeyW', ctrlKey: true });
+      expect(screen.getByTitle('doc1.pdf')).toBeInTheDocument();
+      expect(screen.getByText('doc2.pdf')).toBeInTheDocument();
+      expect(screen.getByText('doc3.pdf')).toBeInTheDocument();
+    });
+
+    it('closes active document tab with Cmd+W in Tauri desktop environment on macOS', () => {
+      const originalPlatform = navigator.platform;
+      try {
+        Object.defineProperty(navigator, 'platform', {
+          value: 'MacIntel',
+          configurable: true,
+        });
+        vi.spyOn(tauriBridge, 'isTauri').mockReturnValue(true);
+
+        setupThreeDocs();
+
+        // Cmd+W closes active doc1.pdf on macOS desktop
+        fireEvent.keyDown(window, { key: 'w', code: 'KeyW', metaKey: true });
+        expect(screen.queryByTitle('doc1.pdf')).not.toBeInTheDocument();
+        expect(screen.getByTitle('doc2.pdf')).toBeInTheDocument();
+      } finally {
+        Object.defineProperty(navigator, 'platform', {
+          value: originalPlatform,
+          configurable: true,
+        });
+      }
+    });
+
+    it('does not close active tab with Cmd+W in web mode on macOS', () => {
+      const originalPlatform = navigator.platform;
+      try {
+        Object.defineProperty(navigator, 'platform', {
+          value: 'MacIntel',
+          configurable: true,
+        });
+        vi.spyOn(tauriBridge, 'isTauri').mockReturnValue(false);
+
+        setupThreeDocs();
+
+        // Cmd+W in macOS web should not be intercepted
+        fireEvent.keyDown(window, { key: 'w', code: 'KeyW', metaKey: true });
+        expect(screen.getByTitle('doc1.pdf')).toBeInTheDocument();
+      } finally {
+        Object.defineProperty(navigator, 'platform', {
+          value: originalPlatform,
+          configurable: true,
+        });
+      }
+    });
+
+    it('determines next active tab according to Math.min(closedIndex, remainingCount - 1)', () => {
+      setupThreeDocs();
+
+      // Cycle to middle tab: doc2.pdf (closedIndex = 1)
+      fireEvent.keyDown(window, { key: 'PageDown', code: 'PageDown', ctrlKey: true });
+      expect(screen.getByTitle('doc2.pdf')).toBeInTheDocument();
+
+      // Close middle tab: remainingCount is 2, nextIndex = Math.min(1, 1) = 1 -> doc3.pdf
+      fireEvent.keyDown(window, { key: 'F4', code: 'F4', ctrlKey: true });
+      expect(screen.queryByTitle('doc2.pdf')).not.toBeInTheDocument();
+      expect(screen.getByTitle('doc3.pdf')).toBeInTheDocument();
+
+      // Now active is doc3.pdf which is at index 1 in [doc1, doc3]
+      // Close last tab: remainingCount is 1, nextIndex = Math.min(1, 0) = 0 -> doc1.pdf
+      fireEvent.keyDown(window, { key: 'F4', code: 'F4', ctrlKey: true });
+      expect(screen.queryByTitle('doc3.pdf')).not.toBeInTheDocument();
+      expect(screen.getByTitle('doc1.pdf')).toBeInTheDocument();
+    });
+
+    it('transitions to empty dropzone when the sole remaining document is closed', () => {
+      const file = createDummyPdfFile('only.pdf');
+      render(<PDFStudio locale="en" initialFile={file} />);
+
+      expect(screen.getByTitle('only.pdf')).toBeInTheDocument();
+
+      // Close sole document with Ctrl+F4
+      fireEvent.keyDown(window, { key: 'F4', code: 'F4', ctrlKey: true });
+
+      // Document removed and empty dropzone visible
+      expect(screen.queryByTitle('only.pdf')).not.toBeInTheDocument();
+      expect(screen.getByText('Import PDF to Launch Studio Workspace')).toBeInTheDocument();
+    });
+
+    it('prompts confirmation when closing modified document and respects cancellation', async () => {
+      const confirmSpy = vi.spyOn(window, 'confirm');
+      setupThreeDocs();
+
+      // Modify doc1 by applying a tool operation
+      const rotateBtn = screen.getAllByRole('button', { name: /Rotate/i })[0];
+      fireEvent.click(rotateBtn);
+      const applyBtn = screen.getByText('Apply Changes');
+      fireEvent.click(applyBtn);
+
+      await waitFor(() => {
+        expect(studioProcessors.executeStudioOperation).toHaveBeenCalled();
+      });
+
+      // 1. User cancels prompt
+      confirmSpy.mockReturnValueOnce(false);
+      fireEvent.keyDown(window, { key: 'F4', code: 'F4', ctrlKey: true });
+
+      expect(confirmSpy).toHaveBeenCalled();
+      // doc1.pdf should NOT be closed
+      expect(screen.getByTitle('doc1.pdf')).toBeInTheDocument();
+
+      // 2. User confirms prompt
+      confirmSpy.mockReturnValueOnce(true);
+      fireEvent.keyDown(window, { key: 'F4', code: 'F4', ctrlKey: true });
+
+      // doc1.pdf should be closed and doc2.pdf active
+      expect(screen.queryByTitle('doc1.pdf')).not.toBeInTheDocument();
+      expect(screen.getByTitle('doc2.pdf')).toBeInTheDocument();
+    });
+
+    it('suppresses tab closure when isApplying is true', async () => {
+      let resolveOperation: (blob: Blob) => void = () => {};
+      const pendingPromise = new Promise<Blob>((resolve) => {
+        resolveOperation = resolve;
+      });
+      vi.spyOn(studioProcessors, 'executeStudioOperation').mockImplementation(() => pendingPromise);
+
+      setupThreeDocs();
+
+      // Start applying operation
+      const rotateBtn = screen.getAllByRole('button', { name: /Rotate/i })[0];
+      fireEvent.click(rotateBtn);
+      const applyBtn = screen.getByText('Apply Changes');
+      fireEvent.click(applyBtn);
+
+      await waitFor(() => {
+        expect(screen.getByText('Processing document in-place...')).toBeInTheDocument();
+      });
+
+      // Try closing active tab while processing
+      fireEvent.keyDown(window, { key: 'F4', code: 'F4', ctrlKey: true });
+      expect(screen.getByTitle('doc1.pdf')).toBeInTheDocument();
+
+      // Finish operation
+      resolveOperation(new Blob(['%PDF-1.4 done'], { type: 'application/pdf' }));
+      await waitFor(() => {
+        expect(screen.queryByText('Processing document in-place...')).not.toBeInTheDocument();
+      });
+
+      // Tab closure now works
+      fireEvent.keyDown(window, { key: 'F4', code: 'F4', ctrlKey: true });
+      expect(screen.queryByTitle('doc1.pdf')).not.toBeInTheDocument();
+      expect(screen.getByTitle('doc2.pdf')).toBeInTheDocument();
+    });
+
+    it('allows tab closure when an input element is focused', () => {
+      setupThreeDocs();
+
+      const searchInput = screen.getByTestId('studio-tool-search');
+      searchInput.focus();
+      expect(document.activeElement).toBe(searchInput);
+
+      // Close while focused in input
+      fireEvent.keyDown(searchInput, { key: 'F4', code: 'F4', ctrlKey: true });
+      expect(screen.queryByTitle('doc1.pdf')).not.toBeInTheDocument();
+      expect(screen.getByTitle('doc2.pdf')).toBeInTheDocument();
+    });
+
+    it('safely performs no-op when no documents are loaded', () => {
+      render(<PDFStudio locale="en" />);
+
+      expect(() => {
+        fireEvent.keyDown(window, { key: 'F4', code: 'F4', ctrlKey: true });
+        fireEvent.keyDown(window, { key: 'w', code: 'KeyW', ctrlKey: true });
+      }).not.toThrow();
+    });
+  });
 });
+
 
