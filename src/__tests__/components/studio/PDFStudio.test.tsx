@@ -833,6 +833,151 @@ describe('PDFStudio Component', () => {
       }).not.toThrow();
     });
   });
+
+  describe('UI Shortcut Tooltip Hints & Accessibility Affordances', () => {
+    const originalPlatform = navigator.platform;
+    const originalUserAgent = navigator.userAgent;
+
+    afterEach(() => {
+      Object.defineProperty(navigator, 'platform', {
+        value: originalPlatform,
+        configurable: true,
+      });
+      Object.defineProperty(navigator, 'userAgent', {
+        value: originalUserAgent,
+        configurable: true,
+      });
+    });
+
+    it('renders Windows/Linux Desktop shortcut tooltips in English and Chinese', () => {
+      vi.spyOn(tauriBridge, 'isTauri').mockReturnValue(true);
+      Object.defineProperty(navigator, 'platform', {
+        value: 'Win32',
+        configurable: true,
+      });
+      Object.defineProperty(navigator, 'userAgent', {
+        value: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
+        configurable: true,
+      });
+
+      // English
+      const { unmount: unmountEn } = render(
+        <PDFStudio locale="en" initialFile={createDummyPdfFile('doc-win-en.pdf')} />
+      );
+      const tabCloseEn = screen.getByLabelText('Close doc-win-en.pdf');
+      const headerCloseEn = screen.getByLabelText('Close file');
+      expect(tabCloseEn).toHaveAttribute('title', 'Close document (Ctrl+F4 or Ctrl+W)');
+      expect(headerCloseEn).toHaveAttribute('title', 'Close document (Ctrl+F4 or Ctrl+W)');
+      unmountEn();
+
+      // Chinese
+      const { unmount: unmountZh } = render(
+        <PDFStudio locale="zh" initialFile={createDummyPdfFile('doc-win-zh.pdf')} />
+      );
+      const tabCloseZh = screen.getByLabelText('Close doc-win-zh.pdf');
+      const headerCloseZh = screen.getByLabelText('Close file');
+      expect(tabCloseZh).toHaveAttribute('title', '关闭文档 (Ctrl+F4 / Ctrl+W)');
+      expect(headerCloseZh).toHaveAttribute('title', '关闭文档 (Ctrl+F4 / Ctrl+W)');
+      unmountZh();
+    });
+
+    it('renders Windows/Linux Web shortcut tooltips in English and Chinese', () => {
+      vi.spyOn(tauriBridge, 'isTauri').mockReturnValue(false);
+      Object.defineProperty(navigator, 'platform', {
+        value: 'Linux x86_64',
+        configurable: true,
+      });
+      Object.defineProperty(navigator, 'userAgent', {
+        value: 'Mozilla/5.0 (X11; Linux x86_64)',
+        configurable: true,
+      });
+
+      // English
+      const { unmount: unmountEn } = render(
+        <PDFStudio locale="en" initialFile={createDummyPdfFile('doc-web-en.pdf')} />
+      );
+      const tabCloseEn = screen.getByLabelText('Close doc-web-en.pdf');
+      const headerCloseEn = screen.getByLabelText('Close file');
+      expect(tabCloseEn).toHaveAttribute('title', 'Close document (Ctrl+F4)');
+      expect(headerCloseEn).toHaveAttribute('title', 'Close document (Ctrl+F4)');
+      unmountEn();
+
+      // Chinese
+      const { unmount: unmountZh } = render(
+        <PDFStudio locale="zh" initialFile={createDummyPdfFile('doc-web-zh.pdf')} />
+      );
+      const tabCloseZh = screen.getByLabelText('Close doc-web-zh.pdf');
+      const headerCloseZh = screen.getByLabelText('Close file');
+      expect(tabCloseZh).toHaveAttribute('title', '关闭文档 (Ctrl+F4)');
+      expect(headerCloseZh).toHaveAttribute('title', '关闭文档 (Ctrl+F4)');
+      unmountZh();
+    });
+
+    it('renders macOS Desktop shortcut tooltips in English and Chinese', () => {
+      vi.spyOn(tauriBridge, 'isTauri').mockReturnValue(true);
+      Object.defineProperty(navigator, 'platform', {
+        value: 'MacIntel',
+        configurable: true,
+      });
+      Object.defineProperty(navigator, 'userAgent', {
+        value: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)',
+        configurable: true,
+      });
+
+      // English
+      const { unmount: unmountEn } = render(
+        <PDFStudio locale="en" initialFile={createDummyPdfFile('doc-mac-en.pdf')} />
+      );
+      const tabCloseEn = screen.getByLabelText('Close doc-mac-en.pdf');
+      const headerCloseEn = screen.getByLabelText('Close file');
+      expect(tabCloseEn).toHaveAttribute('title', 'Close document (Cmd+W)');
+      expect(headerCloseEn).toHaveAttribute('title', 'Close document (Cmd+W)');
+      unmountEn();
+
+      // Chinese
+      const { unmount: unmountZh } = render(
+        <PDFStudio locale="zh" initialFile={createDummyPdfFile('doc-mac-zh.pdf')} />
+      );
+      const tabCloseZh = screen.getByLabelText('Close doc-mac-zh.pdf');
+      const headerCloseZh = screen.getByLabelText('Close file');
+      expect(tabCloseZh).toHaveAttribute('title', '关闭文档 (Cmd+W)');
+      expect(headerCloseZh).toHaveAttribute('title', '关闭文档 (Cmd+W)');
+      unmountZh();
+    });
+
+    it('renders macOS Web shortcut tooltips in English and Chinese', () => {
+      vi.spyOn(tauriBridge, 'isTauri').mockReturnValue(false);
+      Object.defineProperty(navigator, 'platform', {
+        value: 'MacIntel',
+        configurable: true,
+      });
+      Object.defineProperty(navigator, 'userAgent', {
+        value: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)',
+        configurable: true,
+      });
+
+      // English
+      const { unmount: unmountEn } = render(
+        <PDFStudio locale="en" initialFile={createDummyPdfFile('doc-macweb-en.pdf')} />
+      );
+      const tabCloseEn = screen.getByLabelText('Close doc-macweb-en.pdf');
+      const headerCloseEn = screen.getByLabelText('Close file');
+      expect(tabCloseEn).toHaveAttribute('title', 'Close document (Ctrl+F4)');
+      expect(headerCloseEn).toHaveAttribute('title', 'Close document (Ctrl+F4)');
+      unmountEn();
+
+      // Chinese
+      const { unmount: unmountZh } = render(
+        <PDFStudio locale="zh" initialFile={createDummyPdfFile('doc-macweb-zh.pdf')} />
+      );
+      const tabCloseZh = screen.getByLabelText('Close doc-macweb-zh.pdf');
+      const headerCloseZh = screen.getByLabelText('Close file');
+      expect(tabCloseZh).toHaveAttribute('title', '关闭文档 (Ctrl+F4)');
+      expect(headerCloseZh).toHaveAttribute('title', '关闭文档 (Ctrl+F4)');
+      unmountZh();
+    });
+  });
 });
+
 
 

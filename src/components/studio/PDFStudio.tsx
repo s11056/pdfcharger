@@ -63,6 +63,16 @@ export interface StudioDocument {
   redoStack: HistoryItem[];
 }
 
+function checkIsMac(): boolean {
+  return (
+    typeof navigator !== 'undefined' &&
+    Boolean(
+      (navigator.platform && navigator.platform.toUpperCase().indexOf('MAC') >= 0) ||
+        (navigator.userAgent && navigator.userAgent.toUpperCase().indexOf('MAC') >= 0)
+    )
+  );
+}
+
 export const PDFStudio: React.FC<PDFStudioProps> = ({
   locale = 'en',
   className = '',
@@ -71,6 +81,19 @@ export const PDFStudio: React.FC<PDFStudioProps> = ({
   const router = useRouter();
   const validLocale = (locale as string) || 'en';
   const isZh = validLocale.toLowerCase().startsWith('zh');
+  const isMac = checkIsMac();
+
+  const closeDocTooltip = isTauri()
+    ? isMac
+      ? isZh
+        ? '关闭文档 (Cmd+W)'
+        : 'Close document (Cmd+W)'
+      : isZh
+        ? '关闭文档 (Ctrl+F4 / Ctrl+W)'
+        : 'Close document (Ctrl+F4 or Ctrl+W)'
+    : isZh
+      ? '关闭文档 (Ctrl+F4)'
+      : 'Close document (Ctrl+F4)';
 
   // Multi-document states
   const [documents, setDocuments] = useState<StudioDocument[]>(() => {
@@ -535,12 +558,7 @@ export const PDFStudio: React.FC<PDFStudioProps> = ({
   // Keyboard shortcuts (Ctrl+Z, Ctrl+Y, Ctrl+S, Ctrl+P, Escape, /, and tab cycling shortcuts)
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      const isMac =
-        typeof navigator !== 'undefined' &&
-        Boolean(
-          (navigator.platform && navigator.platform.toUpperCase().indexOf('MAC') >= 0) ||
-            (navigator.userAgent && navigator.userAgent.toUpperCase().indexOf('MAC') >= 0)
-        );
+      const isMac = checkIsMac();
       const modKey = isMac ? e.metaKey : e.ctrlKey;
 
       const isStandalone =
@@ -825,7 +843,7 @@ export const PDFStudio: React.FC<PDFStudioProps> = ({
                   }
                 }}
                 className="p-1.5 rounded-lg text-[hsl(var(--color-muted-foreground))] hover:text-red-500 hover:bg-[hsl(var(--color-muted))] transition-colors ml-1"
-                title={isZh ? '关闭文档' : 'Close document'}
+                title={closeDocTooltip}
                 aria-label="Close file"
               >
                 <X className="w-4 h-4" />
@@ -928,7 +946,7 @@ export const PDFStudio: React.FC<PDFStudioProps> = ({
                     type="button"
                     onClick={(e) => handleCloseDocument(doc.id, e)}
                     className="p-0.5 rounded-md hover:bg-[hsl(var(--color-muted))] text-[hsl(var(--color-muted-foreground))] hover:text-red-500 opacity-60 group-hover:opacity-100 transition-all ml-0.5"
-                    title={isZh ? '关闭文档' : 'Close document'}
+                    title={closeDocTooltip}
                     aria-label={`Close ${doc.name}`}
                   >
                     <X className="w-3 h-3" />
