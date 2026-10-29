@@ -3,6 +3,7 @@ import { locales, type Locale } from '@/lib/i18n/config';
 import { TOOL_CATEGORIES, type ToolCategory } from '@/types/tool';
 import CategoryPageClient from './CategoryPageClient';
 import { notFound } from 'next/navigation';
+import { generateBaseMetadata } from '@/lib/seo/metadata';
 
 export function generateStaticParams() {
     return locales.flatMap((locale) =>
@@ -14,17 +15,20 @@ export function generateStaticParams() {
 }
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string; category: string }> }) {
-    const { category } = await params;
+    const { locale, category } = await params;
+    const validLocale = locales.includes(locale as Locale) ? (locale as Locale) : 'en';
 
     const formattedCategory = category
         .split('-')
         .map(word => word.charAt(0).toUpperCase() + word.slice(1))
         .join(' ');
 
-    return {
+    return generateBaseMetadata({
+        locale: validLocale,
+        path: `/tools/category/${category}`,
         title: `${formattedCategory} Tools - PDFCharger`,
         description: `Free online ${formattedCategory} tools. Secure, fast, and easy to use.`,
-    };
+    });
 }
 
 export default async function CategoryPage({ params }: { params: Promise<{ locale: string; category: string }> }) {
