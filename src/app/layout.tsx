@@ -38,6 +38,11 @@ export default function RootLayout({
           }}
         />
         <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){var m=location.pathname.match(/^\\/([a-z]{2}(?:-[A-Z]{2})?)(\\/?)/);if(m&&m[1]){document.documentElement.lang=m[1];if(m[1]==='he'||m[1]==='ar')document.documentElement.dir='rtl';}})();`,
+          }}
+        />
+        <script
           src={`${process.env.NEXT_PUBLIC_BASE_PATH || ''}/coi-serviceworker.js`}
           data-coi="true"
           async
