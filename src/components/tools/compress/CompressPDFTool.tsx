@@ -361,7 +361,7 @@ export function CompressPDFTool({ className = '', initialTargetKb }: CompressPDF
                 {bf.status === 'completed' && bf.result && (
                   <DownloadButton
                     file={bf.result}
-                    filename={`${bf.file.name.replace('.pdf', '')}_compressed.pdf`}
+                    filename={`${bf.file.name.replace(/\.pdf$/i, '')}_compressed.pdf`}
                     variant="ghost"
                     size="sm"
                   />
@@ -768,7 +768,7 @@ export function CompressPDFTool({ className = '', initialTargetKb }: CompressPDF
             </Button>
             <DownloadButton
               file={files[0].result!}
-              filename={`${singleFile.name.replace('.pdf', '')}_compressed.pdf`}
+              filename={`${singleFile.name.replace(/\.pdf$/i, '')}_compressed.pdf`}
               variant="primary"
               size="lg"
               className="flex-1 font-bold shadow-lg"
