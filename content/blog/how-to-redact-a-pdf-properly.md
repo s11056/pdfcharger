@@ -20,7 +20,7 @@ Anyone who receives the file can still:
 - **Delete or move the rectangle** in any PDF editor.
 - **Extract the text** with free tools, which ignore shapes completely.
 
-Two well-known examples show how costly this can be. In 2009, the US Transportation Security Administration published an airport screening manual in which the blacked-out passages could be read by copying the text. In 2019, a court filing by Paul Manafort's lawyers contained redactions that reporters undid the same way, revealing details the defence had meant to keep private.
+It happens more often than you'd think. Government agencies have published reports whose blacked-out passages could be read by simply copying the text, and court filings have been released where journalists uncovered the "redacted" details within hours, using nothing more than copy and paste.
 
 Highlighting text in black, setting the text colour to black on a black background, or covering it with a black image all fail in the same way.
 
