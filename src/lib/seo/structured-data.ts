@@ -174,6 +174,62 @@ export interface BreadcrumbListSchema {
 }
 
 /**
+ * BlogPosting schema for blog articles
+ * @see https://schema.org/BlogPosting
+ */
+export interface BlogPostingSchema {
+  '@context': 'https://schema.org';
+  '@type': 'BlogPosting';
+  headline: string;
+  description: string;
+  url: string;
+  mainEntityOfPage: string;
+  datePublished: string;
+  dateModified: string;
+  inLanguage: string;
+  image: string;
+  author: { '@type': 'Organization'; name: string; url: string };
+  publisher: {
+    '@type': 'Organization';
+    name: string;
+    url: string;
+    logo: { '@type': 'ImageObject'; url: string };
+  };
+}
+
+/**
+ * Generate BlogPosting schema for a blog article
+ */
+export function generateBlogPostingSchema(post: {
+  slug: string;
+  title: string;
+  description: string;
+  date: string;
+  updated?: string;
+}): BlogPostingSchema {
+  const url = `${siteConfig.url}/en/blog/${post.slug}/`;
+  const organization = { '@type': 'Organization' as const, name: siteConfig.name, url: siteConfig.url };
+
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'BlogPosting',
+    headline: post.title,
+    description: post.description,
+    url,
+    mainEntityOfPage: url,
+    datePublished: post.date,
+    dateModified: post.updated || post.date,
+    inLanguage: 'en-US',
+    image: siteConfig.ogImage.startsWith('http') ? siteConfig.ogImage : `${siteConfig.url}${siteConfig.ogImage}`,
+    author: organization,
+    publisher: {
+      ...organization,
+      logo: { '@type': 'ImageObject', url: `${siteConfig.url}/images/logo.png` },
+    },
+  };
+}
+
+/**
  * Generate SoftwareApplication schema for a tool page
  */
 export function generateSoftwareApplicationSchema(

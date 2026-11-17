@@ -358,3 +358,60 @@ select option {
 .scroll-smooth { scroll-behavior: smooth; }
 .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
 .scrollbar-hide::-webkit-scrollbar { display: none; }
+
+/* Blog article body (rendered Markdown) */
+.pc-prose {
+  color: hsl(var(--color-foreground));
+  font-size: 1.0625rem;
+  line-height: 1.75;
+}
+.pc-prose > * + * { margin-top: 1.25em; }
+.pc-prose h2 {
+  font-family: var(--font-display);
+  letter-spacing: -0.02em;
+  font-size: 1.6rem;
+  font-weight: 800;
+  line-height: 1.3;
+  margin-top: 2.2em;
+}
+.pc-prose h3 {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-top: 1.8em;
+}
+.pc-prose a {
+  color: hsl(var(--color-primary));
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.pc-prose ul { list-style: disc; padding-left: 1.4em; }
+.pc-prose ol { list-style: decimal; padding-left: 1.4em; }
+.pc-prose li + li { margin-top: 0.4em; }
+.pc-prose li::marker { color: hsl(var(--color-muted-foreground)); }
+.pc-prose strong { font-weight: 700; }
+.pc-prose blockquote {
+  border-left: 4px solid hsl(var(--color-primary) / 0.6);
+  background: hsl(var(--color-primary) / 0.06);
+  border-radius: 0 0.75rem 0.75rem 0;
+  padding: 0.9em 1.2em;
+}
+.pc-prose code {
+  font-size: 0.9em;
+  background: hsl(var(--color-muted));
+  border-radius: 0.375rem;
+  padding: 0.1em 0.35em;
+}
+.pc-prose pre {
+  background: hsl(var(--color-muted));
+  border-radius: 0.75rem;
+  padding: 1em 1.2em;
+  overflow-x: auto;
+}
+.pc-prose pre code { background: none; padding: 0; }
+.pc-prose img { border-radius: 0.75rem; border: 1px solid hsl(var(--color-border)); }
+.pc-prose table { width: 100%; border-collapse: collapse; font-size: 0.95em; display: block; overflow-x: auto; }
+.pc-prose th, .pc-prose td { border: 1px solid hsl(var(--color-border)); padding: 0.5em 0.75em; text-align: left; }
+.pc-prose th { background: hsl(var(--color-surface)); font-weight: 700; }
+.pc-prose hr { border-color: hsl(var(--color-border)); margin: 2.5em 0; }

@@ -255,6 +255,34 @@ export function generateContactMetadata(locale: Locale, translations?: { title: 
 }
 
 /**
+ * Generate metadata for blog pages.
+ * The blog is English-only, so hreflang lists just `en` and `x-default`
+ * instead of the 18 locale alternates the other pages advertise.
+ */
+export function generateBlogMetadata(options: {
+  path: string;
+  title: string;
+  description: string;
+  publishedTime?: string;
+  modifiedTime?: string;
+}): Metadata {
+  const { path, title, description, publishedTime, modifiedTime } = options;
+  const base = generateBaseMetadata({ locale: 'en', path, title, description, keywords: ['PDF guide', 'how to'] });
+  const canonicalUrl = getCanonicalUrl('en', path);
+
+  return {
+    ...base,
+    alternates: {
+      canonical: canonicalUrl,
+      languages: { en: canonicalUrl, 'x-default': canonicalUrl },
+    },
+    openGraph: publishedTime
+      ? { ...base.openGraph, type: 'article', publishedTime, modifiedTime: modifiedTime || publishedTime }
+      : base.openGraph,
+  };
+}
+
+/**
  * Convert locale to Open Graph locale format
  */
 export function getOpenGraphLocale(locale: Locale): string {

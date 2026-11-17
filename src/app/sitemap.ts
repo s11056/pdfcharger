@@ -9,6 +9,7 @@ import { MetadataRoute } from 'next';
 import { siteConfig } from '@/config/site';
 import { locales, type Locale } from '@/lib/i18n/config';
 import { getAllTools } from '@/config/tools';
+import { getAllPosts, BLOG_LOCALE } from '@/lib/blog/posts';
 
 // Required for static export
 export const dynamic = 'force-static';
@@ -87,7 +88,26 @@ export default function sitemap(): MetadataRoute.Sitemap {
     const localeEntries = generateLocaleEntries(locale, lastModified);
     allEntries.push(...localeEntries);
   }
-  
+
+  // Blog is English-only; use each post's own date so lastmod reflects real changes
+  const posts = getAllPosts();
+  if (posts.length > 0) {
+    allEntries.push({
+      url: `${siteConfig.url}/${BLOG_LOCALE}/blog/`,
+      lastModified: new Date(posts[0].updated || posts[0].date),
+      changeFrequency: 'weekly',
+      priority: PRIORITY.tools,
+    });
+    for (const post of posts) {
+      allEntries.push({
+        url: `${siteConfig.url}/${BLOG_LOCALE}/blog/${post.slug}/`,
+        lastModified: new Date(post.updated || post.date),
+        changeFrequency: 'monthly',
+        priority: PRIORITY.toolPage,
+      });
+    }
+  }
+
   return allEntries;
 }
 

@@ -14,6 +14,7 @@ export {
   generateFaqMetadata,
   generatePrivacyMetadata,
   generateContactMetadata,
+  generateBlogMetadata,
   getCanonicalUrl,
   getAlternateUrls,
   getOpenGraphLocale,
@@ -34,6 +35,7 @@ export {
   generateHowToSchema,
   generateWebPageSchema,
   generateWebApplicationSchema,
+  generateBlogPostingSchema,
   serializeStructuredData,
   validateSoftwareApplicationSchema,
   validateFAQPageSchema,
@@ -45,4 +47,5 @@ export {
   type BreadcrumbListSchema,
   type HowToSchema,
   type WebPageSchema,
+  type BlogPostingSchema,
 } from './structured-data';
