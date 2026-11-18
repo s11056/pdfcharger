@@ -275,7 +275,7 @@ export const Header: React.FC<HeaderProps> = ({ locale, showSearch = true }) => 
       <header
         className={`fixed top-0 z-50 w-full transition-all duration-300 ${
           scrolled || mobileOpen
-            ? 'glass border-b border-[hsl(var(--color-border))] shadow-[var(--shadow-sm)]'
+            ? 'border-b border-[hsl(var(--color-border))] bg-[hsl(var(--color-background))] shadow-[var(--shadow-sm)]'
             : 'border-b border-transparent bg-transparent'
         }`}
         role="banner"
@@ -371,7 +371,7 @@ export const Header: React.FC<HeaderProps> = ({ locale, showSearch = true }) => 
               <button
                 type="button"
                 onClick={() => setSearchOpen(true)}
-                className="flex h-10 items-center gap-2 rounded-xl border border-[hsl(var(--color-border))] bg-[hsl(var(--color-card))] px-3 text-sm text-[hsl(var(--color-muted-foreground))] transition-colors hover:border-[hsl(var(--color-primary)/0.4)] hover:text-[hsl(var(--color-foreground))]"
+                className="flex h-10 items-center gap-2 rounded-full border border-[hsl(var(--color-border))] bg-[hsl(var(--color-card))] px-4 text-sm text-[hsl(var(--color-muted-foreground))] transition-colors hover:border-[hsl(var(--color-primary)/0.4)] hover:text-[hsl(var(--color-foreground))]"
                 aria-label="Open search"
               >
                 <Search className="h-4 w-4" aria-hidden="true" />
@@ -393,6 +393,13 @@ export const Header: React.FC<HeaderProps> = ({ locale, showSearch = true }) => 
             </div>
 
             <ThemeToggle />
+
+            <Link
+              href={`/${locale}/tools`}
+              className="hidden items-center rounded-full bg-[hsl(var(--color-primary))] px-5 py-2.5 text-sm font-bold text-white shadow-[0_8px_20px_-10px_hsl(var(--color-primary)/0.8)] transition-colors hover:bg-[hsl(var(--color-primary-hover))] md:inline-flex"
+            >
+              {t('navigation.tools')}
+            </Link>
 
             <button
               type="button"

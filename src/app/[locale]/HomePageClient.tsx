@@ -134,25 +134,57 @@ export default function HomePageClient({ locale, localizedToolContent = {} }: Ho
 
       <main id="main-content" className="flex-1" tabIndex={-1}>
         {/* ============ HERO ============ */}
-        <section className="pc-hero-wash relative overflow-hidden pb-16 pt-28 sm:pt-32" aria-labelledby="hero-title">
-          <div className="pc-dots pointer-events-none absolute inset-0 [mask-image:radial-gradient(ellipse_at_top,black_20%,transparent_70%)]" aria-hidden="true" />
+        <section className="pc-hero-wash relative overflow-hidden pb-20 pt-28 sm:pt-32" aria-labelledby="hero-title">
+          <div className="relative mx-auto grid max-w-7xl items-center gap-12 px-4 sm:px-6 lg:grid-cols-[1fr_1.05fr] lg:gap-16">
+            <div className="text-center lg:text-left">
+              <p className="mb-6 inline-flex items-center gap-2 rounded-full bg-[hsl(var(--color-primary)/0.1)] px-4 py-1.5 text-sm font-bold text-[hsl(var(--color-primary))]">
+                <Zap className="h-4 w-4 fill-current" aria-hidden="true" />
+                {t('home.pc.badge', { count: allTools.length })}
+              </p>
 
-          <div className="relative mx-auto max-w-4xl px-4 text-center">
-            <p className="mb-6 inline-flex items-center gap-2 rounded-full border border-[hsl(var(--color-primary)/0.2)] bg-[hsl(var(--color-card)/0.8)] px-4 py-1.5 text-sm font-semibold text-[hsl(var(--color-primary))] shadow-[var(--shadow-sm)]">
-              <Zap className="h-4 w-4 fill-current" aria-hidden="true" />
-              {t('home.pc.badge', { count: allTools.length })}
-            </p>
+              <h1 id="hero-title" className="font-display mb-6 text-[2.6rem] font-extrabold leading-[1.05] text-[hsl(var(--color-foreground))] sm:text-6xl xl:text-[4.25rem]">
+                {t('home.pc.title')} <span className="text-[hsl(var(--color-primary))]">{t('home.pc.highlight')}</span>
+              </h1>
+              <p className="mx-auto mb-8 max-w-xl text-lg leading-relaxed text-[hsl(var(--color-muted-foreground))] lg:mx-0">
+                {t('home.pc.subtitle')}
+              </p>
 
-            <h1 id="hero-title" className="font-display mb-5 text-[2.4rem] font-extrabold leading-[1.08] text-[hsl(var(--color-foreground))] sm:text-6xl">
-              {t('home.pc.title')} <span className="text-gradient">{t('home.pc.highlight')}</span>
-            </h1>
-            <p className="mx-auto mb-10 max-w-2xl text-lg leading-relaxed text-[hsl(var(--color-muted-foreground))]">
-              {t('home.pc.subtitle')}
-            </p>
+              <div className="mb-8 flex flex-wrap items-center justify-center gap-3 lg:justify-start">
+                <button
+                  type="button"
+                  onClick={() => inputRef.current?.click()}
+                  className="inline-flex items-center gap-2 rounded-full bg-[hsl(var(--color-primary))] px-7 py-3.5 font-bold text-white shadow-[0_10px_24px_-10px_hsl(var(--color-primary)/0.9)] transition-colors hover:bg-[hsl(var(--color-primary-hover))]"
+                >
+                  <Plus className="h-5 w-5" aria-hidden="true" />
+                  {t('home.pc.select')}
+                </button>
+                <Link
+                  href={`/${locale}/tools`}
+                  className="inline-flex items-center gap-2 rounded-full border-2 border-[hsl(var(--color-foreground)/0.85)] px-7 py-3 font-bold text-[hsl(var(--color-foreground))] transition-colors hover:bg-[hsl(var(--color-foreground))] hover:text-[hsl(var(--color-background))]"
+                >
+                  {t('home.pc.viewAll', { count: allTools.length })}
+                  <ArrowRight className="h-4 w-4" aria-hidden="true" />
+                </Link>
+              </div>
 
-            {/* Drop zone */}
+              <ul className="flex flex-col items-center gap-2.5 text-sm font-semibold text-[hsl(var(--color-foreground)/0.8)] sm:flex-row sm:flex-wrap sm:justify-center sm:gap-x-6 lg:justify-start">
+                {[t('home.pc.trust.1'), t('home.pc.trust.2'), t('home.pc.trust.3')].map((line) => (
+                  <li key={line} className="inline-flex items-center gap-2">
+                    <span className="flex h-5 w-5 items-center justify-center rounded-full bg-[hsl(var(--color-primary))] text-white">
+                      <Check className="h-3 w-3" strokeWidth={3} aria-hidden="true" />
+                    </span>
+                    {line}
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Drop zone, on a tinted panel */}
+            <div className="relative">
+              <div className="pc-tint-mint absolute -inset-3 rounded-[2.5rem] sm:-inset-6 lg:-inset-8" aria-hidden="true" />
+              <div className="pc-tint-blue absolute -right-4 -top-6 hidden h-24 w-24 rounded-full lg:block" aria-hidden="true" />
             <div
-              className={`relative mx-auto max-w-3xl rounded-[var(--radius-xl)] border bg-[hsl(var(--color-card))] p-2 shadow-[var(--shadow-xl)] transition-colors ${
+              className={`relative rounded-[var(--radius-xl)] border bg-[hsl(var(--color-card))] p-2 shadow-[var(--shadow-xl)] transition-colors ${
                 dragging ? 'border-[hsl(var(--color-primary))]' : 'border-[hsl(var(--color-border))]'
               }`}
               onDragEnter={(e) => {
@@ -191,13 +223,16 @@ export default function HomePageClient({ locale, localizedToolContent = {} }: Ho
                   tabIndex={0}
                   onClick={() => inputRef.current?.click()}
                   onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && inputRef.current?.click()}
-                  className={`group flex cursor-pointer flex-col items-center rounded-[calc(var(--radius-xl)-6px)] border-2 border-dashed px-6 py-12 transition-colors sm:py-14 ${
+                  className={`group flex cursor-pointer flex-col items-center rounded-[calc(var(--radius-xl)-6px)] border-2 border-dashed px-6 py-12 transition-colors sm:py-16 ${
                     dragging
                       ? 'border-[hsl(var(--color-primary))] bg-[hsl(var(--color-primary)/0.06)]'
                       : 'border-[hsl(var(--color-primary)/0.25)] bg-[hsl(var(--color-surface))] hover:border-[hsl(var(--color-primary)/0.55)]'
                   }`}
                 >
-                  <span className="pc-brand-gradient inline-flex items-center gap-2 rounded-2xl px-9 py-4 text-lg font-bold text-white shadow-[var(--shadow-xl)] transition-transform group-hover:scale-[1.03]">
+                  <span className="mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-[hsl(var(--color-primary)/0.1)] text-[hsl(var(--color-primary))]">
+                    <UploadCloud className="h-8 w-8" aria-hidden="true" />
+                  </span>
+                  <span className="inline-flex items-center gap-2 rounded-full bg-[hsl(var(--color-primary))] px-8 py-3.5 text-lg font-bold text-white shadow-[0_10px_24px_-10px_hsl(var(--color-primary)/0.9)] transition-colors group-hover:bg-[hsl(var(--color-primary-hover))]">
                     <Plus className="h-5 w-5" aria-hidden="true" />
                     {t('home.pc.select')}
                   </span>
@@ -232,7 +267,7 @@ export default function HomePageClient({ locale, localizedToolContent = {} }: Ho
                       <X className="h-4 w-4" aria-hidden="true" />
                     </button>
                   </div>
-                  <div className="grid grid-cols-1 gap-2 min-[420px]:grid-cols-2 sm:grid-cols-3">
+                  <div className="grid grid-cols-1 gap-2 min-[420px]:grid-cols-2">
                     {suggestions.map((tool) => {
                       const Icon = getToolIcon(tool.icon);
                       return (
@@ -253,15 +288,11 @@ export default function HomePageClient({ locale, localizedToolContent = {} }: Ho
                 </div>
               )}
             </div>
-
-            <ul className="mt-7 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm font-medium text-[hsl(var(--color-muted-foreground))]">
-              {[t('home.pc.trust.1'), t('home.pc.trust.2'), t('home.pc.trust.3')].map((line) => (
-                <li key={line} className="inline-flex items-center gap-1.5">
-                  <Check className="h-4 w-4 text-[hsl(var(--color-success))]" aria-hidden="true" />
-                  {line}
-                </li>
-              ))}
-            </ul>
+              <div className="absolute -bottom-5 left-6 hidden items-center gap-2 rounded-full border border-[hsl(var(--color-border))] bg-[hsl(var(--color-card))] px-4 py-2 text-sm font-bold shadow-[var(--shadow-lg)] sm:flex" aria-hidden="true">
+                <ShieldCheck className="h-4 w-4 text-[hsl(var(--color-primary))]" />
+                {t('home.pc.illustrationBadge')}
+              </div>
+            </div>
           </div>
         </section>
 
@@ -276,7 +307,7 @@ export default function HomePageClient({ locale, localizedToolContent = {} }: Ho
             </div>
 
             <div className="sticky top-[76px] z-30 -mx-4 mb-8 px-4">
-              <div className="scrollbar-hide mx-auto flex max-w-max gap-1 overflow-x-auto rounded-2xl border border-[hsl(var(--color-border))] bg-[hsl(var(--color-card)/0.92)] p-1.5 shadow-[var(--shadow-md)] backdrop-blur" role="tablist" aria-label="Tool categories">
+              <div className="scrollbar-hide mx-auto flex max-w-max gap-1 overflow-x-auto rounded-full border border-[hsl(var(--color-border))] bg-[hsl(var(--color-card)/0.92)] p-1.5 shadow-[var(--shadow-md)] backdrop-blur" role="tablist" aria-label="Tool categories">
                 {tabs.map((item) => {
                   const active = tab === item.value;
                   const meta = item.value === 'all' ? null : CATEGORY_META[item.value];
@@ -286,7 +317,7 @@ export default function HomePageClient({ locale, localizedToolContent = {} }: Ho
                       role="tab"
                       aria-selected={active}
                       onClick={() => setTab(item.value)}
-                      className={`${meta?.colorClass ?? ''} flex flex-shrink-0 items-center gap-1.5 whitespace-nowrap rounded-xl px-4 py-2 text-sm font-semibold transition-colors ${
+                      className={`${meta?.colorClass ?? ''} flex flex-shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full px-4 py-2 text-sm font-semibold transition-colors ${
                         active
                           ? item.value === 'all'
                             ? 'pc-brand-gradient text-white shadow-sm'
@@ -307,7 +338,7 @@ export default function HomePageClient({ locale, localizedToolContent = {} }: Ho
             <div className="mt-10 text-center">
               <Link
                 href={`/${locale}/tools${tab === 'all' ? '' : `?category=${tab}`}`}
-                className="inline-flex items-center gap-2 rounded-xl border border-[hsl(var(--color-border))] bg-[hsl(var(--color-card))] px-6 py-3 font-semibold shadow-[var(--shadow-sm)] transition-colors hover:border-[hsl(var(--color-primary)/0.5)] hover:text-[hsl(var(--color-primary))]"
+                className="inline-flex items-center gap-2 rounded-full border-2 border-[hsl(var(--color-foreground)/0.85)] px-7 py-3 font-bold transition-colors hover:bg-[hsl(var(--color-foreground))] hover:text-[hsl(var(--color-background))]"
               >
                 {t('home.pc.viewAll', { count: allTools.length })}
                 <ArrowRight className="h-4 w-4" aria-hidden="true" />
@@ -317,22 +348,22 @@ export default function HomePageClient({ locale, localizedToolContent = {} }: Ho
         </section>
 
         {/* ============ HOW IT WORKS ============ */}
-        <section className="border-y border-[hsl(var(--color-border))] bg-[hsl(var(--color-surface))] py-20" aria-labelledby="how-heading">
+        <section className="py-20" aria-labelledby="how-heading">
           <div className="mx-auto max-w-6xl px-4 sm:px-6">
             <h2 id="how-heading" className="font-display mb-12 text-center text-3xl font-extrabold sm:text-4xl">
               {t('home.pc.howTitle')}
             </h2>
             <ol className="grid gap-6 md:grid-cols-3">
               {steps.map((step, i) => (
-                <li key={i} className="relative rounded-[var(--radius-lg)] border border-[hsl(var(--color-border))] bg-[hsl(var(--color-card))] p-7 text-center shadow-[var(--shadow-sm)]">
-                  <span className="pc-brand-gradient absolute -top-4 left-1/2 flex h-8 w-8 -translate-x-1/2 items-center justify-center rounded-full text-sm font-bold text-white shadow-md">
-                    {i + 1}
-                  </span>
-                  <span className="mx-auto mb-4 mt-2 flex h-14 w-14 items-center justify-center rounded-2xl bg-[hsl(var(--color-primary)/0.1)] text-[hsl(var(--color-primary))]">
-                    <step.icon className="h-7 w-7" aria-hidden="true" />
-                  </span>
-                  <h3 className="font-display mb-2 text-lg font-bold">{step.title}</h3>
-                  <p className="text-sm leading-relaxed text-[hsl(var(--color-muted-foreground))]">{step.body}</p>
+                <li key={i} className={`${['pc-tint-mint', 'pc-tint-blue', 'pc-tint-peach'][i % 3]} relative rounded-[2rem] p-8`}>
+                  <div className="mb-6 flex items-center justify-between">
+                    <span className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[hsl(var(--color-card))] text-[hsl(var(--color-primary))] shadow-[var(--shadow-md)]">
+                      <step.icon className="h-7 w-7" aria-hidden="true" />
+                    </span>
+                    <span className="font-display text-5xl font-extrabold text-[hsl(var(--color-foreground)/0.12)]" aria-hidden="true">0{i + 1}</span>
+                  </div>
+                  <h3 className="font-display mb-2 text-xl font-bold">{step.title}</h3>
+                  <p className="leading-relaxed text-[hsl(var(--color-foreground)/0.72)]">{step.body}</p>
                 </li>
               ))}
             </ol>
@@ -344,7 +375,7 @@ export default function HomePageClient({ locale, localizedToolContent = {} }: Ho
           <div className="mx-auto grid max-w-6xl items-center gap-12 px-4 sm:px-6 lg:grid-cols-2">
             {/* Illustration: stacked document cards */}
             <div className="relative mx-auto aspect-[4/3.2] w-full max-w-md" aria-hidden="true">
-              <div className="pc-hero-wash absolute inset-0 rounded-[2rem] border border-[hsl(var(--color-border))]" />
+              <div className="pc-tint-green absolute inset-0 rounded-[2.5rem]" />
               <div className="absolute left-[10%] top-[14%] w-[52%] rotate-[-7deg] rounded-2xl border border-[hsl(var(--color-border))] bg-[hsl(var(--color-card))] p-4 shadow-[var(--shadow-lg)]">
                 <div className="mb-3 h-2.5 w-2/3 rounded-full bg-[hsl(var(--color-muted))]" />
                 {[...Array(5)].map((_, i) => (
@@ -377,7 +408,7 @@ export default function HomePageClient({ locale, localizedToolContent = {} }: Ho
               <ul className="grid gap-5 sm:grid-cols-2">
                 {benefits.map((b) => (
                   <li key={b.title} className="flex gap-3">
-                    <span className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-[hsl(var(--color-primary)/0.1)] text-[hsl(var(--color-primary))]">
+                    <span className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-[hsl(var(--color-primary))] text-white">
                       <b.icon className="h-5 w-5" aria-hidden="true" />
                     </span>
                     <div>
@@ -392,9 +423,9 @@ export default function HomePageClient({ locale, localizedToolContent = {} }: Ho
         </section>
 
         {/* ============ STATS ============ */}
-        <section className="pb-20" aria-label="Statistics">
+        <section className="pc-on-dark py-16" aria-label="Statistics">
           <div className="mx-auto max-w-6xl px-4 sm:px-6">
-            <dl className="grid grid-cols-2 overflow-hidden rounded-[var(--radius-xl)] border border-[hsl(var(--color-border))] bg-[hsl(var(--color-card))] shadow-[var(--shadow-sm)] md:grid-cols-4">
+            <dl className="grid grid-cols-2 md:grid-cols-4">
               {[
                 { value: `${allTools.length}+`, label: t('home.stats.pdfTools') },
                 { value: '100%', label: t('home.stats.freeToUse') },
@@ -402,8 +433,8 @@ export default function HomePageClient({ locale, localizedToolContent = {} }: Ho
                 { value: '0', label: t('home.stats.filesUploaded') },
               ].map((s, i) => (
                 <div key={s.label} className={`p-6 text-center ${i > 0 ? 'border-l border-[hsl(var(--color-border))]' : ''} ${i === 2 ? 'max-md:border-l-0 max-md:border-t' : ''} ${i === 3 ? 'max-md:border-t' : ''}`}>
-                  <dd className="font-display text-gradient text-4xl font-extrabold">{s.value}</dd>
-                  <dt className="mt-1 text-xs font-semibold uppercase tracking-wider text-[hsl(var(--color-muted-foreground))]">{s.label}</dt>
+                  <dd className="font-display text-5xl font-extrabold text-[hsl(var(--color-primary))]">{s.value}</dd>
+                  <dt className="mt-2 text-sm font-semibold text-[hsl(var(--color-muted-foreground))]">{s.label}</dt>
                 </div>
               ))}
             </dl>
@@ -411,7 +442,7 @@ export default function HomePageClient({ locale, localizedToolContent = {} }: Ho
         </section>
 
         {/* ============ FAQ ============ */}
-        <section className="border-t border-[hsl(var(--color-border))] bg-[hsl(var(--color-surface))] py-20" aria-labelledby="faq-heading">
+        <section className="py-20" aria-labelledby="faq-heading">
           <div className="mx-auto max-w-3xl px-4 sm:px-6">
             <h2 id="faq-heading" className="font-display mb-10 text-center text-3xl font-extrabold sm:text-4xl">
               {t('home.pc.faqTitle')}
@@ -433,17 +464,18 @@ export default function HomePageClient({ locale, localizedToolContent = {} }: Ho
         {/* ============ CTA ============ */}
         <section className="py-16">
           <div className="mx-auto max-w-6xl px-4 sm:px-6">
-            <div className="pc-brand-gradient relative overflow-hidden rounded-[2rem] px-6 py-14 text-center text-white shadow-[var(--shadow-xl)] sm:px-12">
-              <div className="pc-dots pointer-events-none absolute inset-0 opacity-30 [filter:invert(1)]" aria-hidden="true" />
-              <h2 className="font-display relative mb-3 text-3xl font-extrabold sm:text-4xl">{t('home.pc.ctaTitle')}</h2>
-              <p className="relative mx-auto mb-8 max-w-xl text-white/85">{t('home.pc.ctaBody')}</p>
+            <div className="pc-on-dark relative overflow-hidden rounded-[2.5rem] px-6 py-16 text-center sm:px-12">
+              <div className="absolute -left-16 -top-16 h-56 w-56 rounded-full bg-[hsl(var(--color-primary)/0.18)]" aria-hidden="true" />
+              <div className="absolute -bottom-20 -right-10 h-64 w-64 rounded-full bg-[hsl(var(--color-brand-2)/0.2)]" aria-hidden="true" />
+              <h2 className="font-display relative mb-3 text-3xl font-extrabold sm:text-5xl">{t('home.pc.ctaTitle')}</h2>
+              <p className="relative mx-auto mb-8 max-w-xl text-lg text-[hsl(var(--color-muted-foreground))]">{t('home.pc.ctaBody')}</p>
               <button
                 type="button"
                 onClick={() => {
                   window.scrollTo({ top: 0, behavior: 'smooth' });
                   setTimeout(() => inputRef.current?.click(), 400);
                 }}
-                className="relative inline-flex items-center gap-2 rounded-2xl bg-white px-8 py-4 font-bold text-[hsl(262_83%_45%)] shadow-lg transition-transform hover:scale-[1.03]"
+                className="relative inline-flex items-center gap-2 rounded-full bg-[hsl(var(--color-primary))] px-8 py-4 font-bold text-white transition-colors hover:bg-[hsl(var(--color-primary-hover))]"
               >
                 <Plus className="h-5 w-5" aria-hidden="true" />
                 {t('home.pc.select')}

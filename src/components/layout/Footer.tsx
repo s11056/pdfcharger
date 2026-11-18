@@ -53,25 +53,24 @@ export const Footer: React.FC<FooterProps> = ({ locale }) => {
     {/* AudioCharger cross-promo banner */}
     <section className="py-16">
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
-        <div className="pc-brand-gradient relative overflow-hidden rounded-[2rem] px-6 py-12 text-center text-white shadow-[var(--shadow-xl)] sm:px-12">
-          <div className="pc-dots pointer-events-none absolute inset-0 opacity-30 [filter:invert(1)]" aria-hidden="true" />
-          <p className="relative mb-1 text-sm font-semibold uppercase tracking-widest text-white/70">Also from the Charger family</p>
+        <div className="pc-tint-mint relative overflow-hidden rounded-[2.5rem] px-6 py-12 text-center sm:px-12">
+          <p className="relative mb-2 text-sm font-bold uppercase tracking-widest text-[hsl(var(--color-primary))]">Also from the Charger family</p>
           <h2 className="font-display relative mb-3 text-3xl font-extrabold sm:text-4xl">Need audio tools too?</h2>
-          <p className="relative mx-auto mb-8 max-w-xl text-white/85">
+          <p className="relative mx-auto mb-8 max-w-xl text-[hsl(var(--color-foreground)/0.72)]">
             AudioCharger brings the same free, private, in-browser experience to audio and video — convert, trim, add effects and more.
           </p>
           <a
             href="https://audiocharger.com"
             target="_blank"
             rel="noopener noreferrer"
-            className="relative inline-flex items-center gap-2 rounded-2xl bg-white px-8 py-4 font-bold text-[hsl(262_83%_45%)] shadow-lg transition-transform hover:scale-[1.03]"
+            className="relative inline-flex items-center gap-2 rounded-full bg-[hsl(var(--color-primary))] px-8 py-4 font-bold text-white transition-colors hover:bg-[hsl(var(--color-primary-hover))]"
           >
             Try AudioCharger ↗
           </a>
         </div>
       </div>
     </section>
-    <footer className="w-full border-t border-[hsl(var(--color-border))] bg-[hsl(var(--color-surface))]" role="contentinfo">
+    <footer className="pc-on-dark w-full" role="contentinfo">
       <div className="mx-auto max-w-7xl px-4 pb-8 pt-14 sm:px-6">
         <div className="grid grid-cols-2 gap-x-6 gap-y-10 md:grid-cols-4 lg:grid-cols-8">
           {/* Brand */}
@@ -95,7 +94,7 @@ export const Footer: React.FC<FooterProps> = ({ locale }) => {
                   target={href.startsWith('http') ? '_blank' : undefined}
                   rel="noopener noreferrer"
                   aria-label={label}
-                  className="flex h-9 w-9 items-center justify-center rounded-xl border border-[hsl(var(--color-border))] bg-[hsl(var(--color-card))] text-[hsl(var(--color-muted-foreground))] transition-colors hover:border-[hsl(var(--color-primary)/0.5)] hover:text-[hsl(var(--color-primary))]"
+                  className="flex h-9 w-9 items-center justify-center rounded-full border border-[hsl(var(--color-border))] bg-[hsl(var(--color-card))] text-[hsl(var(--color-muted-foreground))] transition-colors hover:border-[hsl(var(--color-primary)/0.5)] hover:text-[hsl(var(--color-primary))]"
                 >
                   <Icon className="h-4 w-4" aria-hidden="true" />
                 </a>

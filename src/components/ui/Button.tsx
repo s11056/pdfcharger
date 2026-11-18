@@ -14,10 +14,10 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 
 const variantStyles: Record<ButtonVariant, string> = {
   primary: `
-    pc-brand-gradient
+    bg-[hsl(var(--color-primary))]
     text-white
-    shadow-[0_8px_20px_-8px_hsl(var(--color-primary)/0.7)]
-    hover:brightness-110
+    shadow-[0_8px_20px_-10px_hsl(var(--color-primary)/0.8)]
+    hover:bg-[hsl(var(--color-primary-hover))]
     focus-visible:ring-[hsl(var(--color-ring))]
   `,
   secondary: `
@@ -27,8 +27,8 @@ const variantStyles: Record<ButtonVariant, string> = {
     focus-visible:ring-[hsl(var(--color-ring))]
   `,
   outline: `
-    border
-    border-[hsl(var(--color-border))] 
+    border-2
+    border-[hsl(var(--color-foreground)/0.85)] 
     bg-transparent 
     text-[hsl(var(--color-foreground))]
     hover:bg-[hsl(var(--color-muted))]
@@ -43,8 +43,8 @@ const variantStyles: Record<ButtonVariant, string> = {
 };
 
 const sizeStyles: Record<ButtonSize, string> = {
-  sm: 'px-3 py-1.5 text-sm',
-  md: 'px-4 py-2 text-base',
+  sm: 'px-4 py-1.5 text-sm',
+  md: 'px-5 py-2 text-base',
   lg: 'px-7 py-3.5 text-base',
   icon: 'h-9 w-9 p-0 flex items-center justify-center',
 };
@@ -92,7 +92,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
 
     const baseStyles = `
       inline-flex items-center justify-center gap-2
-      font-semibold rounded-[var(--radius-md)]
+      font-semibold rounded-full
       transition-all duration-[var(--transition-normal)]
       focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2
       disabled:opacity-50 disabled:cursor-not-allowed
