@@ -6,6 +6,48 @@ import { UploadCloud, File, Plus, X, Lock, Loader2, ShieldCheck } from 'lucide-r
 import { isTauri } from '@/lib/tauri-bridge';
 import { takePendingFiles } from '@/lib/pending-files';
 
+/** Short names for MIME types that have no matching extension in an accept list */
+const MIME_NAMES: Record<string, string> = {
+  'application/pdf': 'PDF',
+  'image/*': 'images',
+  'text/plain': 'TXT',
+  'application/json': 'JSON',
+  'message/rfc822': 'EML',
+  'application/msword': 'DOC',
+};
+
+/** Spellings folded into one name, so ".jpg, .jpeg" shows as just "JPG" */
+const EXT_ALIASES: Record<string, string> = {
+  JPEG: 'JPG', TIF: 'TIFF', HEIF: 'HEIC', HTM: 'HTML', MARKDOWN: 'MD', DJV: 'DJVU',
+};
+
+/**
+ * Turn an accept list (MIME types and extensions) into readable format names,
+ * e.g. ['image/jpeg', '.jpg', '.jpeg', '.png'] -> "JPG, PNG".
+ */
+export function formatAcceptList(accept: string[]): string {
+  if (accept.some((type) => type === '*' || type === '*/*')) return '*';
+  const names: string[] = [];
+  const add = (name: string) => {
+    if (!names.includes(name)) names.push(name);
+  };
+  for (const type of accept) {
+    if (type.startsWith('.')) {
+      const ext = type.slice(1).toUpperCase();
+      add(EXT_ALIASES[ext] ?? ext);
+    }
+  }
+  for (const type of accept) {
+    if (!type.includes('/')) continue;
+    // Fall back to a plain subtype (image/png -> PNG); skip vendor types like vnd.* or x-*
+    const subtype = type.split('/')[1].replace(/\+xml$/, '');
+    const plain = /^[a-z0-9]+$/.test(subtype) ? subtype.toUpperCase() : undefined;
+    const name = MIME_NAMES[type] ?? (plain && (EXT_ALIASES[plain] ?? plain));
+    if (name) add(name);
+  }
+  return names.join(', ');
+}
+
 export interface FileUploaderProps {
   /** Accepted file types (MIME types or extensions) */
   accept?: string[];
@@ -188,7 +230,7 @@ export const FileUploader: React.FC<FileUploaderProps> = ({
       const acceptsPdf = accept.includes('application/pdf');
 
       if (!isValidType && !(acceptsPdf && isPdfByExtension)) {
-        errors.push(tErrors('fileTypeInvalid', { acceptedTypes: accept.join(', ') }));
+        errors.push(tErrors('fileTypeInvalid', { acceptedTypes: formatAcceptList(accept) }));
         continue;
       }
 
@@ -549,9 +591,7 @@ export const FileUploader: React.FC<FileUploaderProps> = ({
       ? 'border-[hsl(var(--color-primary))] bg-[hsl(var(--color-primary)/0.06)] scale-[1.005]'
       : 'border-[hsl(var(--color-primary)/0.28)] bg-[hsl(var(--color-surface))] hover:border-[hsl(var(--color-primary)/0.6)] hover:bg-[hsl(var(--color-primary)/0.03)]';
 
-  const formatsLabel = accept && accept.length > 0
-    ? (accept.length > 6 ? `${accept.slice(0, 6).join(', ')} +${accept.length - 6}` : accept.join(', '))
-    : t('fileUploader.paste');
+  const formatsLabel = accept && accept.length > 0 ? formatAcceptList(accept) : t('fileUploader.paste');
 
   return (
     <div

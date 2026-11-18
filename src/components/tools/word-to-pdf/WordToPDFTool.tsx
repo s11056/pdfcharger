@@ -218,7 +218,7 @@ export function WordToPDFTool({ className = '' }: WordToPDFToolProps) {
             {/* File Upload Area */}
             <FileUploader
                 accept={[
-                    '.docx', '.doc', '.odt',
+                    '.docx', '.doc', '.odt', '.rtf',
                     'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
                     'application/msword',
                     'application/vnd.oasis.opendocument.text',

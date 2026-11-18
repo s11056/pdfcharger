@@ -16,6 +16,49 @@ import { BasePDFProcessor } from '../processor';
 import { loadPdfLib } from '../loader';
 
 /**
+ * Draw raw RGBA pixels onto a canvas and return them as PNG bytes
+ */
+async function rgbaToPng(rgba: Uint8Array, width: number, height: number): Promise<Uint8Array> {
+  const canvas = document.createElement('canvas');
+  canvas.width = width;
+  canvas.height = height;
+  const ctx = canvas.getContext('2d');
+  if (!ctx) throw new Error('Failed to get canvas context');
+  ctx.putImageData(new ImageData(new Uint8ClampedArray(rgba), width, height), 0, 0);
+  const blob = await new Promise<Blob>((res, rej) => {
+    canvas.toBlob((b) => (b ? res(b) : rej(new Error('Failed to convert to PNG'))), 'image/png');
+  });
+  return new Uint8Array(await blob.arrayBuffer());
+}
+
+/**
+ * Decode every page of a TIFF to PNG bytes. Most browsers can't display TIFF,
+ * so it is decoded in JavaScript (UTIF, loaded only when needed).
+ */
+async function decodeTiffPages(buffer: ArrayBuffer, fileName: string): Promise<Uint8Array[]> {
+  const UTIF = await import('utif');
+  const pages: Uint8Array[] = [];
+  for (const ifd of UTIF.decode(buffer)) {
+    UTIF.decodeImage(buffer, ifd);
+    if (!ifd.width || !ifd.height) continue;
+    pages.push(await rgbaToPng(UTIF.toRGBA8(ifd), ifd.width, ifd.height));
+  }
+  if (pages.length === 0) throw new Error(`Couldn't read any pages from ${fileName}.`);
+  return pages;
+}
+
+/**
+ * Decode a HEIC/HEIF photo (one or more images) to PNG bytes. Only Safari can
+ * display HEIC natively, so it is decoded with heic2any, loaded only when needed.
+ */
+async function decodeHeicImages(file: File): Promise<Uint8Array[]> {
+  const { default: heic2any } = await import('heic2any');
+  const result = await heic2any({ blob: file, toType: 'image/png', multiple: true });
+  const blobs = Array.isArray(result) ? result : [result];
+  return Promise.all(blobs.map(async (b) => new Uint8Array(await b.arrayBuffer())));
+}
+
+/**
  * Page size presets in points (72 points = 1 inch)
  */
 export const PAGE_SIZES = {
@@ -243,53 +286,66 @@ export class ImageToPDFProcessor extends BasePDFProcessor {
     const arrayBuffer = await file.arrayBuffer();
     const uint8Array = new Uint8Array(arrayBuffer);
 
-    // Determine image type and embed
-    let image: Awaited<ReturnType<typeof pdfDoc.embedJpg>>;
+    // Determine image type and embed. TIFF and HEIC can hold several images
+    // (pages), and each one becomes its own PDF page.
+    const images: Awaited<ReturnType<typeof pdfDoc.embedJpg>>[] = [];
     const fileType = file.type.toLowerCase();
     const ext = file.name.split('.').pop()?.toLowerCase() || '';
 
-    try {
-      if (fileType === 'image/jpeg' || ext === 'jpg' || ext === 'jpeg') {
-        image = await pdfDoc.embedJpg(uint8Array);
-      } else if (fileType === 'image/png' || ext === 'png') {
-        image = await pdfDoc.embedPng(uint8Array);
-      } else {
-        throw new Error('Format requires conversion');
+    if (fileType === 'image/tiff' || ext === 'tif' || ext === 'tiff') {
+      for (const png of await decodeTiffPages(arrayBuffer, file.name)) {
+        images.push(await pdfDoc.embedPng(png));
       }
-    } catch (error) {
-      // Fallback: convert to PNG via canvas
-      // This handles cases where extension doesn't match content (e.g. jpg renamed to png)
-      // or formats not natively supported by pdf-lib
-      const isSvg = fileType === 'image/svg+xml' || ext === 'svg';
-      image = await this.convertAndEmbedImage(pdfDoc, file, pdfLib, isSvg ? options.svgScale : 1);
+    } else if (fileType === 'image/heic' || fileType === 'image/heif' || ext === 'heic' || ext === 'heif') {
+      for (const png of await decodeHeicImages(file)) {
+        images.push(await pdfDoc.embedPng(png));
+      }
+    } else {
+      try {
+        if (fileType === 'image/jpeg' || ext === 'jpg' || ext === 'jpeg') {
+          images.push(await pdfDoc.embedJpg(uint8Array));
+        } else if (fileType === 'image/png' || ext === 'png') {
+          images.push(await pdfDoc.embedPng(uint8Array));
+        } else {
+          throw new Error('Format requires conversion');
+        }
+      } catch (error) {
+        // Fallback: convert to PNG via canvas
+        // This handles cases where extension doesn't match content (e.g. jpg renamed to png)
+        // or formats not natively supported by pdf-lib
+        const isSvg = fileType === 'image/svg+xml' || ext === 'svg';
+        images.push(await this.convertAndEmbedImage(pdfDoc, file, pdfLib, isSvg ? options.svgScale : 1));
+      }
     }
 
-    // Calculate page dimensions
-    const { pageWidth, pageHeight } = this.calculatePageDimensions(
-      image.width,
-      image.height,
-      options
-    );
+    for (const image of images) {
+      // Calculate page dimensions
+      const { pageWidth, pageHeight } = this.calculatePageDimensions(
+        image.width,
+        image.height,
+        options
+      );
 
-    // Add page
-    const page = pdfDoc.addPage([pageWidth, pageHeight]);
+      // Add page
+      const page = pdfDoc.addPage([pageWidth, pageHeight]);
 
-    // Calculate image position and size
-    const { x, y, width, height } = this.calculateImagePlacement(
-      image.width,
-      image.height,
-      pageWidth,
-      pageHeight,
-      options
-    );
+      // Calculate image position and size
+      const { x, y, width, height } = this.calculateImagePlacement(
+        image.width,
+        image.height,
+        pageWidth,
+        pageHeight,
+        options
+      );
 
-    // Draw image
-    page.drawImage(image, {
-      x,
-      y,
-      width,
-      height,
-    });
+      // Draw image
+      page.drawImage(image, {
+        x,
+        y,
+        width,
+        height,
+      });
+    }
   }
 
   /**

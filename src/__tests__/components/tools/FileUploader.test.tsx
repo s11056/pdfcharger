@@ -109,6 +109,17 @@ describe('FileUploader', () => {
       expect(screen.getByText('Custom upload description')).toBeInTheDocument();
     });
 
+    it('shows readable format names, folding duplicate spellings', () => {
+      render(
+        <FileUploader
+          onFilesSelected={mockOnFilesSelected}
+          accept={['image/jpeg', '.jpg', '.jpeg', '.png', 'image/tiff', '.tif', '.tiff', 'image/svg+xml']}
+        />
+      );
+
+      expect(screen.getByText('JPG, PNG, TIFF, SVG')).toBeInTheDocument();
+    });
+
     it('displays accepted file types', () => {
       render(
         <FileUploader 
@@ -117,7 +128,7 @@ describe('FileUploader', () => {
         />
       );
       
-      expect(screen.getByText(/application\/pdf, image\/png/)).toBeInTheDocument();
+      expect(screen.getByText('PDF, PNG')).toBeInTheDocument();
     });
 
     it('displays max file size', () => {

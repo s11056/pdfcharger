@@ -64,38 +64,18 @@ export function ImageToPDFTool({ className = '', imageType }: ImageToPDFToolProp
   const cancelledRef = useRef(false);
 
   /**
-   * Get accepted file types based on imageType prop
+   * Accepted file types. Every image page (JPG to PDF, PNG to PDF, ...) shares
+   * this converter, so each one accepts all supported formats; `imageType`
+   * only decides which format is listed first in the file picker.
    */
   const getAcceptedTypes = useCallback(() => {
-    if (imageType) {
-      switch (imageType.toLowerCase()) {
-        case 'jpg':
-        case 'jpeg':
-          return ['image/jpeg', '.jpg', '.jpeg'];
-        case 'png':
-          return ['image/png', '.png'];
-        case 'webp':
-          return ['image/webp', '.webp'];
-        case 'bmp':
-          return ['image/bmp', '.bmp'];
-        case 'tiff':
-        case 'tif':
-          return ['image/tiff', '.tiff', '.tif'];
-        case 'svg':
-          return ['image/svg+xml', '.svg'];
-        case 'heic':
-        case 'heif':
-          return ['image/heic', 'image/heif', '.heic', '.heif'];
-        default:
-          break;
-      }
-    }
-    // All supported formats
-    return [
+    const all = [
       'image/jpeg', 'image/png', 'image/webp', 'image/bmp',
       'image/tiff', 'image/svg+xml', 'image/heic', 'image/heif',
       '.jpg', '.jpeg', '.png', '.webp', '.bmp', '.tiff', '.tif', '.svg', '.heic', '.heif'
     ];
+    const ext = imageType ? `.${imageType.toLowerCase()}` : '';
+    return ext && all.includes(ext) ? [ext, ...all.filter((t) => t !== ext)] : all;
   }, [imageType]);
 
 
@@ -372,12 +352,17 @@ export function ImageToPDFTool({ className = '', imageType }: ImageToPDFToolProp
                 `}
               >
                 {/* Image Preview */}
-                <div className="aspect-square bg-[hsl(var(--color-muted)/0.3)]">
+                <div className="relative flex aspect-square items-center justify-center bg-[hsl(var(--color-muted)/0.3)]">
+                  {/* Shown when the browser can't preview the format (e.g. TIFF/HEIC outside Safari) */}
+                  <span className="text-sm font-bold uppercase text-[hsl(var(--color-muted-foreground))]">
+                    {file.file.name.split('.').pop()}
+                  </span>
                   {file.preview && (
                     <img
                       src={file.preview}
                       alt={file.file.name}
-                      className="w-full h-full object-cover"
+                      className="absolute inset-0 w-full h-full object-cover"
+                      onError={(e) => { e.currentTarget.style.display = 'none'; }}
                     />
                   )}
                 </div>

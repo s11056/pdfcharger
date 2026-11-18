@@ -1209,7 +1209,7 @@
     "tryAgain": "Try again",
     "goHome": "Go home",
     "fileTooLarge": "File is too large. Maximum size is {maxSize}MB.",
-    "fileTypeInvalid": "Invalid file type. Please upload a {acceptedTypes} file.",
+    "fileTypeInvalid": "Invalid file type. Please upload one of these formats: {acceptedTypes}.",
     "fileCorrupted": "The file appears to be corrupted or unreadable.",
     "fileEmpty": "The file is empty.",
     "fileNotPdf": "The file is not a valid PDF.",
@@ -2410,7 +2410,7 @@
     },
     "ocrPdf": {
       "uploadLabel": "Upload PDF File",
-      "uploadDescription": "Drag and drop a scanned PDF file here, or click to browse.",
+      "uploadDescription": "Drag and drop a scanned PDF or an image (JPG, PNG, WebP) here, or click to browse.",
       "optionsTitle": "OCR Options",
       "languages": "Languages",
       "languagesHint": "Select one or more languages for better accuracy",
@@ -3011,7 +3011,7 @@
     },
     "wordToPdf": {
       "uploadLabel": "Upload Word Document",
-      "uploadDescription": "Drag and drop a Word document (.docx) here, or click to browse.",
+      "uploadDescription": "Drag and drop a Word document (.docx, .doc, .odt or .rtf) here, or click to browse.",
       "convertButton": "Convert to PDF",
       "successMessage": "Your Word document has been successfully converted to PDF!"
     },
@@ -3023,13 +3023,13 @@
     },
     "excelToPdf": {
       "uploadLabel": "Upload Excel File",
-      "uploadDescription": "Drag and drop an Excel file (.xlsx) here, or click to browse.",
+      "uploadDescription": "Drag and drop a spreadsheet (.xlsx, .xls, .ods or .csv) here, or click to browse.",
       "convertButton": "Convert to PDF",
       "successMessage": "Your Excel file has been successfully converted to PDF!"
     },
     "pptxToPdf": {
       "uploadLabel": "Upload PowerPoint File",
-      "uploadDescription": "Drag and drop a PowerPoint file (.pptx) here, or click to browse.",
+      "uploadDescription": "Drag and drop a presentation (.pptx, .ppt or .odp) here, or click to browse.",
       "convertButton": "Convert to PDF",
       "successMessage": "Your PowerPoint file has been successfully converted to PDF!"
     },
@@ -3121,7 +3121,7 @@
     },
     "emailToPdf": {
       "uploadLabel": "Upload Email File",
-      "uploadDescription": "Drag and drop an email file (.eml) to convert to PDF.",
+      "uploadDescription": "Drag and drop an email file (.eml or .msg) to convert to PDF.",
       "optionsTitle": "Conversion Options",
       "pageSizeLabel": "Page Size",
       "includeCcBccLabel": "Include CC/BCC fields",
