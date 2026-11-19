@@ -48,7 +48,7 @@ With PDFCharger you get, among others:
 - **[Fill PDF forms](/en/tools/form-filler/)** and **[create your own](/en/tools/form-creator/)** with text fields, checkboxes and dropdowns.
 - **[Compress PDF](/en/tools/compress-pdf/)** to get under email attachment limits.
 - **Convert both ways**: [PDF to Word](/en/tools/pdf-to-docx/), Excel, PowerPoint and images, and back again.
-- **[OCR](/en/tools/ocr-pdf/)** to turn scanned pages into searchable, selectable text, in languages including English, Spanish, French, German, Hindi, Arabic, Chinese and Japanese.
+- **[OCR](/en/tools/ocr-pdf/)** to turn scanned pages into searchable, selectable text, in 12 languages including English, Spanish, French, German, Portuguese, Arabic, Chinese, Japanese and Korean.
 - **[Compare two PDFs](/en/tools/compare-pdfs/)** side by side or as an overlay to spot what changed.
 - **[Merge, split and reorder pages](/en/tools/pdf-multi-tool/)**, add page numbers, watermarks and stamps.
 
@@ -94,3 +94,5 @@ The best PDF editor of 2027 should edit real text, keep your files private, be g
 - open source, so you don't have to take our word for it.
 
 [Open the PDF editor](/en/tools/edit-pdf/) and try it on your next document.
+
+Want the bigger picture? Read [why browser-based PDF tools are replacing upload sites](/en/blog/why-browser-based-pdf-tools-are-replacing-upload-sites/), with links to all our 2027 guides.
