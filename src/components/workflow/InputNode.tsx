@@ -168,10 +168,10 @@ const InputNode: React.FC<InputNodeProps> = ({
                     </div>
                     <div>
                         <h4 className="text-xs font-semibold text-[hsl(var(--color-foreground))]">
-                            {data.label || (isImageNode ? '图片输入 (Image Input)' : 'PDF 输入 (PDF Input)')}
+                            {data.label || (isImageNode ? 'Image Input' : 'PDF Input')}
                         </h4>
                         <span className="text-[10px] font-medium text-emerald-600 dark:text-emerald-400">
-                            数据输入源 (Input Node)
+                            Input
                         </span>
                     </div>
                 </div>
@@ -181,7 +181,7 @@ const InputNode: React.FC<InputNodeProps> = ({
                         <button
                             type="button"
                             onClick={handleClearAll}
-                            title="清空已选文件"
+                            title="Clear selected files"
                             className="p-1 rounded text-muted-foreground hover:text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition-colors"
                         >
                             <Trash2 size={13} />
@@ -190,7 +190,7 @@ const InputNode: React.FC<InputNodeProps> = ({
                     <button
                         type="button"
                         onClick={handleDeleteNode}
-                        title="删除节点"
+                        title="Delete node"
                         className="p-1 rounded text-muted-foreground hover:text-foreground hover:bg-black/5 dark:hover:bg-white/10 transition-colors"
                     >
                         <X size={13} />
@@ -220,7 +220,7 @@ const InputNode: React.FC<InputNodeProps> = ({
                     <div className="space-y-1.5">
                         <div className="flex items-center justify-between text-[11px] text-muted-foreground px-0.5">
                             <span className="flex items-center gap-1 text-emerald-600 dark:text-emerald-400 font-medium">
-                                <CheckCircle2 size={12} /> 已加载 {files.length} 个文件
+                                <CheckCircle2 size={12} /> {files.length} file(s) loaded
                             </span>
                             <div className="flex items-center gap-2">
                                 <button
@@ -230,16 +230,16 @@ const InputNode: React.FC<InputNodeProps> = ({
                                         window.dispatchEvent(new CustomEvent('workflow:open-preview'));
                                     }}
                                     className="flex items-center gap-0.5 text-xs text-[hsl(var(--color-primary))] hover:underline cursor-pointer"
-                                    title="打开实时预览窗口"
+                                    title="Open live preview"
                                 >
-                                    <Eye size={11} /> 预览
+                                    <Eye size={11} /> Preview
                                 </button>
                                 <button
                                     type="button"
                                     onClick={() => fileInputRef.current?.click()}
                                     className="flex items-center gap-0.5 text-xs text-emerald-600 dark:text-emerald-400 hover:underline cursor-pointer"
                                 >
-                                    <Plus size={11} /> 追加
+                                    <Plus size={11} /> Add
                                 </button>
                             </div>
                         </div>
@@ -280,7 +280,7 @@ const InputNode: React.FC<InputNodeProps> = ({
                             }`}
                         >
                             <span className="text-[10px] text-muted-foreground">
-                                拖放或点击可追加更多文件
+                                Drop or click to add more files
                             </span>
                         </div>
                     </div>
@@ -302,10 +302,10 @@ const InputNode: React.FC<InputNodeProps> = ({
                                 <Upload size={16} />
                             </div>
                             <div className="text-[11px] font-medium text-foreground">
-                                拖放文件至此，或 <span className="text-emerald-600 dark:text-emerald-400 underline">点击上传</span>
+                                Drop files here, or <span className="text-emerald-600 dark:text-emerald-400 underline">click to upload</span>
                             </div>
                             <div className="text-[10px] text-muted-foreground">
-                                支持 {acceptedExtensions.join(', ')}
+                                Supports {acceptedExtensions.join(', ')}
                             </div>
                         </div>
                     </div>
@@ -327,7 +327,7 @@ const InputNode: React.FC<InputNodeProps> = ({
             />
             {/* Output Socket Label Badge */}
             <div className="absolute right-2.5 bottom-1 text-[9px] font-mono text-muted-foreground pointer-events-none">
-                输出 ➔
+                Output ➔
             </div>
         </div>
     );

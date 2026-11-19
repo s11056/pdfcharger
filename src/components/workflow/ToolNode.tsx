@@ -58,54 +58,54 @@ const categoryBadgeStyles: Record<string, { bg: string; text: string; label: str
  */
 function getNodeSettingsSummary(toolId: string, settings?: Record<string, unknown>): string | null {
     if (!settings || Object.keys(settings).length === 0) {
-        if (toolId === 'rotate-pdf') return '旋转: 90° 顺时针';
-        if (toolId === 'compress-pdf') return '中等质量 (标准算法)';
-        if (toolId === 'split-pdf') return '按单页拆分';
-        if (toolId === 'download-pdf') return '保存: output.pdf';
-        if (toolId === 'download-zip') return '归档: output.zip';
+        if (toolId === 'rotate-pdf') return 'Rotate: 90° clockwise';
+        if (toolId === 'compress-pdf') return 'Medium quality';
+        if (toolId === 'split-pdf') return 'Split into single pages';
+        if (toolId === 'download-pdf') return 'Save: output.pdf';
+        if (toolId === 'download-zip') return 'Archive: output.zip';
         return null;
     }
 
     switch (toolId) {
         case 'rotate-pdf': {
             const angle = settings.angle ?? 90;
-            return `旋转: ${angle}°`;
+            return `Rotate: ${angle}°`;
         }
         case 'add-watermark': {
             const isImage = settings.watermarkType === 'image';
             const isRepeat = Boolean(settings.repeat);
             if (isImage) {
-                return `图片水印${isRepeat ? ' (平铺)' : ''}`;
+                return `Image watermark${isRepeat ? ' (tiled)' : ''}`;
             }
             const text = String(settings.text || 'CONFIDENTIAL');
-            return `${isRepeat ? '平铺水印: ' : '水印: '}"${text}"`;
+            return `${isRepeat ? 'Tiled watermark: ' : 'Watermark: '}"${text}"`;
         }
         case 'compress-pdf': {
             const quality = String(settings.quality || 'medium');
-            const qualityMap: Record<string, string> = { low: '低体积', medium: '中等质量', high: '高质量', maximum: '极佳质量' };
+            const qualityMap: Record<string, string> = { low: 'Smallest size', medium: 'Medium quality', high: 'High quality', maximum: 'Best quality' };
             const algo = String(settings.algorithm || 'standard');
             return `${qualityMap[quality] || quality} (${algo})`;
         }
         case 'split-pdf': {
             const mode = String(settings.splitMode || 'every-page');
             if (mode === 'every-n-pages') {
-                return `每 ${settings.pagesPerSplit || 1} 页拆分`;
+                return `Split every ${settings.pagesPerSplit || 1} page(s)`;
             }
             if (mode === 'ranges' && settings.pageRanges) {
-                return `范围: ${settings.pageRanges}`;
+                return `Ranges: ${settings.pageRanges}`;
             }
-            return '单页拆分';
+            return 'Single pages';
         }
         case 'page-numbers': {
             const pos = String(settings.position || 'bottom-center');
             const posMap: Record<string, string> = {
-                'top-left': '左上', 'top-center': '顶部居中', 'top-right': '右上',
-                'bottom-left': '左下', 'bottom-center': '底部居中', 'bottom-right': '右下'
+                'top-left': 'top left', 'top-center': 'top center', 'top-right': 'top right',
+                'bottom-left': 'bottom left', 'bottom-center': 'bottom center', 'bottom-right': 'bottom right'
             };
-            return `页码: ${posMap[pos] || pos} (第${settings.startNumber || 1}页起)`;
+            return `Page numbers: ${posMap[pos] || pos} (from ${settings.startNumber || 1})`;
         }
         case 'download-pdf': {
-            return `保存: ${settings.filename || 'output.pdf'}`;
+            return `Save: ${settings.filename || 'output.pdf'}`;
         }
         case 'download-zip': {
             return `ZIP: ${settings.filename || 'output.zip'}`;
@@ -119,48 +119,48 @@ function getNodeSettingsSummary(toolId: string, settings?: Record<string, unknow
             const op = String(settings.operator || 'greater-than');
             const opMap: Record<string, string> = {
                 'greater-than': '>', 'less-than': '<', 'equals': '=',
-                'not-equals': '!=', 'contains': '包含', 'ends-with': '结尾为'
+                'not-equals': '!=', 'contains': 'contains', 'ends-with': 'ends with'
             };
             const typeMap: Record<string, string> = {
-                'file-count': '文件数', 'file-size': '大小', 'file-format': '格式'
+                'file-count': 'File count', 'file-size': 'Size', 'file-format': 'Format'
             };
             return `${typeMap[type] || type} ${opMap[op] || op} ${settings.value ?? 1}${type === 'file-size' ? (settings.sizeUnit || 'MB') : ''}`;
         }
         case 'n-up-pdf': {
-            return `${settings.pagesPerSheet || 4} 拼一版 (${settings.pageSize || 'A4'})`;
+            return `${settings.pagesPerSheet || 4} per sheet (${settings.pageSize || 'A4'})`;
         }
         case 'extract-pages':
         case 'delete-pages': {
-            return `页码: ${settings.pageRange || '1'}`;
+            return `Pages: ${settings.pageRange || '1'}`;
         }
         case 'ocr-pdf': {
             return `OCR: ${settings.language || settings.languages || 'eng'}`;
         }
         case 'encrypt-pdf': {
-            return settings.userPassword ? '设置密码保护' : '加密安全';
+            return settings.userPassword ? 'Password protected' : 'Encrypt';
         }
         case 'flatten-pdf': {
-            return '扁平化表单与注释';
+            return 'Flatten forms and annotations';
         }
         case 'table-of-contents': {
-            return `目录: "${settings.title || 'Table of Contents'}"`;
+            return `Contents: "${settings.title || 'Table of Contents'}"`;
         }
         case 'header-footer': {
             const parts = [];
-            if (settings.headerText) parts.push(`眉: "${settings.headerText}"`);
-            if (settings.footerText) parts.push(`脚: "${settings.footerText}"`);
-            return parts.join(' | ') || '页眉页脚';
+            if (settings.headerText) parts.push(`Header: "${settings.headerText}"`);
+            if (settings.footerText) parts.push(`Footer: "${settings.footerText}"`);
+            return parts.join(' | ') || 'Header & footer';
         }
         case 'background-color': {
-            return `背景色: ${settings.color || '#FFFFFF'}`;
+            return `Background: ${settings.color || '#FFFFFF'}`;
         }
         case 'text-color': {
-            return `文字色: ${settings.color || '#000000'}`;
+            return `Text colour: ${settings.color || '#000000'}`;
         }
         default: {
             if (settings.filename) return `${settings.filename}`;
-            if (settings.quality) return `质量: ${settings.quality}`;
-            if (settings.color) return `颜色: ${settings.color}`;
+            if (settings.quality) return `Quality: ${settings.quality}`;
+            if (settings.color) return `Colour: ${settings.color}`;
             return null;
         }
     }
@@ -260,7 +260,7 @@ const ToolNode = memo(({ id, data, selected = false, isConnectable = true }: Too
                     borderColor: '#ffffff',
                 }}
                 className="!w-3.5 !h-3.5 !border-2 shadow-sm transition-transform hover:scale-125"
-                title={`输入类型: ${inputSocket.label}`}
+                title={`Input type: ${inputSocket.label}`}
             />
 
             {/* Top Category Badge */}
@@ -301,7 +301,7 @@ const ToolNode = memo(({ id, data, selected = false, isConnectable = true }: Too
 
             {/* Inline Parameter Summary Badge */}
             {settingsSummary && (
-                <div className="mt-2 flex items-center gap-1.5 px-2 py-1 rounded-md bg-[hsl(var(--color-muted)/0.7)] dark:bg-gray-800/60 border border-[hsl(var(--color-border)/0.6)] text-[11px] text-[hsl(var(--color-foreground))] font-medium truncate" title={`参数: ${settingsSummary}`}>
+                <div className="mt-2 flex items-center gap-1.5 px-2 py-1 rounded-md bg-[hsl(var(--color-muted)/0.7)] dark:bg-gray-800/60 border border-[hsl(var(--color-border)/0.6)] text-[11px] text-[hsl(var(--color-foreground))] font-medium truncate" title={`Settings: ${settingsSummary}`}>
                     <LucideIcons.Sliders className="w-3 h-3 text-[hsl(var(--color-primary))] shrink-0" />
                     <span className="truncate">{settingsSummary}</span>
                 </div>
@@ -349,7 +349,7 @@ const ToolNode = memo(({ id, data, selected = false, isConnectable = true }: Too
                         className="w-full flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 active:scale-98 text-white text-xs font-semibold shadow-sm transition-all"
                     >
                         <LucideIcons.Download className="w-3.5 h-3.5" />
-                        <span>立即下载产物</span>
+                        <span>Download output</span>
                     </button>
                 </div>
             )}
@@ -360,7 +360,7 @@ const ToolNode = memo(({ id, data, selected = false, isConnectable = true }: Too
                     <div className="flex items-center gap-1.5">
                         <LucideIcons.CheckCircle className="w-3 h-3 text-emerald-600 dark:text-emerald-400 shrink-0" />
                         <span className="text-[10px] text-emerald-600 dark:text-emerald-400 font-medium">
-                            {data.outputFiles.length} 个生成文件
+                            {data.outputFiles.length} file(s) created
                         </span>
                     </div>
                     {/* Quick Preview Button */}
@@ -377,10 +377,10 @@ const ToolNode = memo(({ id, data, selected = false, isConnectable = true }: Too
                             }
                         }}
                         className="flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-950/60 hover:bg-indigo-100 dark:hover:bg-indigo-900/80 transition-colors"
-                        title="在新标签页中快速预览当前步骤输出"
+                        title="Preview this step's output in a new tab"
                     >
                         <LucideIcons.Eye className="w-3 h-3" />
-                        <span>预览步骤</span>
+                        <span>Preview step</span>
                     </button>
                 </div>
             )}
@@ -408,7 +408,7 @@ const ToolNode = memo(({ id, data, selected = false, isConnectable = true }: Too
                     borderColor: '#ffffff',
                 }}
                 className="!w-3.5 !h-3.5 !border-2 shadow-sm transition-transform hover:scale-125"
-                title={`输出类型: ${outputSocket.label}`}
+                title={`Output type: ${outputSocket.label}`}
             />
         </div>
     );

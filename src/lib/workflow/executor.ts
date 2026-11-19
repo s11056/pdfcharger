@@ -292,7 +292,7 @@ export async function executeNode(
                     : files;
 
                 if (sourceFiles.length === 0) {
-                    throw new Error(`请先在【${node.data.label || '输入节点'}】中上传或拖入文件`);
+                    throw new Error(`Please add files to "${node.data.label || 'Input'}" first`);
                 }
 
                 onProgress?.(100);

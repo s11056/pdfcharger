@@ -589,7 +589,7 @@ function WorkflowEditorContent() {
 
             const hasLocalFiles = inputNodes.some(n => n.data.inputFiles && n.data.inputFiles.length > 0);
             if (inputFiles.length === 0 && !hasLocalFiles) {
-                throw new Error('请先上传文件（可在顶部面板上传，或直接在输入节点卡片中上传）');
+                throw new Error('Please add files first (use the top panel, or upload directly in the input card)');
             }
 
             logger.log(
@@ -1233,7 +1233,7 @@ function WorkflowEditorContent() {
                                     : 'opacity-35 text-[hsl(var(--color-muted-foreground))] cursor-not-allowed'
                                 }
                             `}
-                            title={`${tWorkflow('undo') || '撤销'} (Ctrl+Z)`}
+                            title={`${tWorkflow('undo') || 'Undo'} (Ctrl+Z)`}
                         >
                             <Undo2 className="w-4 h-4" />
                         </button>
@@ -1247,7 +1247,7 @@ function WorkflowEditorContent() {
                                     : 'opacity-35 text-[hsl(var(--color-muted-foreground))] cursor-not-allowed'
                                 }
                             `}
-                            title={`${tWorkflow('redo') || '重做'} (Ctrl+Shift+Z)`}
+                            title={`${tWorkflow('redo') || 'Redo'} (Ctrl+Shift+Z)`}
                         >
                             <Redo2 className="w-4 h-4" />
                         </button>
@@ -1264,7 +1264,7 @@ function WorkflowEditorContent() {
                                     : 'opacity-35 text-[hsl(var(--color-muted-foreground))] cursor-not-allowed'
                                 }
                             `}
-                            title={tWorkflow('autoLayout') || '自动整理布局 (Auto Layout)'}
+                            title={tWorkflow('autoLayout') || 'Auto layout'}
                         >
                             <LayoutGrid className="w-4 h-4" />
                         </button>
@@ -1279,7 +1279,7 @@ function WorkflowEditorContent() {
                                     : 'opacity-35 text-[hsl(var(--color-muted-foreground))] cursor-not-allowed'
                                 }
                             `}
-                            title={`${tWorkflow('duplicateNode') || '复制节点 (Duplicate)'} (Ctrl+D)`}
+                            title={`${tWorkflow('duplicateNode') || 'Duplicate node'} (Ctrl+D)`}
                         >
                             <Copy className="w-4 h-4" />
                         </button>

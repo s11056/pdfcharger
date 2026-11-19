@@ -16,7 +16,7 @@ interface ConditionalNodeProps {
  * Format condition settings into a clean human-readable summary badge
  */
 function getConditionSummary(settings?: Record<string, unknown>): string {
-    if (!settings) return '文件数量 > 1';
+    if (!settings) return 'File count > 1';
 
     const condType = (settings.conditionType as string) || 'file-count';
     const op = (settings.operator as string) || 'greater-than';
@@ -29,25 +29,25 @@ function getConditionSummary(settings?: Record<string, unknown>): string {
         'less-than': '<',
         'greater-or-equal': '≥',
         'less-or-equal': '≤',
-        'contains': '包含',
-        'not-contains': '不包含',
-        'matches': '正则匹配',
+        'contains': 'contains',
+        'not-contains': 'does not contain',
+        'matches': 'matches',
     };
 
     const symbol = opSymbols[op] || op;
 
     if (condType === 'file-count') {
-        return `文件数量 ${symbol} ${val}`;
+        return `File count ${symbol} ${val}`;
     }
     if (condType === 'file-size') {
         const unit = (settings.sizeUnit as string) || 'MB';
-        return `文件大小 ${symbol} ${val} ${unit}`;
+        return `File size ${symbol} ${val} ${unit}`;
     }
     if (condType === 'file-format') {
-        return `格式 ${symbol} ${String(val).toUpperCase()}`;
+        return `Format ${symbol} ${String(val).toUpperCase()}`;
     }
 
-    return `条件 ${symbol} ${val}`;
+    return `Condition ${symbol} ${val}`;
 }
 
 /**
@@ -95,7 +95,7 @@ export const ConditionalNode = memo(({ id, data, selected = false, isConnectable
                 <button
                     onClick={handleDelete}
                     className="absolute -top-2 -right-2 w-5 h-5 bg-red-500 hover:bg-red-600 text-white rounded-full flex items-center justify-center shadow-md transition-all z-20"
-                    title="删除节点"
+                    title="Delete node"
                 >
                     <X className="w-3 h-3" />
                 </button>
@@ -107,7 +107,7 @@ export const ConditionalNode = memo(({ id, data, selected = false, isConnectable
                 position={Position.Left}
                 isConnectable={isConnectable}
                 className="!w-3.5 !h-3.5 !bg-indigo-500 !border-2 !border-white dark:!border-gray-900 transition-transform hover:scale-125"
-                title="输入连线"
+                title="Input connection"
             />
 
             {/* Header: Icon + Title */}
@@ -117,7 +117,7 @@ export const ConditionalNode = memo(({ id, data, selected = false, isConnectable
                 </div>
                 <div className="flex-1 min-w-0">
                     <p className="text-xs font-semibold text-[hsl(var(--color-foreground))] truncate">
-                        {data.label || '条件分流'}
+                        {data.label || 'Condition'}
                     </p>
                     <p className="text-[10px] text-[hsl(var(--color-muted-foreground))]">
                         Condition Gateway
@@ -137,11 +137,11 @@ export const ConditionalNode = memo(({ id, data, selected = false, isConnectable
                 <div className="mt-2 flex items-center gap-1 text-[11px] font-medium">
                     {data.activeBranch === 'true' ? (
                         <span className="text-emerald-600 dark:text-emerald-400 flex items-center gap-1">
-                            <Check className="w-3 h-3" /> 已走 True 分支
+                            <Check className="w-3 h-3" /> Took the True branch
                         </span>
                     ) : (
                         <span className="text-amber-600 dark:text-amber-400 flex items-center gap-1">
-                            <Check className="w-3 h-3" /> 已走 False 分支
+                            <Check className="w-3 h-3" /> Took the False branch
                         </span>
                     )}
                 </div>
@@ -149,7 +149,7 @@ export const ConditionalNode = memo(({ id, data, selected = false, isConnectable
 
             {data.status === 'skipped' && (
                 <div className="mt-1.5 text-[10px] text-gray-500 italic">
-                    上游分支未激活 (已跳过)
+                    Upstream branch not active (skipped)
                 </div>
             )}
 
@@ -164,7 +164,7 @@ export const ConditionalNode = memo(({ id, data, selected = false, isConnectable
             <div className="mt-3 pt-2 border-t border-[hsl(var(--color-border)/0.6)] space-y-2">
                 {/* True branch handle label */}
                 <div className="flex items-center justify-between text-[11px]">
-                    <span className="text-muted-foreground text-[10px]">满足条件:</span>
+                    <span className="text-muted-foreground text-[10px]">If true:</span>
                     <span className={`font-semibold flex items-center gap-1 ${
                         data.activeBranch === 'true'
                             ? 'text-emerald-600 dark:text-emerald-400 ring-1 ring-emerald-400 rounded px-1'
@@ -176,7 +176,7 @@ export const ConditionalNode = memo(({ id, data, selected = false, isConnectable
 
                 {/* False branch handle label */}
                 <div className="flex items-center justify-between text-[11px]">
-                    <span className="text-muted-foreground text-[10px]">不满足/默认:</span>
+                    <span className="text-muted-foreground text-[10px]">Otherwise:</span>
                     <span className={`font-semibold flex items-center gap-1 ${
                         data.activeBranch === 'false'
                             ? 'text-amber-600 dark:text-amber-400 ring-1 ring-amber-400 rounded px-1'
@@ -195,7 +195,7 @@ export const ConditionalNode = memo(({ id, data, selected = false, isConnectable
                 style={{ top: '68%' }}
                 isConnectable={isConnectable}
                 className="!w-3.5 !h-3.5 !bg-emerald-500 !border-2 !border-white dark:!border-gray-900 transition-transform hover:scale-125"
-                title="True 分支 (满足条件)"
+                title="True branch (condition met)"
             />
 
             {/* Source Handle: False Branch */}
@@ -206,7 +206,7 @@ export const ConditionalNode = memo(({ id, data, selected = false, isConnectable
                 style={{ top: '88%' }}
                 isConnectable={isConnectable}
                 className="!w-3.5 !h-3.5 !bg-amber-500 !border-2 !border-white dark:!border-gray-900 transition-transform hover:scale-125"
-                title="False 分支 (不满足条件)"
+                title="False branch (condition not met)"
             />
         </div>
     );

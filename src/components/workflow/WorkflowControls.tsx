@@ -161,7 +161,7 @@ export function WorkflowControls({
             return (
                 <div className="flex items-center gap-1.5 px-2.5 py-1 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 rounded-full text-xs font-medium whitespace-nowrap shrink-0">
                     <CheckCircle className="w-3.5 h-3.5" />
-                    <span>{tWorkflow('complete') || '已完成'}</span>
+                    <span>{tWorkflow('complete') || 'Complete'}</span>
                 </div>
             );
         }
@@ -169,7 +169,7 @@ export function WorkflowControls({
             return (
                 <div className="flex items-center gap-1.5 px-2.5 py-1 bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-500/20 rounded-full text-xs font-medium whitespace-nowrap shrink-0">
                     <XCircle className="w-3.5 h-3.5" />
-                    <span>{tWorkflow('error') || '出错了'}</span>
+                    <span>{tWorkflow('error') || 'Error'}</span>
                 </div>
             );
         }
@@ -178,7 +178,7 @@ export function WorkflowControls({
                 <div className="flex items-center gap-1.5 px-2.5 py-1 bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 rounded-full text-xs font-medium whitespace-nowrap shrink-0">
                     <AlertCircle className="w-3.5 h-3.5" />
                     <span>
-                        {validation.errors.length} {tWorkflow('issues') || '个待处理'}
+                        {validation.errors.length} {tWorkflow('issues') || 'issue(s)'}
                     </span>
                 </div>
             );
@@ -209,7 +209,7 @@ export function WorkflowControls({
                             className="h-8 px-2.5 text-xs whitespace-nowrap shrink-0"
                         >
                             <Upload className="w-3.5 h-3.5 mr-1.5" />
-                            {tWorkflow('selectFiles') || '选择文件'}
+                            {tWorkflow('selectFiles') || 'Select files'}
                         </Button>
                         {selectedFiles.length > 0 ? (
                             <button
@@ -223,20 +223,20 @@ export function WorkflowControls({
                                     transition-colors whitespace-nowrap shrink-0
                                     ${isRunning ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
                                 `}
-                                title={tWorkflow('viewEditFiles') || '查看已选文件'}
+                                title={tWorkflow('viewEditFiles') || 'View selected files'}
                             >
                                 <span className="font-medium">
-                                    {selectedFiles.length} 个文件
+                                    {selectedFiles.length} file(s)
                                 </span>
                                 <Edit2 className="w-3 h-3" />
                             </button>
                         ) : nodeFiles.length > 0 ? (
                             <div
                                 className="flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 text-xs font-medium cursor-default whitespace-nowrap shrink-0"
-                                title="源文件已载入画布输入卡片中，可直接执行"
+                                title="Files are loaded in the input card on the canvas, ready to run"
                             >
                                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                                <span>输入卡片就绪 ({nodeFiles.length})</span>
+                                <span>Input ready ({nodeFiles.length})</span>
                             </div>
                         ) : null}
                     </div>
@@ -253,7 +253,7 @@ export function WorkflowControls({
                         className="h-8 px-3 text-xs whitespace-nowrap shrink-0 font-medium shadow-sm"
                     >
                         <Play className="w-3.5 h-3.5 mr-1.5 fill-current" />
-                        {tWorkflow('execute') || '执行'}
+                        {tWorkflow('execute') || 'Run'}
                     </Button>
 
                     {/* Preview Toggle button */}
@@ -264,10 +264,10 @@ export function WorkflowControls({
                             onClick={onTogglePreview}
                             disabled={!hasAnyFiles}
                             className="h-8 px-2.5 text-xs whitespace-nowrap shrink-0"
-                            title={tWorkflow('preview') || '实时预览'}
+                            title={tWorkflow('preview') || 'Live preview'}
                         >
                             <Eye className="w-3.5 h-3.5 mr-1.5 text-[hsl(var(--color-primary))]" />
-                            <span>{tWorkflow('preview') || '预览'}</span>
+                            <span>{tWorkflow('preview') || 'Preview'}</span>
                         </Button>
                     )}
 
@@ -280,7 +280,7 @@ export function WorkflowControls({
                             className="h-8 px-2.5 text-xs text-rose-600 border-rose-300 hover:bg-rose-50 whitespace-nowrap shrink-0"
                         >
                             <Square className="w-3.5 h-3.5 mr-1.5" />
-                            {tWorkflow('stop') || '停止'}
+                            {tWorkflow('stop') || 'Stop'}
                         </Button>
                     )}
 
@@ -292,7 +292,7 @@ export function WorkflowControls({
                 <div className="flex items-center gap-1.5 shrink-0">
                     {/* Node count */}
                     <span className="text-xs px-2 py-1 rounded bg-[hsl(var(--color-muted))] text-[hsl(var(--color-muted-foreground))] whitespace-nowrap shrink-0">
-                        {nodes.length} 节点
+                        {nodes.length} nodes
                     </span>
 
                     {/* Save */}
@@ -304,7 +304,7 @@ export function WorkflowControls({
                         className="h-8 px-2.5 text-xs whitespace-nowrap shrink-0"
                     >
                         <Save className="w-3.5 h-3.5 mr-1.5" />
-                        {tCommon('buttons.save') || '保存'}
+                        {tCommon('buttons.save') || 'Save'}
                     </Button>
 
                     {/* Import */}
@@ -322,7 +322,7 @@ export function WorkflowControls({
                         className="h-8 px-2.5 text-xs whitespace-nowrap shrink-0"
                     >
                         <Download className="w-3.5 h-3.5 mr-1.5" />
-                        {tWorkflow('import') || '导入'}
+                        {tWorkflow('import') || 'Import'}
                     </Button>
 
                     {/* Clear */}
@@ -334,7 +334,7 @@ export function WorkflowControls({
                         className="h-8 px-2 text-xs text-rose-600 hover:text-rose-700 hover:bg-rose-50 dark:hover:bg-rose-950/30 whitespace-nowrap shrink-0"
                     >
                         <Trash2 className="w-3.5 h-3.5 mr-1" />
-                        {tWorkflow('clear') || '清空'}
+                        {tWorkflow('clear') || 'Clear'}
                     </Button>
 
                     {/* Sidebar Toggle */}
@@ -347,7 +347,7 @@ export function WorkflowControls({
                                         ? 'bg-[hsl(var(--color-primary)/0.1)] text-[hsl(var(--color-primary))] border-[hsl(var(--color-primary)/0.3)]'
                                         : 'text-[hsl(var(--color-muted-foreground))] hover:bg-[hsl(var(--color-muted))] border-transparent'
                                 }`}
-                                title={isRightSidebarCollapsed ? '展开模板库 (宽画布模式)' : '收起模板库 (全景大画布)'}
+                                title={isRightSidebarCollapsed ? 'Show templates' : 'Hide templates (wider canvas)'}
                             >
                                 <PanelRight className="w-4 h-4" />
                             </button>
@@ -361,7 +361,7 @@ export function WorkflowControls({
                 <div className="absolute top-3 left-1/2 -translate-x-1/2 z-30 flex items-center gap-2.5 px-3.5 py-1.5 bg-white/95 dark:bg-zinc-900/95 backdrop-blur-md border border-emerald-500/30 rounded-full shadow-lg shadow-emerald-500/10 text-xs whitespace-nowrap animate-in fade-in slide-in-from-top-2 duration-200">
                     <div className="flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400 font-medium">
                         <CheckCircle className="w-3.5 h-3.5 text-emerald-500" />
-                        <span>工作流执行成功 ({executionState.outputFiles.length} 个产物)</span>
+                        <span>Workflow complete ({executionState.outputFiles.length} file(s))</span>
                     </div>
                     <div className="h-3 w-px bg-zinc-200 dark:bg-zinc-700" />
                     <div className="flex items-center gap-1.5">
@@ -391,7 +391,7 @@ export function WorkflowControls({
                                     className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-emerald-600 hover:bg-emerald-700 text-white font-medium text-xs shadow-sm transition-colors cursor-pointer"
                                 >
                                     {isZipping ? <Loader2 className="w-3 h-3 animate-spin" /> : <Archive className="w-3 h-3" />}
-                                    <span>打包 ZIP</span>
+                                    <span>Download ZIP</span>
                                 </button>
                                 <button
                                     onClick={() => {
@@ -404,7 +404,7 @@ export function WorkflowControls({
                                     className="flex items-center gap-1 px-2 py-1 rounded-full bg-zinc-100 hover:bg-zinc-200 dark:bg-zinc-800 dark:hover:bg-zinc-700 text-zinc-700 dark:text-zinc-200 text-xs transition-colors cursor-pointer"
                                 >
                                     <Download className="w-3 h-3" />
-                                    <span>分别下载</span>
+                                    <span>Download separately</span>
                                 </button>
                             </>
                         ) : (
@@ -418,13 +418,13 @@ export function WorkflowControls({
                                 className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-emerald-600 hover:bg-emerald-700 text-white font-medium text-xs shadow-sm transition-colors cursor-pointer"
                             >
                                 <Download className="w-3 h-3" />
-                                <span>立即下载结果</span>
+                                <span>Download result</span>
                             </button>
                         )}
                         <button
                             onClick={() => setIsDismissedSuccess(true)}
                             className="p-1 rounded-full text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors ml-0.5 cursor-pointer"
-                            title="关闭提示"
+                            title="Close"
                         >
                             <X className="w-3 h-3" />
                         </button>

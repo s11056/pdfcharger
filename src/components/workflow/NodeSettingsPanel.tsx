@@ -2730,7 +2730,7 @@ export function NodeSettingsPanel({ node, onClose, onUpdateSettings }: NodeSetti
                             {settings.conditionType === 'file-format' && (
                                 <input
                                     type="text"
-                                    placeholder="例如: pdf, docx, png, jpg"
+                                    placeholder="e.g. pdf, docx, png, jpg"
                                     value={(settings.value as string) || ''}
                                     onChange={(e) => handleFieldChange('value', e.target.value)}
                                     className="w-full px-3 py-2 text-sm rounded-md border border-[hsl(var(--color-border))] bg-[hsl(var(--color-background))] focus:outline-none focus:ring-2 focus:ring-[hsl(var(--color-primary))]"
