@@ -10,6 +10,7 @@ import { siteConfig } from '@/config/site';
 import { locales, type Locale } from '@/lib/i18n/config';
 import { getAllTools } from '@/config/tools';
 import { COMPRESS_PRESETS } from '@/config/compress-presets';
+import { TOOL_CATEGORIES } from '@/types/tool';
 import { getAllPosts, getBlogLocales } from '@/lib/blog/posts';
 
 // Required for static export
@@ -45,6 +46,8 @@ const STATIC_PAGES = [
   { path: '/faq', priority: PRIORITY.static, changeFrequency: CHANGE_FREQUENCY.static },
   { path: '/privacy', priority: PRIORITY.static, changeFrequency: CHANGE_FREQUENCY.static },
   { path: '/contact', priority: PRIORITY.static, changeFrequency: CHANGE_FREQUENCY.static },
+  { path: '/studio', priority: PRIORITY.toolPage, changeFrequency: CHANGE_FREQUENCY.toolPage },
+  { path: '/workflow', priority: PRIORITY.toolPage, changeFrequency: CHANGE_FREQUENCY.toolPage },
 ];
 
 /**
@@ -70,6 +73,16 @@ function generateLocaleEntries(locale: Locale, lastModified: Date): MetadataRout
       url: `${siteConfig.url}/${locale}/tools/${tool.slug}/`,
       lastModified,
       changeFrequency: CHANGE_FREQUENCY.toolPage,
+      priority: PRIORITY.toolPage,
+    });
+  }
+
+  // Tool category pages
+  for (const category of TOOL_CATEGORIES) {
+    entries.push({
+      url: `${siteConfig.url}/${locale}/tools/category/${category}/`,
+      lastModified,
+      changeFrequency: CHANGE_FREQUENCY.tools,
       priority: PRIORITY.toolPage,
     });
   }
@@ -133,5 +146,5 @@ export function getSitemapUrlCount(): number {
   const toolPagesCount = tools.length;
   const localesCount = locales.length;
   
-  return (staticPagesCount + toolPagesCount + COMPRESS_PRESETS.length) * localesCount;
+  return (staticPagesCount + toolPagesCount + TOOL_CATEGORIES.length + COMPRESS_PRESETS.length) * localesCount;
 }
