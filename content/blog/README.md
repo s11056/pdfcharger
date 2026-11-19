@@ -20,4 +20,7 @@ Link tools as [Compress PDF](/en/tools/compress-pdf/).
 - `updated` is optional. Set it only when the content meaningfully changes; it feeds the sitemap `lastmod`.
 - `tools` are tool ids from `src/config/tools.ts`, shown as cards under the post.
 - `draft: true` shows the post in `npm run dev` only. Production builds need at least one non-draft post.
-- The blog is English-only on purpose. Translate a post only once it ranks.
+- Translations go in a folder named after the locale, using the English post's file name,
+  e.g. `content/blog/hi/compress-pdf-to-100kb.md` is served at `/hi/blog/compress-pdf-to-100kb/`.
+  Link tools with the same locale (`/hi/tools/compress-pdf/`). Pages link to each other with hreflang automatically.
+- A locale's blog index lists its translated posts, then the English posts that aren't translated yet.

@@ -595,7 +595,13 @@
       "successTitle": "Optimizare finalizată!",
       "zipDownload": "Descărcați ZIP ({count} fișiere)",
       "successDone": "Documentul PDF a fost optimizat local!",
-      "sizeInfo": "Dimensiune inițială: {size} MB • S-au curățat fragmentele învechite și fluxurile de metadate local."
+      "sizeInfo": "Dimensiune inițială: {size} MB • S-au curățat fragmentele învechite și fluxurile de metadate local.",
+      "targetTitle": "Dimensiunea dorită a fișierului",
+      "targetOff": "Oprit",
+      "targetCustom": "Personalizat (KB)",
+      "targetHint": "Se încearcă mai întâi setările blânde. Pentru dimensiuni foarte mici, paginile pot fi transformate în imagini, iar textul nu va mai putea fi selectat.",
+      "targetMet": "Comprimat la {size}, sub ținta de {target}.",
+      "targetMissed": "Nu s-a putut coborî sub {target}. Cea mai mică dimensiune obținută este {size}. Încercați să eliminați pagini sau să împărțiți PDF-ul."
     },
     "deepSanitize": {
       "uploadLabel": "Încărcați PDF-ul pentru dezinfectare sigură",

@@ -541,7 +541,7 @@ export async function redactPDF(
   for (let pageNum = 1; pageNum <= totalPages; pageNum++) {
     const pageIndex = pageNum - 1;
     const progressPercent = Math.round(10 + (pageIndex / totalPages) * 75);
-    onProgress?.(progressPercent, `正在处理第 ${pageNum} / ${totalPages} 页...`);
+    onProgress?.(progressPercent, `Processing page ${pageNum} of ${totalPages}...`);
 
     const pageRedactions = redactionsByPage[pageNum] || [];
     const shouldRasterize = pageRedactions.length > 0 || flattenAllPages || !originalPdfDoc;

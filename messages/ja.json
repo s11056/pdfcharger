@@ -595,7 +595,13 @@
       "successTitle": "最適化が完了しました！",
       "zipDownload": "ZIPをダウンロード ({count} 個のファイル)",
       "successDone": "PDFドキュメントがローカルで最適化されました！",
-      "sizeInfo": "オリジナル: {size} MB • ローカルで不要なフラグメントとメタデータストリームをクリーンアップしました。"
+      "sizeInfo": "オリジナル: {size} MB • ローカルで不要なフラグメントとメタデータストリームをクリーンアップしました。",
+      "targetTitle": "目標ファイルサイズ",
+      "targetOff": "オフ",
+      "targetCustom": "カスタム (KB)",
+      "targetHint": "まず画質を保つ設定から試します。非常に小さいサイズにするため、ページが画像に変換され、テキストを選択できなくなる場合があります。",
+      "targetMet": "{size} に圧縮しました（目標 {target} 以下）。",
+      "targetMissed": "{target} 以下にできませんでした。最小サイズは {size} です。ページを削除するか、PDF を分割してください。"
     },
     "deepSanitize": {
       "uploadLabel": "安全なクリーンアップ（サニタイズ）用PDFをアップロード",

@@ -595,7 +595,13 @@
       "successTitle": "压缩操作执行完毕！",
       "zipDownload": "打包下载 ZIP ({count} 个文件)",
       "successDone": "文档优化压缩完毕！",
-      "sizeInfo": "原始大小: {size} MB • 成功在本地清理了非必要废弃片段和无用元数据流。"
+      "sizeInfo": "原始大小: {size} MB • 成功在本地清理了非必要废弃片段和无用元数据流。",
+      "targetTitle": "目标文件大小",
+      "targetOff": "关闭",
+      "targetCustom": "自定义 (KB)",
+      "targetHint": "会先尝试保持画质的设置。要压到很小的大小时，页面可能会被转换为图片，文字将无法再选择。",
+      "targetMet": "已压缩到 {size}，低于目标 {target}。",
+      "targetMissed": "无法压缩到 {target} 以下。能达到的最小大小是 {size}。请尝试删除页面或拆分 PDF。"
     },
     "deepSanitize": {
       "uploadLabel": "上传需要脱敏防溯源的 PDF 文档",
@@ -1302,8 +1308,8 @@
     "imageInput": "图片输入源",
     "fileInput": "通用文件输入源",
     "downloadPdf": "下载 PDF",
-    "downloadZip": "打包 ZIP 下载",
-    "outputCategory": "输出与导出 (Output & Export)",
+    "downloadZip": "打包为 ZIP 下载",
+    "outputCategory": "输出与导出",
     "noSavedWorkflows": "暂无已保存的工作流",
     "saveWorkflowHint": "创建并保存您的第一个工作流",
     "noFavorites": "暂无收藏的工作流",
@@ -1473,12 +1479,9 @@
     },
     "autoLayout": "一键整理布局",
     "duplicateNode": "复制节点",
-    "downloadZip": "打包为 ZIP 下载",
     "downloadIndividually": "分别下载各文件",
     "flowControl": "流程控制",
     "conditionGateway": "条件分支",
-    "downloadPdf": "下载 PDF",
-    "outputCategory": "输出与导出",
     "filenameLabel": "输出文件名"
   },
   "tools": {

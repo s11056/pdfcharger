@@ -595,7 +595,13 @@
       "successTitle": "¡Optimización completada!",
       "zipDownload": "Descargar ZIP ({count} archivos)",
       "successDone": "¡Documento PDF optimizado localmente!",
-      "sizeInfo": "Tamaño original: {size} MB • Se limpiaron localmente los fragmentos obsoletos y los flujos de metadatos."
+      "sizeInfo": "Tamaño original: {size} MB • Se limpiaron localmente los fragmentos obsoletos y los flujos de metadatos.",
+      "targetTitle": "Tamaño de archivo objetivo",
+      "targetOff": "No",
+      "targetCustom": "Personalizado (KB)",
+      "targetHint": "Primero se prueban ajustes suaves. Para llegar a tamaños muy pequeños, las páginas pueden convertirse en imágenes y el texto dejará de poder seleccionarse.",
+      "targetMet": "Comprimido a {size}, por debajo de tu objetivo de {target}.",
+      "targetMissed": "No se pudo bajar de {target}. El tamaño más pequeño conseguido es {size}. Prueba a eliminar páginas o dividir el PDF."
     },
     "deepSanitize": {
       "uploadLabel": "Subir PDF para una desinfección segura",

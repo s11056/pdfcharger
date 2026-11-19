@@ -14,20 +14,30 @@
  *   draft: true                (optional, drafts only appear in `npm run dev`)
  *   ---
  *
+ * English posts live in content/blog/. Translations live in
+ * content/blog/<locale>/ under the same file name as the English post, so
+ * every translation shares its slug with the original.
+ *
  * @module lib/blog/posts
  */
 
 import fs from 'fs';
 import path from 'path';
 import { marked } from 'marked';
+import { locales, type Locale } from '@/lib/i18n/config';
 
 const BLOG_DIR = path.join(process.cwd(), 'content', 'blog');
 
-/** The blog is English-only; translate posts individually once they rank. */
-export const BLOG_LOCALE = 'en' as const;
+/** Locale of the original posts in content/blog/ */
+export const BLOG_DEFAULT_LOCALE = 'en' as const;
+
+function localeDir(locale: Locale): string {
+  return locale === BLOG_DEFAULT_LOCALE ? BLOG_DIR : path.join(BLOG_DIR, locale);
+}
 
 export interface BlogPostMeta {
   slug: string;
+  locale: Locale;
   title: string;
   description: string;
   /** ISO date (YYYY-MM-DD) the post was first published */
@@ -66,9 +76,9 @@ function parseFrontmatter(source: string, file: string): { data: Record<string, 
   return { data, body: match[2] };
 }
 
-function readPost(file: string): BlogPost {
+function readPost(locale: Locale, file: string): BlogPost {
   const slug = file.replace(/\.md$/, '');
-  const source = fs.readFileSync(path.join(BLOG_DIR, file), 'utf8');
+  const source = fs.readFileSync(path.join(localeDir(locale), file), 'utf8');
   const { data, body } = parseFrontmatter(source, file);
 
   for (const key of ['title', 'description', 'date']) {
@@ -79,35 +89,50 @@ function readPost(file: string): BlogPost {
 
   const words = body.split(/\s+/).filter(Boolean).length;
 
+  // CJK text has no spaces, so estimate those by characters instead of words
+  const cjkChars = (body.match(/[぀-ヿ㐀-鿿가-힯]/g) || []).length;
+
   return {
     slug,
+    locale,
     title: data.title as string,
     description: data.description as string,
     date: data.date as string,
     updated: typeof data.updated === 'string' && data.updated ? data.updated : undefined,
     tools: Array.isArray(data.tools) ? data.tools : [],
     draft: data.draft === 'true',
-    readingMinutes: Math.max(1, Math.round(words / 220)),
+    readingMinutes: Math.max(1, Math.round(words / 220 + cjkChars / 500)),
     html: marked.parse(body, { async: false }),
   };
 }
 
 /**
- * All posts, newest first. Drafts are only included in development.
+ * All posts in a locale, newest first. Drafts are only included in development.
  */
-export function getAllPosts(): BlogPost[] {
-  if (!fs.existsSync(BLOG_DIR)) return [];
+export function getAllPosts(locale: Locale = BLOG_DEFAULT_LOCALE): BlogPost[] {
+  const dir = localeDir(locale);
+  if (!fs.existsSync(dir)) return [];
 
   const includeDrafts = process.env.NODE_ENV !== 'production';
 
   return fs
-    .readdirSync(BLOG_DIR)
+    .readdirSync(dir)
     .filter((file) => file.endsWith('.md') && !file.startsWith('_') && file !== 'README.md')
-    .map(readPost)
+    .map((file) => readPost(locale, file))
     .filter((post) => includeDrafts || !post.draft)
     .sort((a, b) => b.date.localeCompare(a.date));
 }
 
-export function getPostBySlug(slug: string): BlogPost | undefined {
-  return getAllPosts().find((post) => post.slug === slug);
+export function getPostBySlug(slug: string, locale: Locale = BLOG_DEFAULT_LOCALE): BlogPost | undefined {
+  return getAllPosts(locale).find((post) => post.slug === slug);
+}
+
+/** Locales that have at least one post (always includes English) */
+export function getBlogLocales(): Locale[] {
+  return locales.filter((locale) => locale === BLOG_DEFAULT_LOCALE || getAllPosts(locale).length > 0);
+}
+
+/** Locales a post is available in, for hreflang links */
+export function getPostLocales(slug: string): Locale[] {
+  return locales.filter((locale) => fs.existsSync(path.join(localeDir(locale), `${slug}.md`)));
 }

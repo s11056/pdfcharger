@@ -595,7 +595,13 @@
       "successTitle": "Optimization Complete!",
       "zipDownload": "Download ZIP ({count} files)",
       "successDone": "PDF document optimized locally!",
-      "sizeInfo": "Original: {size} MB • Cleaned obsolete fragments and metadata streams locally."
+      "sizeInfo": "Original: {size} MB • Cleaned obsolete fragments and metadata streams locally.",
+      "targetTitle": "גודל קובץ יעד",
+      "targetOff": "כבוי",
+      "targetCustom": "מותאם אישית (KB)",
+      "targetHint": "קודם מנסים הגדרות עדינות. כדי להגיע לגודל קטן מאוד, ייתכן שהעמודים יהפכו לתמונות והטקסט כבר לא יהיה ניתן לבחירה.",
+      "targetMet": "נדחס ל-{size}, מתחת ליעד של {target}.",
+      "targetMissed": "לא ניתן היה לרדת מתחת ל-{target}. הגודל הקטן ביותר שהושג הוא {size}. נסו להסיר עמודים או לפצל את ה-PDF."
     },
     "deepSanitize": {
       "uploadLabel": "Upload PDF for Safe Sanitization",
@@ -1302,7 +1308,7 @@
     "imageInput": "Image Input",
     "fileInput": "File Input",
     "downloadPdf": "Download PDF",
-    "downloadZip": "Download ZIP",
+    "downloadZip": "Download as ZIP",
     "outputCategory": "Output & Export",
     "noSavedWorkflows": "No saved workflows yet",
     "saveWorkflowHint": "Create and save your first workflow",
@@ -1473,12 +1479,9 @@
     },
     "autoLayout": "Auto Layout",
     "duplicateNode": "Duplicate Node",
-    "downloadZip": "Download as ZIP",
     "downloadIndividually": "Download files individually",
     "flowControl": "Flow Control",
     "conditionGateway": "Condition Gateway",
-    "downloadPdf": "Download PDF",
-    "outputCategory": "Output & Export",
     "filenameLabel": "Output Filename"
   },
   "tools": {

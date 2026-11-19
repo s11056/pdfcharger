@@ -1,0 +1,268 @@
+/**
+ * Interface text for the blog pages, per locale.
+ * Kept here rather than in messages/*.json because only the blog uses it.
+ *
+ * @module lib/blog/i18n
+ */
+
+import type { Locale } from '@/lib/i18n/config';
+
+export interface BlogStrings {
+  /** Blog index heading and meta title */
+  title: string;
+  /** Blog index subheading */
+  subtitle: string;
+  /** Blog index meta description */
+  metaDescription: string;
+  readGuide: string;
+  /** "{n} min read" */
+  minRead: string;
+  updated: string;
+  allGuides: string;
+  privacyNote: string;
+  openTool: string;
+  /** Heading above the English-only posts on a translated blog index */
+  moreInEnglish: string;
+  noPosts: string;
+}
+
+export const BLOG_STRINGS: Record<Locale, BlogStrings> = {
+  en: {
+    title: 'PDF Guides & Tips',
+    subtitle: 'How to get things done with PDFs, without handing your documents to anyone.',
+    metaDescription: 'Practical guides for working with PDFs privately: compress, convert, sign, redact and fix PDFs in your browser without uploading them.',
+    readGuide: 'Read guide',
+    minRead: '{n} min read',
+    updated: 'Updated',
+    allGuides: 'All guides',
+    privacyNote: 'Runs in your browser. Your files never leave your device.',
+    openTool: 'Open tool',
+    moreInEnglish: 'More guides in English',
+    noPosts: 'No posts yet.',
+  },
+  ja: {
+    title: 'PDF ガイドとヒント',
+    subtitle: '書類を誰にも渡さずに、PDF の作業を済ませる方法。',
+    metaDescription: 'PDF をプライベートに扱うための実用ガイド。圧縮、変換、署名、墨消し、修正をアップロードせずにブラウザで。',
+    readGuide: 'ガイドを読む',
+    minRead: '{n} 分で読めます',
+    updated: '更新',
+    allGuides: 'すべてのガイド',
+    privacyNote: 'ブラウザ内で動作します。ファイルが端末の外に出ることはありません。',
+    openTool: 'ツールを開く',
+    moreInEnglish: '英語のガイド',
+    noPosts: 'まだ記事はありません。',
+  },
+  ko: {
+    title: 'PDF 가이드와 팁',
+    subtitle: '문서를 누구에게도 넘기지 않고 PDF 작업을 끝내는 방법.',
+    metaDescription: 'PDF를 안전하게 다루는 실용 가이드. 업로드 없이 브라우저에서 압축, 변환, 서명, 가리기, 수정까지.',
+    readGuide: '가이드 읽기',
+    minRead: '{n}분 분량',
+    updated: '업데이트',
+    allGuides: '모든 가이드',
+    privacyNote: '브라우저에서 실행됩니다. 파일은 기기 밖으로 나가지 않습니다.',
+    openTool: '도구 열기',
+    moreInEnglish: '영어 가이드 더 보기',
+    noPosts: '아직 글이 없습니다.',
+  },
+  es: {
+    title: 'Guías y consejos sobre PDF',
+    subtitle: 'Cómo resolver tareas con PDF sin entregar tus documentos a nadie.',
+    metaDescription: 'Guías prácticas para trabajar con PDF de forma privada: comprime, convierte, firma, censura y repara PDF en tu navegador sin subirlos.',
+    readGuide: 'Leer guía',
+    minRead: '{n} min de lectura',
+    updated: 'Actualizado',
+    allGuides: 'Todas las guías',
+    privacyNote: 'Funciona en tu navegador. Tus archivos nunca salen de tu dispositivo.',
+    openTool: 'Abrir herramienta',
+    moreInEnglish: 'Más guías en inglés',
+    noPosts: 'Aún no hay artículos.',
+  },
+  fr: {
+    title: 'Guides et astuces PDF',
+    subtitle: 'Comment travailler avec vos PDF sans confier vos documents à personne.',
+    metaDescription: 'Guides pratiques pour travailler vos PDF en toute confidentialité : compresser, convertir, signer, caviarder et réparer dans le navigateur, sans envoi.',
+    readGuide: 'Lire le guide',
+    minRead: '{n} min de lecture',
+    updated: 'Mis à jour le',
+    allGuides: 'Tous les guides',
+    privacyNote: 'Fonctionne dans votre navigateur. Vos fichiers ne quittent jamais votre appareil.',
+    openTool: "Ouvrir l'outil",
+    moreInEnglish: 'Plus de guides en anglais',
+    noPosts: "Aucun article pour l'instant.",
+  },
+  de: {
+    title: 'PDF-Ratgeber & Tipps',
+    subtitle: 'So erledigen Sie PDF-Aufgaben, ohne Ihre Dokumente aus der Hand zu geben.',
+    metaDescription: 'Praktische Anleitungen für den privaten Umgang mit PDFs: komprimieren, umwandeln, unterschreiben, schwärzen und reparieren im Browser, ohne Upload.',
+    readGuide: 'Ratgeber lesen',
+    minRead: '{n} Min. Lesezeit',
+    updated: 'Aktualisiert',
+    allGuides: 'Alle Ratgeber',
+    privacyNote: 'Läuft in Ihrem Browser. Ihre Dateien verlassen nie Ihr Gerät.',
+    openTool: 'Tool öffnen',
+    moreInEnglish: 'Weitere Ratgeber auf Englisch',
+    noPosts: 'Noch keine Beiträge.',
+  },
+  zh: {
+    title: 'PDF 指南与技巧',
+    subtitle: '不把文档交给任何人，也能搞定 PDF 的各种任务。',
+    metaDescription: '私密处理 PDF 的实用指南：在浏览器中压缩、转换、签名、涂黑和修复 PDF，无需上传。',
+    readGuide: '阅读指南',
+    minRead: '约 {n} 分钟阅读',
+    updated: '更新于',
+    allGuides: '全部指南',
+    privacyNote: '在浏览器中运行，文件始终留在你的设备上。',
+    openTool: '打开工具',
+    moreInEnglish: '更多英文指南',
+    noPosts: '暂无文章。',
+  },
+  'zh-TW': {
+    title: 'PDF 指南與技巧',
+    subtitle: '不把文件交給任何人，也能完成 PDF 的各種工作。',
+    metaDescription: '私密處理 PDF 的實用指南：在瀏覽器中壓縮、轉換、簽名、塗黑與修復 PDF，無需上傳。',
+    readGuide: '閱讀指南',
+    minRead: '約 {n} 分鐘閱讀',
+    updated: '更新於',
+    allGuides: '所有指南',
+    privacyNote: '在瀏覽器中執行，檔案始終留在你的裝置上。',
+    openTool: '開啟工具',
+    moreInEnglish: '更多英文指南',
+    noPosts: '目前沒有文章。',
+  },
+  pt: {
+    title: 'Guias e dicas de PDF',
+    subtitle: 'Como resolver tarefas com PDF sem entregar seus documentos a ninguém.',
+    metaDescription: 'Guias práticos para trabalhar com PDF com privacidade: comprima, converta, assine, oculte dados e corrija PDFs no navegador, sem enviar arquivos.',
+    readGuide: 'Ler guia',
+    minRead: '{n} min de leitura',
+    updated: 'Atualizado em',
+    allGuides: 'Todos os guias',
+    privacyNote: 'Funciona no seu navegador. Seus arquivos nunca saem do seu dispositivo.',
+    openTool: 'Abrir ferramenta',
+    moreInEnglish: 'Mais guias em inglês',
+    noPosts: 'Ainda não há artigos.',
+  },
+  ar: {
+    title: 'أدلة ونصائح PDF',
+    subtitle: 'كيف تنجز مهام PDF دون تسليم مستنداتك لأي أحد.',
+    metaDescription: 'أدلة عملية للتعامل مع ملفات PDF بخصوصية: الضغط والتحويل والتوقيع والتنقيح والإصلاح داخل المتصفح دون رفع الملفات.',
+    readGuide: 'اقرأ الدليل',
+    minRead: 'قراءة {n} دقائق',
+    updated: 'تم التحديث',
+    allGuides: 'كل الأدلة',
+    privacyNote: 'يعمل داخل متصفحك. لا تغادر ملفاتك جهازك أبدًا.',
+    openTool: 'افتح الأداة',
+    moreInEnglish: 'المزيد من الأدلة بالإنجليزية',
+    noPosts: 'لا توجد مقالات بعد.',
+  },
+  he: {
+    title: 'מדריכים וטיפים ל-PDF',
+    subtitle: 'איך לבצע משימות PDF בלי למסור את המסמכים שלכם לאף אחד.',
+    metaDescription: 'מדריכים מעשיים לעבודה פרטית עם PDF: דחיסה, המרה, חתימה, השחרה ותיקון בדפדפן, בלי להעלות קבצים.',
+    readGuide: 'לקריאת המדריך',
+    minRead: '{n} דקות קריאה',
+    updated: 'עודכן',
+    allGuides: 'כל המדריכים',
+    privacyNote: 'פועל בדפדפן. הקבצים שלכם לעולם לא יוצאים מהמכשיר.',
+    openTool: 'פתיחת הכלי',
+    moreInEnglish: 'מדריכים נוספים באנגלית',
+    noPosts: 'אין עדיין מאמרים.',
+  },
+  it: {
+    title: 'Guide e consigli sui PDF',
+    subtitle: 'Come lavorare con i PDF senza consegnare i tuoi documenti a nessuno.',
+    metaDescription: 'Guide pratiche per lavorare con i PDF in privato: comprimi, converti, firma, oscura e ripara i PDF nel browser senza caricarli.',
+    readGuide: 'Leggi la guida',
+    minRead: '{n} min di lettura',
+    updated: 'Aggiornato il',
+    allGuides: 'Tutte le guide',
+    privacyNote: 'Funziona nel tuo browser. I tuoi file non lasciano mai il dispositivo.',
+    openTool: 'Apri lo strumento',
+    moreInEnglish: 'Altre guide in inglese',
+    noPosts: 'Ancora nessun articolo.',
+  },
+  id: {
+    title: 'Panduan & Tips PDF',
+    subtitle: 'Cara menyelesaikan urusan PDF tanpa menyerahkan dokumen Anda ke siapa pun.',
+    metaDescription: 'Panduan praktis mengolah PDF secara privat: kompres, konversi, tanda tangan, sensor, dan perbaiki PDF di browser tanpa mengunggah.',
+    readGuide: 'Baca panduan',
+    minRead: '{n} menit baca',
+    updated: 'Diperbarui',
+    allGuides: 'Semua panduan',
+    privacyNote: 'Berjalan di browser Anda. File tidak pernah keluar dari perangkat.',
+    openTool: 'Buka alat',
+    moreInEnglish: 'Panduan lain dalam bahasa Inggris',
+    noPosts: 'Belum ada artikel.',
+  },
+  vi: {
+    title: 'Hướng dẫn & mẹo PDF',
+    subtitle: 'Cách xử lý PDF mà không phải giao tài liệu cho ai.',
+    metaDescription: 'Hướng dẫn thực tế để xử lý PDF riêng tư: nén, chuyển đổi, ký, che thông tin và sửa PDF ngay trên trình duyệt, không cần tải lên.',
+    readGuide: 'Đọc hướng dẫn',
+    minRead: '{n} phút đọc',
+    updated: 'Cập nhật',
+    allGuides: 'Tất cả hướng dẫn',
+    privacyNote: 'Chạy trên trình duyệt. Tệp của bạn không bao giờ rời khỏi thiết bị.',
+    openTool: 'Mở công cụ',
+    moreInEnglish: 'Thêm hướng dẫn bằng tiếng Anh',
+    noPosts: 'Chưa có bài viết.',
+  },
+  ro: {
+    title: 'Ghiduri și sfaturi PDF',
+    subtitle: 'Cum rezolvi sarcinile cu PDF fără să-ți predai documentele nimănui.',
+    metaDescription: 'Ghiduri practice pentru lucrul privat cu PDF: comprimă, convertește, semnează, anonimizează și repară PDF-uri în browser, fără încărcare.',
+    readGuide: 'Citește ghidul',
+    minRead: '{n} min de citit',
+    updated: 'Actualizat',
+    allGuides: 'Toate ghidurile',
+    privacyNote: 'Rulează în browser. Fișierele tale nu părăsesc niciodată dispozitivul.',
+    openTool: 'Deschide instrumentul',
+    moreInEnglish: 'Mai multe ghiduri în engleză',
+    noPosts: 'Încă nu există articole.',
+  },
+  pl: {
+    title: 'Poradniki i wskazówki PDF',
+    subtitle: 'Jak załatwiać sprawy z PDF bez oddawania dokumentów komukolwiek.',
+    metaDescription: 'Praktyczne poradniki do prywatnej pracy z PDF: kompresuj, konwertuj, podpisuj, anonimizuj i naprawiaj PDF w przeglądarce, bez wysyłania.',
+    readGuide: 'Czytaj poradnik',
+    minRead: '{n} min czytania',
+    updated: 'Zaktualizowano',
+    allGuides: 'Wszystkie poradniki',
+    privacyNote: 'Działa w przeglądarce. Twoje pliki nigdy nie opuszczają urządzenia.',
+    openTool: 'Otwórz narzędzie',
+    moreInEnglish: 'Więcej poradników po angielsku',
+    noPosts: 'Brak artykułów.',
+  },
+  cs: {
+    title: 'Návody a tipy pro PDF',
+    subtitle: 'Jak vyřídit práci s PDF, aniž byste své dokumenty komukoli předali.',
+    metaDescription: 'Praktické návody pro soukromou práci s PDF: komprimujte, převádějte, podepisujte, začerňujte a opravujte PDF v prohlížeči bez nahrávání.',
+    readGuide: 'Číst návod',
+    minRead: '{n} min čtení',
+    updated: 'Aktualizováno',
+    allGuides: 'Všechny návody',
+    privacyNote: 'Běží ve vašem prohlížeči. Soubory nikdy neopustí vaše zařízení.',
+    openTool: 'Otevřít nástroj',
+    moreInEnglish: 'Další návody v angličtině',
+    noPosts: 'Zatím žádné články.',
+  },
+  hi: {
+    title: 'PDF गाइड और टिप्स',
+    subtitle: 'अपने दस्तावेज़ किसी को सौंपे बिना PDF के काम कैसे करें।',
+    metaDescription: 'PDF को निजी तरीके से संभालने की व्यावहारिक गाइड: बिना अपलोड किए ब्राउज़र में PDF कम्प्रेस, कन्वर्ट, साइन, रिडैक्ट और ठीक करें।',
+    readGuide: 'गाइड पढ़ें',
+    minRead: '{n} मिनट में पढ़ें',
+    updated: 'अपडेट किया गया',
+    allGuides: 'सभी गाइड',
+    privacyNote: 'आपके ब्राउज़र में चलता है। आपकी फ़ाइलें कभी आपके डिवाइस से बाहर नहीं जातीं।',
+    openTool: 'टूल खोलें',
+    moreInEnglish: 'अंग्रेज़ी में और गाइड',
+    noPosts: 'अभी कोई लेख नहीं है।',
+  },
+};
+
+export function getBlogStrings(locale: Locale): BlogStrings {
+  return BLOG_STRINGS[locale] ?? BLOG_STRINGS.en;
+}

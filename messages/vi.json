@@ -595,7 +595,13 @@
       "successTitle": "Tối ưu hóa thành công!",
       "zipDownload": "Tải xuống ZIP ({count} tệp)",
       "successDone": "Tài liệu PDF đã được tối ưu cục bộ!",
-      "sizeInfo": "Dung lượng gốc: {size} MB • Đã làm sạch các phân mảnh lỗi thời và luồng siêu dữ liệu dư thừa trên máy khách."
+      "sizeInfo": "Dung lượng gốc: {size} MB • Đã làm sạch các phân mảnh lỗi thời và luồng siêu dữ liệu dư thừa trên máy khách.",
+      "targetTitle": "Kích thước tệp mục tiêu",
+      "targetOff": "Tắt",
+      "targetCustom": "Tùy chỉnh (KB)",
+      "targetHint": "Các thiết lập nhẹ sẽ được thử trước. Để đạt kích thước rất nhỏ, các trang có thể được chuyển thành hình ảnh nên văn bản sẽ không chọn được nữa.",
+      "targetMet": "Đã nén còn {size}, dưới mục tiêu {target}.",
+      "targetMissed": "Không thể nén xuống dưới {target}. Kích thước nhỏ nhất đạt được là {size}. Hãy thử xóa bớt trang hoặc tách PDF."
     },
     "deepSanitize": {
       "uploadLabel": "Tải lên tài liệu PDF để làm sạch an toàn",

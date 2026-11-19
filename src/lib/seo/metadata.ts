@@ -256,25 +256,32 @@ export function generateContactMetadata(locale: Locale, translations?: { title: 
 
 /**
  * Generate metadata for blog pages.
- * The blog is English-only, so hreflang lists just `en` and `x-default`
- * instead of the 18 locale alternates the other pages advertise.
+ * Posts are translated individually, so hreflang lists only the locales a
+ * page actually exists in (plus x-default pointing to English).
  */
 export function generateBlogMetadata(options: {
+  locale: Locale;
+  /** Locales this page is available in */
+  availableLocales: readonly Locale[];
   path: string;
   title: string;
   description: string;
   publishedTime?: string;
   modifiedTime?: string;
 }): Metadata {
-  const { path, title, description, publishedTime, modifiedTime } = options;
-  const base = generateBaseMetadata({ locale: 'en', path, title, description, keywords: ['PDF guide', 'how to'] });
-  const canonicalUrl = getCanonicalUrl('en', path);
+  const { locale, availableLocales, path, title, description, publishedTime, modifiedTime } = options;
+  const base = generateBaseMetadata({ locale, path, title, description, keywords: ['PDF guide', 'how to'] });
+  const languages: Record<string, string> = {};
+  for (const available of availableLocales) {
+    languages[available] = getCanonicalUrl(available, path);
+  }
+  if (availableLocales.includes('en')) languages['x-default'] = getCanonicalUrl('en', path);
 
   return {
     ...base,
     alternates: {
-      canonical: canonicalUrl,
-      languages: { en: canonicalUrl, 'x-default': canonicalUrl },
+      canonical: getCanonicalUrl(locale, path),
+      languages,
     },
     openGraph: publishedTime
       ? { ...base.openGraph, type: 'article', publishedTime, modifiedTime: modifiedTime || publishedTime }

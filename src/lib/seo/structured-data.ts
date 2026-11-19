@@ -202,12 +202,13 @@ export interface BlogPostingSchema {
  */
 export function generateBlogPostingSchema(post: {
   slug: string;
+  locale: string;
   title: string;
   description: string;
   date: string;
   updated?: string;
 }): BlogPostingSchema {
-  const url = `${siteConfig.url}/en/blog/${post.slug}/`;
+  const url = `${siteConfig.url}/${post.locale}/blog/${post.slug}/`;
   const organization = { '@type': 'Organization' as const, name: siteConfig.name, url: siteConfig.url };
 
   return {
@@ -219,7 +220,7 @@ export function generateBlogPostingSchema(post: {
     mainEntityOfPage: url,
     datePublished: post.date,
     dateModified: post.updated || post.date,
-    inLanguage: 'en-US',
+    inLanguage: post.locale === 'en' ? 'en-US' : post.locale,
     image: siteConfig.ogImage.startsWith('http') ? siteConfig.ogImage : `${siteConfig.url}${siteConfig.ogImage}`,
     author: organization,
     publisher: {

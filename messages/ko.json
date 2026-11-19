@@ -595,7 +595,13 @@
       "successTitle": "최적화 완료!",
       "zipDownload": "ZIP 다운로드 ({count}개 파일)",
       "successDone": "PDF 문서가 로컬에서 최적화되었습니다!",
-      "sizeInfo": "원본: {size} MB • 불필요한 레거시 조각 및 메타데이터 스트림이 로컬에서 정상 정리되었습니다."
+      "sizeInfo": "원본: {size} MB • 불필요한 레거시 조각 및 메타데이터 스트림이 로컬에서 정상 정리되었습니다.",
+      "targetTitle": "목표 파일 크기",
+      "targetOff": "끄기",
+      "targetCustom": "직접 입력 (KB)",
+      "targetHint": "먼저 품질을 유지하는 설정부터 시도합니다. 아주 작은 크기로 줄이려면 페이지가 이미지로 바뀌어 텍스트를 선택할 수 없게 될 수 있습니다.",
+      "targetMet": "{size}(으)로 압축했습니다. 목표 {target} 이하입니다.",
+      "targetMissed": "{target} 이하로 줄이지 못했습니다. 가장 작은 크기는 {size}입니다. 페이지를 삭제하거나 PDF를 분할해 보세요."
     },
     "deepSanitize": {
       "uploadLabel": "보안 메타데이터 영구 소거(Sanitize)용 PDF 업로드",

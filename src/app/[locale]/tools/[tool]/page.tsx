@@ -127,6 +127,7 @@ import { PdfLosslessSlicerTool } from '@/components/tools/pdf-lossless-slicer/Pd
 import { PdfScratchpadCanvasTool } from '@/components/tools/pdf-scratchpad-canvas/PdfScratchpadCanvasTool';
 import { PhotoTilingPrepressTool } from '@/components/tools/photo-tiling-prepress/PhotoTilingPrepressTool';
 import { generateToolMetadata } from '@/lib/seo/metadata';
+import { COMPRESS_PRESETS, getCompressPresetContent } from '@/config/compress-presets';
 import { JsonLd } from '@/components/seo/JsonLd';
 import {
   generateSoftwareApplicationSchema,
@@ -324,7 +325,22 @@ export default async function ToolPageRoute({ params }: ToolPageParams) {
         return <JSONToPDFTool />;
       // Optimize & Repair tools
       case 'compress-pdf':
-        return <CompressPDFTool />;
+        return (
+          <>
+            <CompressPDFTool />
+            <nav aria-label="Compress to a target size" className="mt-6 flex flex-wrap justify-center gap-2">
+              {COMPRESS_PRESETS.map((preset) => (
+                <a
+                  key={preset.slug}
+                  href={`/${locale}/compress-pdf-to/${preset.slug}/`}
+                  className="rounded-full border border-[hsl(var(--color-border))] px-3 py-1.5 text-xs font-semibold text-[hsl(var(--color-muted-foreground))] hover:border-[hsl(var(--color-primary))] hover:text-[hsl(var(--color-primary))]"
+                >
+                  {getCompressPresetContent(locale, preset).title}
+                </a>
+              ))}
+            </nav>
+          </>
+        );
       case 'sign-pdf':
         return <SignPDFTool />;
       case 'crop-pdf':

@@ -595,7 +595,13 @@
       "successTitle": "Optimasi Selesai!",
       "zipDownload": "Unduh ZIP ({count} file)",
       "successDone": "Dokumen PDF dioptimalkan secara lokal!",
-      "sizeInfo": "Ukuran Asli: {size} MB • Berhasil membersihkan fragmen usang dan aliran metadata di penyimpanan lokal."
+      "sizeInfo": "Ukuran Asli: {size} MB • Berhasil membersihkan fragmen usang dan aliran metadata di penyimpanan lokal.",
+      "targetTitle": "Target ukuran file",
+      "targetOff": "Mati",
+      "targetCustom": "Kustom (KB)",
+      "targetHint": "Pengaturan ringan dicoba lebih dulu. Untuk mencapai ukuran yang sangat kecil, halaman bisa diubah menjadi gambar sehingga teks tidak bisa dipilih lagi.",
+      "targetMet": "Berhasil dikompres menjadi {size}, di bawah target {target}.",
+      "targetMissed": "Tidak bisa di bawah {target}. Ukuran terkecil yang dicapai adalah {size}. Coba hapus beberapa halaman atau pisahkan PDF."
     },
     "deepSanitize": {
       "uploadLabel": "Unggah PDF untuk Sanitasi Aman",

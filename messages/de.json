@@ -595,7 +595,13 @@
       "successTitle": "Optimierung abgeschlossen!",
       "zipDownload": "ZIP herunterladen ({count} Dateien)",
       "successDone": "PDF-Dokument lokal optimiert!",
-      "sizeInfo": "Original: {size} MB • Veraltete Fragmente und Metadatenströme wurden lokal bereinigt."
+      "sizeInfo": "Original: {size} MB • Veraltete Fragmente und Metadatenströme wurden lokal bereinigt.",
+      "targetTitle": "Zieldateigröße",
+      "targetOff": "Aus",
+      "targetCustom": "Eigene (KB)",
+      "targetHint": "Zuerst werden schonende Einstellungen versucht. Für sehr kleine Größen werden Seiten eventuell in Bilder umgewandelt; der Text ist dann nicht mehr markierbar.",
+      "targetMet": "Auf {size} komprimiert, unter Ihrem Ziel von {target}.",
+      "targetMissed": "{target} konnte nicht erreicht werden. Die kleinste erreichte Größe ist {size}. Entfernen Sie Seiten oder teilen Sie die PDF."
     },
     "deepSanitize": {
       "uploadLabel": "PDF zur sicheren Bereinigung hochladen",

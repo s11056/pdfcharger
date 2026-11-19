@@ -600,7 +600,13 @@
       "successTitle": "Optimalizace dokončena!",
       "zipDownload": "Stáhnout ZIP (souborů: {count})",
       "successDone": "Dokument PDF byl lokálně optimalizován!",
-      "sizeInfo": "Původní: {size} MB • Zastaralé fragmenty a proudy metadat byly lokálně vyčištěny."
+      "sizeInfo": "Původní: {size} MB • Zastaralé fragmenty a proudy metadat byly lokálně vyčištěny.",
+      "targetTitle": "Cílová velikost souboru",
+      "targetOff": "Vypnuto",
+      "targetCustom": "Vlastní (KB)",
+      "targetHint": "Nejprve se zkoušejí šetrná nastavení. Pro velmi malou velikost se stránky mohou převést na obrázky a text pak nepůjde označit.",
+      "targetMet": "Zkomprimováno na {size}, pod cílem {target}.",
+      "targetMissed": "Pod {target} se nepodařilo dostat. Nejmenší dosažená velikost je {size}. Zkuste odstranit stránky nebo PDF rozdělit."
     },
     "deepSanitize": {
       "uploadLabel": "Nahrát PDF k bezpečnému vyčištění",

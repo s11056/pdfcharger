@@ -9,7 +9,8 @@ import { MetadataRoute } from 'next';
 import { siteConfig } from '@/config/site';
 import { locales, type Locale } from '@/lib/i18n/config';
 import { getAllTools } from '@/config/tools';
-import { getAllPosts, BLOG_LOCALE } from '@/lib/blog/posts';
+import { COMPRESS_PRESETS } from '@/config/compress-presets';
+import { getAllPosts, getBlogLocales } from '@/lib/blog/posts';
 
 // Required for static export
 export const dynamic = 'force-static';
@@ -72,6 +73,16 @@ function generateLocaleEntries(locale: Locale, lastModified: Date): MetadataRout
       priority: PRIORITY.toolPage,
     });
   }
+
+  // "Compress PDF to <size>" landing pages
+  for (const preset of COMPRESS_PRESETS) {
+    entries.push({
+      url: `${siteConfig.url}/${locale}/compress-pdf-to/${preset.slug}/`,
+      lastModified,
+      changeFrequency: CHANGE_FREQUENCY.toolPage,
+      priority: PRIORITY.toolPage,
+    });
+  }
   
   return entries;
 }
@@ -89,18 +100,19 @@ export default function sitemap(): MetadataRoute.Sitemap {
     allEntries.push(...localeEntries);
   }
 
-  // Blog is English-only; use each post's own date so lastmod reflects real changes
-  const posts = getAllPosts();
-  if (posts.length > 0) {
+  // Blog: English plus translated posts; use each post's own date so lastmod reflects real changes
+  for (const locale of getBlogLocales()) {
+    const posts = getAllPosts(locale);
+    if (posts.length === 0) continue;
     allEntries.push({
-      url: `${siteConfig.url}/${BLOG_LOCALE}/blog/`,
+      url: `${siteConfig.url}/${locale}/blog/`,
       lastModified: new Date(posts[0].updated || posts[0].date),
       changeFrequency: 'weekly',
       priority: PRIORITY.tools,
     });
     for (const post of posts) {
       allEntries.push({
-        url: `${siteConfig.url}/${BLOG_LOCALE}/blog/${post.slug}/`,
+        url: `${siteConfig.url}/${locale}/blog/${post.slug}/`,
         lastModified: new Date(post.updated || post.date),
         changeFrequency: 'monthly',
         priority: PRIORITY.toolPage,
@@ -121,5 +133,5 @@ export function getSitemapUrlCount(): number {
   const toolPagesCount = tools.length;
   const localesCount = locales.length;
   
-  return (staticPagesCount + toolPagesCount) * localesCount;
+  return (staticPagesCount + toolPagesCount + COMPRESS_PRESETS.length) * localesCount;
 }

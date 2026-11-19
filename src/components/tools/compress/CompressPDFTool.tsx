@@ -14,9 +14,23 @@ import { Trash2, FileArchive, Check, AlertCircle, Loader2, X, Scaling, Eye, Slid
 
 export interface CompressPDFToolProps {
   className?: string;
+  /** Preselected target size in KB, e.g. on the "compress PDF to 100 KB" pages */
+  initialTargetKb?: number;
 }
 
-export function CompressPDFTool({ className = '' }: CompressPDFToolProps) {
+const TARGET_PRESETS_KB = [50, 100, 200, 500, 1024];
+
+/** "100 KB" / "1 MB" style label for a size in KB */
+function formatKb(kb: number): string {
+  return kb >= 1024 && kb % 1024 === 0 ? `${kb / 1024} MB` : `${kb} KB`;
+}
+
+/** Human-readable byte size */
+function formatBytes(bytes: number): string {
+  return bytes >= 1024 * 1024 ? `${(bytes / (1024 * 1024)).toFixed(2)} MB` : `${Math.max(1, Math.round(bytes / 1024))} KB`;
+}
+
+export function CompressPDFTool({ className = '', initialTargetKb }: CompressPDFToolProps) {
   const t = useTranslations('common');
   const tTools = useTranslations('tools');
 
@@ -26,6 +40,10 @@ export function CompressPDFTool({ className = '' }: CompressPDFToolProps) {
   const [removeMetadata, setRemoveMetadata] = useState(false);
   const [optimizeImages, setOptimizeImages] = useState(true);
   const [photonDpi, setPhotonDpi] = useState(150);
+  const [targetKb, setTargetKb] = useState<number | null>(initialTargetKb ?? null);
+  const [customTarget, setCustomTarget] = useState(
+    initialTargetKb && !TARGET_PRESETS_KB.includes(initialTargetKb) ? String(initialTargetKb) : ''
+  );
   const [error, setError] = useState<string | null>(null);
 
   // Single File Workspace (Magnifier & Physics balance)
@@ -158,6 +176,7 @@ export function CompressPDFTool({ className = '' }: CompressPDFToolProps) {
       photonDpi,
       photonFormat: 'jpeg' as const,
       photonQuality: quality === 'low' ? 60 : quality === 'medium' ? 75 : 85,
+      targetSizeBytes: targetKb ? targetKb * 1024 : undefined,
     };
 
     const output = await compressPDF(
@@ -171,7 +190,7 @@ export function CompressPDFTool({ className = '' }: CompressPDFToolProps) {
     }
 
     throw new Error(output.error?.message || 'Failed to compress PDF file.');
-  }, [algorithm, quality, removeMetadata, optimizeImages, photonDpi]);
+  }, [algorithm, quality, removeMetadata, optimizeImages, photonDpi, targetKb]);
 
   /**
    * Handle compress operation
@@ -230,6 +249,68 @@ export function CompressPDFTool({ className = '' }: CompressPDFToolProps) {
     }
   };
 
+  /**
+   * Target size picker, shared by the single-file and batch layouts
+   */
+  const renderTargetPicker = () => (
+    <div className="space-y-2">
+      <label className="text-xs font-bold text-[hsl(var(--color-muted-foreground))] uppercase tracking-wider">
+        {t('compress.targetTitle')}
+      </label>
+      <div className="flex flex-wrap gap-1.5">
+        {[null, ...TARGET_PRESETS_KB].map((kb) => (
+          <button
+            key={kb ?? 'off'}
+            type="button"
+            onClick={() => { setTargetKb(kb); setCustomTarget(''); }}
+            disabled={isProcessing}
+            className={`py-2 px-3 rounded-xl text-xs font-bold transition-all border ${
+              targetKb === kb && !customTarget
+                ? 'border-[hsl(var(--color-primary))] bg-[hsl(var(--color-primary)/0.08)] text-[hsl(var(--color-foreground))]'
+                : 'border-zinc-200 dark:border-zinc-800 bg-white/50 dark:bg-black/20 text-zinc-500'
+            }`}
+          >
+            {kb === null ? t('compress.targetOff') : formatKb(kb)}
+          </button>
+        ))}
+        <input
+          type="number"
+          min={10}
+          inputMode="numeric"
+          value={customTarget}
+          placeholder={t('compress.targetCustom')}
+          aria-label={t('compress.targetCustom')}
+          disabled={isProcessing}
+          onChange={(e) => {
+            setCustomTarget(e.target.value);
+            const kb = Math.round(Number(e.target.value));
+            setTargetKb(kb >= 10 ? kb : null);
+          }}
+          className={`w-32 py-2 px-3 rounded-xl text-xs font-bold border bg-white/50 dark:bg-black/20 ${
+            customTarget ? 'border-[hsl(var(--color-primary))]' : 'border-zinc-200 dark:border-zinc-800'
+          }`}
+        />
+      </div>
+      {targetKb && (
+        <p className="text-[11px] text-[hsl(var(--color-muted-foreground))] leading-normal">{t('compress.targetHint')}</p>
+      )}
+    </div>
+  );
+
+  /**
+   * Whether a finished file reached the target size (null when no target is set)
+   */
+  const renderTargetResult = (result: Blob | undefined) => {
+    if (!targetKb || !result) return null;
+    const met = result.size <= targetKb * 1024;
+    const params = { size: formatBytes(result.size), target: formatKb(targetKb) };
+    return (
+      <p className={`text-xs font-semibold ${met ? 'text-emerald-600 dark:text-emerald-400' : 'text-amber-600 dark:text-amber-400'}`}>
+        {met ? t('compress.targetMet', params) : t('compress.targetMissed', params)}
+      </p>
+    );
+  };
+
   const hasFiles = files.length > 0;
   const canCompress = hasFiles && !isProcessing;
   const hasCompletedFiles = completedCount > 0;
@@ -273,7 +354,10 @@ export function CompressPDFTool({ className = '' }: CompressPDFToolProps) {
           <div className="space-y-2 max-h-40 overflow-y-auto">
             {files.map((bf) => (
               <div key={bf.id} className="flex items-center justify-between p-3 bg-[hsl(var(--color-muted)/0.3)] border border-[hsl(var(--color-border))] rounded-xl">
-                <span className="text-xs font-semibold truncate max-w-sm">{bf.file.name}</span>
+                <div className="min-w-0">
+                  <span className="block text-xs font-semibold truncate max-w-sm">{bf.file.name}</span>
+                  {bf.status === 'completed' && renderTargetResult(bf.result)}
+                </div>
                 {bf.status === 'completed' && bf.result && (
                   <DownloadButton
                     file={bf.result}
@@ -288,7 +372,10 @@ export function CompressPDFTool({ className = '' }: CompressPDFToolProps) {
 
           {/* Batch Processing Options & Start Button */}
           <div className="mt-4 space-y-4">
+            {renderTargetPicker()}
+
             {/* Quality Options */}
+            {!targetKb && (<>
             <div className="space-y-2">
               <label className="text-xs font-bold text-[hsl(var(--color-muted-foreground))] uppercase tracking-wider">
                 {t('compress.qualityTitle')}
@@ -336,6 +423,7 @@ export function CompressPDFTool({ className = '' }: CompressPDFToolProps) {
                 ))}
               </div>
             </div>
+            </>)}
 
             {/* Extra Options */}
             <div className="space-y-2">
@@ -544,7 +632,10 @@ export function CompressPDFTool({ className = '' }: CompressPDFToolProps) {
 
                 </div>
 
+                {renderTargetPicker()}
+
                 {/* Quality options */}
+                {!targetKb && (
                 <div className="space-y-3.5">
                   <label className="text-xs font-bold text-[hsl(var(--color-muted-foreground))] uppercase tracking-wider flex items-center gap-1.5">
                     {t('compress.qualityTitle')}
@@ -574,6 +665,7 @@ export function CompressPDFTool({ className = '' }: CompressPDFToolProps) {
                     {quality === 'maximum' && t('compress.descMaximum')}
                   </p>
                 </div>
+                )}
 
                 {/* Extra Options */}
                 <div className="space-y-2 border-t border-[hsl(var(--color-border))] pt-4">
@@ -662,6 +754,7 @@ export function CompressPDFTool({ className = '' }: CompressPDFToolProps) {
             <p className="text-xs text-[hsl(var(--color-muted-foreground))]">
               {t('compress.sizeInfo', { size: (singleFile.size / (1024 * 1024)).toFixed(2) })}
             </p>
+            {renderTargetResult(files[0].result)}
           </div>
 
           <div className="flex gap-2 justify-center max-w-sm mx-auto">

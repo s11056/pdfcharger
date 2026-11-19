@@ -600,7 +600,13 @@
       "successTitle": "Optymalizacja zakończona!",
       "zipDownload": "Pobierz ZIP ({count, plural, one {# plik} few {# pliki} many {# plików} other {# pliku}})",
       "successDone": "Dokument PDF został zoptymalizowany lokalnie!",
-      "sizeInfo": "Oryginał: {size} MB • Lokalnie wyczyszczono przestarzałe fragmenty i strumienie metadanych."
+      "sizeInfo": "Oryginał: {size} MB • Lokalnie wyczyszczono przestarzałe fragmenty i strumienie metadanych.",
+      "targetTitle": "Docelowy rozmiar pliku",
+      "targetOff": "Wył.",
+      "targetCustom": "Własny (KB)",
+      "targetHint": "Najpierw próbujemy łagodnych ustawień. Aby osiągnąć bardzo mały rozmiar, strony mogą zostać zamienione na obrazy i tekstu nie da się już zaznaczyć.",
+      "targetMet": "Skompresowano do {size}, poniżej celu {target}.",
+      "targetMissed": "Nie udało się zejść poniżej {target}. Najmniejszy osiągnięty rozmiar to {size}. Spróbuj usunąć strony lub podzielić PDF."
     },
     "deepSanitize": {
       "uploadLabel": "Prześlij plik PDF do bezpiecznego oczyszczenia",

@@ -34,8 +34,7 @@ export const Footer: React.FC<FooterProps> = ({ locale }) => {
     { href: `/${locale}/contact`, label: t('navigation.contact') },
     { href: `/${locale}/studio`, label: 'PDF Studio' },
     { href: `/${locale}/workflow`, label: t('navigation.workflow') },
-    // Blog is English-only, so every locale links to /en/blog
-    { href: '/en/blog', label: 'Blog' },
+    { href: `/${locale}/blog`, label: 'Blog' },
   ];
 
   const handleLanguageChange = (newLocale: Locale) => {

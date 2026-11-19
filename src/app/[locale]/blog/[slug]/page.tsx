@@ -7,25 +7,30 @@ import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
 import { JsonLd } from '@/components/seo/JsonLd';
 import { generateBlogMetadata, generateBlogPostingSchema, generateBreadcrumbSchema } from '@/lib/seo';
-import { getAllPosts, getPostBySlug, BLOG_LOCALE } from '@/lib/blog/posts';
+import { getAllPosts, getBlogLocales, getPostBySlug, getPostLocales } from '@/lib/blog/posts';
+import { getBlogStrings } from '@/lib/blog/i18n';
 import { getToolById } from '@/config/tools';
 import { getToolContent } from '@/config/tool-content';
+import type { Locale } from '@/lib/i18n/config';
 import { formatPostDate } from '../format';
 
-// The blog is English-only: only /en/blog/<slug>/ is built, other locales 404.
+// Only posts that exist in a locale are built; other locale/slug pairs 404.
 export const dynamicParams = false;
 
 export function generateStaticParams() {
-  return getAllPosts().map((post) => ({ locale: BLOG_LOCALE, slug: post.slug }));
+  return getBlogLocales().flatMap((locale) => getAllPosts(locale).map((post) => ({ locale, slug: post.slug })));
 }
 
-export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
-  const { slug } = await params;
-  const post = getPostBySlug(slug);
+export async function generateMetadata({ params }: { params: Promise<{ locale: string; slug: string }> }): Promise<Metadata> {
+  const { locale: localeParam, slug } = await params;
+  const locale = localeParam as Locale;
+  const post = getPostBySlug(slug, locale);
   if (!post) return {};
 
   return {
     ...generateBlogMetadata({
+      locale,
+      availableLocales: getPostLocales(post.slug),
       path: `/blog/${post.slug}`,
       title: post.title,
       description: post.description,
@@ -37,15 +42,17 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 }
 
 export default async function BlogPostPage({ params }: { params: Promise<{ locale: string; slug: string }> }) {
-  const { locale, slug } = await params;
+  const { locale: localeParam, slug } = await params;
+  const locale = localeParam as Locale;
   setRequestLocale(locale);
 
-  const post = getPostBySlug(slug);
+  const post = getPostBySlug(slug, locale);
   if (!post) notFound();
+  const strings = getBlogStrings(locale);
 
   const tools = post.tools.flatMap((id) => {
     const tool = getToolById(id);
-    const content = getToolContent(BLOG_LOCALE, id);
+    const content = getToolContent(locale, id);
     return tool && content ? [{ slug: tool.slug, title: content.title, description: content.metaDescription }] : [];
   });
 
@@ -55,22 +62,22 @@ export default async function BlogPostPage({ params }: { params: Promise<{ local
       { name: 'Blog', path: '/blog/' },
       { name: post.title, path: `/blog/${post.slug}/` },
     ],
-    BLOG_LOCALE
+    locale
   );
 
   return (
     <div className="min-h-screen flex flex-col">
       <JsonLd data={[generateBlogPostingSchema(post), breadcrumb]} />
-      <Header locale={BLOG_LOCALE} />
+      <Header locale={locale} />
 
       <main className="flex-1">
         <article className="mx-auto max-w-3xl px-4 py-12 md:py-16">
           <nav aria-label="Breadcrumb" className="mb-8">
             <Link
-              href={`/${BLOG_LOCALE}/blog/`}
+              href={`/${locale}/blog/`}
               className="inline-flex items-center gap-1 text-sm font-semibold text-[hsl(var(--color-primary))] hover:underline"
             >
-              <ArrowLeft className="h-4 w-4" aria-hidden="true" /> All guides
+              <ArrowLeft className="h-4 w-4 rtl:rotate-180" aria-hidden="true" /> {strings.allGuides}
             </Link>
           </nav>
 
@@ -79,14 +86,14 @@ export default async function BlogPostPage({ params }: { params: Promise<{ local
               {post.title}
             </h1>
             <p className="text-sm text-[hsl(var(--color-muted-foreground))]">
-              <time dateTime={post.date}>{formatPostDate(post.date)}</time>
+              <time dateTime={post.date}>{formatPostDate(post.date, locale)}</time>
               {post.updated && (
                 <>
-                  {' · Updated '}
-                  <time dateTime={post.updated}>{formatPostDate(post.updated)}</time>
+                  {` · ${strings.updated} `}
+                  <time dateTime={post.updated}>{formatPostDate(post.updated, locale)}</time>
                 </>
               )}
-              {` · ${post.readingMinutes} min read`}
+              {` · ${strings.minRead.replace('{n}', String(post.readingMinutes))}`}
             </p>
           </header>
 
@@ -96,13 +103,13 @@ export default async function BlogPostPage({ params }: { params: Promise<{ local
             <aside className="mt-14 rounded-3xl border border-[hsl(var(--color-border))] bg-[hsl(var(--color-surface))] p-6 md:p-8">
               <p className="mb-4 inline-flex items-center gap-2 text-sm font-semibold text-[hsl(var(--color-success))]">
                 <ShieldCheck className="h-4 w-4" aria-hidden="true" />
-                Runs in your browser. Your files never leave your device.
+                {strings.privacyNote}
               </p>
               <div className="grid gap-4 sm:grid-cols-2">
                 {tools.map((tool) => (
                   <Link
                     key={tool.slug}
-                    href={`/${BLOG_LOCALE}/tools/${tool.slug}/`}
+                    href={`/${locale}/tools/${tool.slug}/`}
                     className="pc-card group rounded-2xl p-5 transition-colors hover:border-[hsl(var(--color-primary)/0.5)]"
                   >
                     <p className="font-display mb-1 text-lg font-bold text-[hsl(var(--color-foreground))] group-hover:text-[hsl(var(--color-primary))]">
@@ -110,7 +117,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ local
                     </p>
                     <p className="mb-3 text-sm text-[hsl(var(--color-muted-foreground))]">{tool.description}</p>
                     <span className="inline-flex items-center gap-1 text-sm font-semibold text-[hsl(var(--color-primary))]">
-                      Open tool <ArrowRight className="h-4 w-4" aria-hidden="true" />
+                      {strings.openTool} <ArrowRight className="h-4 w-4 rtl:rotate-180" aria-hidden="true" />
                     </span>
                   </Link>
                 ))}
@@ -120,7 +127,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ local
         </article>
       </main>
 
-      <Footer locale={BLOG_LOCALE} />
+      <Footer locale={locale} />
     </div>
   );
 }

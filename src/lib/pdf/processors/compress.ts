@@ -49,7 +49,34 @@ export interface CompressPDFOptions {
   photonFormat?: 'jpeg' | 'png';
   /** JPEG quality for Photon algorithm (0-100) */
   photonQuality?: number;
+  /**
+   * Target output size in bytes. When set, the algorithm and quality options
+   * are ignored and progressively stronger settings are tried until the file
+   * fits (or the strongest setting is reached).
+   */
+  targetSizeBytes?: number;
 }
+
+/**
+ * Settings tried in order when compressing to a target size, from the gentlest
+ * (keeps text selectable) to the strongest (pages become low-resolution images).
+ */
+const TARGET_SIZE_LADDER: Array<
+  | { kind: 'condense'; quality: CompressionQuality }
+  | { kind: 'photon'; dpi: number; jpegQuality: number }
+> = [
+  { kind: 'condense', quality: 'high' },
+  { kind: 'condense', quality: 'medium' },
+  { kind: 'condense', quality: 'low' },
+  { kind: 'photon', dpi: 150, jpegQuality: 70 },
+  { kind: 'photon', dpi: 120, jpegQuality: 60 },
+  { kind: 'photon', dpi: 100, jpegQuality: 50 },
+  { kind: 'photon', dpi: 85, jpegQuality: 45 },
+  { kind: 'photon', dpi: 72, jpegQuality: 40 },
+  { kind: 'photon', dpi: 60, jpegQuality: 35 },
+  { kind: 'photon', dpi: 50, jpegQuality: 30 },
+  { kind: 'photon', dpi: 40, jpegQuality: 25 },
+];
 
 /**
  * Default compress options
@@ -159,7 +186,16 @@ export class CompressPDFProcessor extends BasePDFProcessor {
       this.updateProgress(10, 'Starting compression...');
 
       let result: { pdfBytes: ArrayBuffer; compressedSize: number };
+      let targetMet: boolean | undefined;
 
+      if (compressOptions.targetSizeBytes && compressOptions.targetSizeBytes > 0) {
+        ({ result, targetMet } = await this.compressToTargetSize(
+          file,
+          arrayBuffer,
+          compressOptions.targetSizeBytes,
+          compressOptions.removeMetadata
+        ));
+      } else
       // Choose compression method based on algorithm
       switch (compressOptions.algorithm) {
         case 'condense':
@@ -222,6 +258,7 @@ export class CompressPDFProcessor extends BasePDFProcessor {
         compressionRatio: `${compressionRatio}%`,
         algorithm: compressOptions.algorithm,
         quality: compressOptions.quality,
+        ...(targetMet === undefined ? {} : { targetSizeBytes: compressOptions.targetSizeBytes, targetMet }),
       });
 
     } catch (error) {
@@ -242,6 +279,58 @@ export class CompressPDFProcessor extends BasePDFProcessor {
         error instanceof Error ? error.message : 'Unknown error'
       );
     }
+  }
+
+  /**
+   * Try progressively stronger settings until the output fits targetBytes.
+   * Returns the first result that fits, or the smallest one if none does.
+   * A file that is already small enough is returned unchanged.
+   */
+  private async compressToTargetSize(
+    file: File,
+    original: ArrayBuffer,
+    targetBytes: number,
+    removeMetadata: boolean
+  ): Promise<{ result: { pdfBytes: ArrayBuffer; compressedSize: number }; targetMet: boolean }> {
+    if (original.byteLength <= targetBytes && !removeMetadata) {
+      return { result: { pdfBytes: original, compressedSize: original.byteLength }, targetMet: true };
+    }
+
+    const pymupdf = await loadPyMuPDF();
+    let best: { pdfBytes: ArrayBuffer; compressedSize: number } | null = null;
+    let lastPhoton: { dpi: number; jpegQuality: number; size: number } | null = null;
+
+    for (let i = 0; i < TARGET_SIZE_LADDER.length; i++) {
+      const step = TARGET_SIZE_LADDER[i];
+      const isLast = i === TARGET_SIZE_LADDER.length - 1;
+
+      // Skip photon steps that the last measurement says still can't fit:
+      // output size scales roughly with the pixel count (dpi squared).
+      if (step.kind === 'photon' && lastPhoton && !isLast) {
+        const estimate = lastPhoton.size * (step.dpi / lastPhoton.dpi) ** 2 * (step.jpegQuality / lastPhoton.jpegQuality);
+        if (estimate > targetBytes * 1.5) continue;
+      }
+
+      if (this.checkCancelled()) throw new Error('Processing was cancelled.');
+      this.updateProgress(
+        10 + (i / TARGET_SIZE_LADDER.length) * 85,
+        step.kind === 'condense' ? 'Optimizing PDF...' : `Trying ${step.dpi} DPI...`
+      );
+
+      const blob: Blob = step.kind === 'condense'
+        ? await pymupdf.compress(file, { quality: step.quality, removeMetadata })
+        : await pymupdf.photonCompress(file, { dpi: step.dpi, format: 'jpeg', quality: step.jpegQuality });
+      const pdfBytes = await blob.arrayBuffer();
+      const attempt = { pdfBytes, compressedSize: pdfBytes.byteLength };
+
+      if (!best || attempt.compressedSize < best.compressedSize) best = attempt;
+      if (attempt.compressedSize <= targetBytes) return { result: attempt, targetMet: true };
+      if (step.kind === 'photon') {
+        lastPhoton = { dpi: step.dpi, jpegQuality: step.jpegQuality, size: attempt.compressedSize };
+      }
+    }
+
+    return { result: best!, targetMet: false };
   }
 
   /**

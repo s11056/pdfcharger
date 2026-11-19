@@ -600,7 +600,13 @@
       "successTitle": "Optimization Complete!",
       "zipDownload": "Download ZIP ({count} files)",
       "successDone": "PDF document optimized locally!",
-      "sizeInfo": "Original: {size} MB • Cleaned obsolete fragments and metadata streams locally."
+      "sizeInfo": "Original: {size} MB • Cleaned obsolete fragments and metadata streams locally.",
+      "targetTitle": "Target file size",
+      "targetOff": "Off",
+      "targetCustom": "Custom (KB)",
+      "targetHint": "Gentle settings are tried first. To reach very small sizes, pages may be turned into images, so text will no longer be selectable.",
+      "targetMet": "Compressed to {size}, under your {target} target.",
+      "targetMissed": "Couldn't get under {target}. The smallest size reached is {size}. Try removing pages or splitting the PDF."
     },
     "deepSanitize": {
       "uploadLabel": "Upload PDF for Safe Sanitization",

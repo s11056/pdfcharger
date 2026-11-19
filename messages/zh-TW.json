@@ -595,7 +595,13 @@
       "successTitle": "優化完成！",
       "zipDownload": "打包下载 ZIP ({count} 个文件)",
       "successDone": "PDF 文檔已在本地優化成功！",
-      "sizeInfo": "原始大小: {size} MB • 成功在本地清理了非必要廢棄片段和無用元数据流。"
+      "sizeInfo": "原始大小: {size} MB • 成功在本地清理了非必要廢棄片段和無用元数据流。",
+      "targetTitle": "目標檔案大小",
+      "targetOff": "關閉",
+      "targetCustom": "自訂 (KB)",
+      "targetHint": "會先嘗試保留畫質的設定。若要壓到很小的大小，頁面可能會轉換為圖片，文字將無法再選取。",
+      "targetMet": "已壓縮至 {size}，低於目標 {target}。",
+      "targetMissed": "無法壓縮到 {target} 以下。可達到的最小大小為 {size}。請嘗試刪除頁面或分割 PDF。"
     },
     "deepSanitize": {
       "uploadLabel": "上傳需要脫敏防溯源的 PDF 文檔",
