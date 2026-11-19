@@ -1,5 +1,5 @@
 ---
-title: Best Free PDF Tools for Small Businesses in 2027
+title: Best Free PDF Tools for Small Businesses of 2027
 description: Contracts, invoices, forms and client documents. The free PDF tools a small business needs in 2027, with no subscriptions and no uploading of client data.
 date: 2026-11-18
 tools: [sign-pdf, form-creator, encrypt-pdf, redact-pdf]

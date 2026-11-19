@@ -1,5 +1,5 @@
 ---
-title: Best Free Way to Password-Protect a PDF in 2027
+title: Best Free Way to Password-Protect a PDF of 2027
 description: How to add a password to a PDF for free in 2027 with 256-bit AES encryption, control printing and copying, and share it safely without uploading it.
 date: 2026-11-18
 tools: [encrypt-pdf, change-permissions, decrypt-pdf, redact-pdf]

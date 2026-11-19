@@ -1,5 +1,5 @@
 ---
-title: Best Free Way to Turn iPhone Photos (HEIC) into a PDF in 2027
+title: Best Free HEIC to PDF Converter of 2027 - Turn iPhone Photos into a PDF
 description: iPhone photos are saved as HEIC, which many websites won't accept. How to turn HEIC photos into one PDF for free in 2027, without uploading them.
 date: 2026-11-18
 tools: [heic-to-pdf, image-to-pdf, compress-pdf, merge-pdf]

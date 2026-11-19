@@ -1,5 +1,5 @@
 ---
-title: Best Free Way to Sign a PDF in 2027 (No Account Needed)
+title: Best Free Way to Sign a PDF of 2027 (No Account Needed)
 description: Sign a PDF for free in 2027 without printing, scanning or creating an account. Draw, type or upload your signature, all inside your browser.
 date: 2026-11-18
 tools: [sign-pdf, form-filler, flatten-pdf, encrypt-pdf]

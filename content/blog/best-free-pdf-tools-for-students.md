@@ -1,5 +1,5 @@
 ---
-title: Best Free PDF Tools for Students in 2027
+title: Best Free PDF Tools for Students of 2027
 description: The free PDF tools every student needs in 2027, from merging assignments and shrinking files for upload portals to OCR for scanned readings. No sign-up.
 date: 2026-11-18
 tools: [merge-pdf, compress-pdf, ocr-pdf, annotation-exporter]
