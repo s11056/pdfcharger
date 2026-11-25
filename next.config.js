@@ -92,6 +92,12 @@ const nextConfig = {
       })
     );
 
+    // Raise the LibreOffice converter's 10s worker load timeout (see loader)
+    config.module.rules.push({
+      test: /[\\/]@matbee[\\/]libreoffice-converter[\\/]dist[\\/]browser\.js$/,
+      use: [path.join(__dirname, 'scripts', 'libreoffice-timeout-loader.cjs')],
+    });
+
     // Enable WebAssembly
     config.experiments = {
       ...config.experiments,
