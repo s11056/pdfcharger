@@ -1171,6 +1171,26 @@ export function LegacyAnnotatorTool({
     showFileVersion(nextFile);
   }, [file, isTextReplacing, showFileVersion, tTools]);
 
+  // The viewer's own save/download buttons are hidden, so export through the
+  // annotation extension, which flattens annotations into the PDF and downloads it.
+  const handleDownload = useCallback(async () => {
+    const win = iframeRef.current?.contentWindow as
+      | (Window & { pdfjsAnnotationExtensionInstance?: { exportPdf?: () => Promise<void> } })
+      | null
+      | undefined;
+    const ext = win?.pdfjsAnnotationExtensionInstance;
+    if (typeof ext?.exportPdf !== 'function') {
+      setError('The editor is not ready yet. Please wait a moment and try again.');
+      return;
+    }
+    try {
+      await ext.exportPdf();
+    } catch (err) {
+      console.error('[LegacyAnnotator] PDF export failed:', err);
+      setError('Could not export the PDF. Please try again.');
+    }
+  }, []);
+
   useEffect(() => {
     const handleMessage = async (event: MessageEvent) => {
       if (
@@ -1315,6 +1335,15 @@ export function LegacyAnnotatorTool({
               disabled={textRedoCount === 0 || isTextReplacing}
             >
               ↪ {tTools('textRedo')}
+            </Button>
+            <Button
+              variant="primary"
+              size="sm"
+              className="ml-auto"
+              onClick={handleDownload}
+              disabled={!isEditorReady || isTextReplacing}
+            >
+              ⬇ {t('buttons.download') || 'Download'} PDF
             </Button>
           </div>
 
