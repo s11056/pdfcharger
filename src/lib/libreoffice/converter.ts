@@ -33,6 +33,9 @@ import { isTauri } from '../tauri-bridge';
 
 const LIBREOFFICE_PATH = withBasePath('/libreoffice-wasm/');
 const ASSET_VERSION = '20240212-4';
+// Bumped separately for the worker scripts: browsers cached them for a year with
+// duplicated COOP/COEP headers that stop the worker from starting.
+const WORKER_ASSET_VERSION = '20261126-1';
 // Request uncompressed names. In production, nginx gzip_static serves the .gz variant
 // with correct Content-Encoding and MIME headers (required for WebAssembly streaming).
 const SOFFICE_WASM_FILE = 'soffice.wasm.bin';
@@ -178,11 +181,11 @@ export class LibreOfficeConverter {
             }
 
             this.converter = new WorkerBrowserConverter({
-                sofficeJs: `${this.basePath}soffice.js?v=${ASSET_VERSION}`,
+                sofficeJs: `${this.basePath}soffice.js?v=${WORKER_ASSET_VERSION}`,
                 sofficeWasm: sofficeWasmUrl,
                 sofficeData: sofficeDataUrl,
-                sofficeWorkerJs: `${this.basePath}soffice.worker.js?v=${ASSET_VERSION}`,
-                browserWorkerJs: `${this.basePath}browser.worker.global.js?v=${ASSET_VERSION}`,
+                sofficeWorkerJs: `${this.basePath}soffice.worker.js?v=${WORKER_ASSET_VERSION}`,
+                browserWorkerJs: `${this.basePath}browser.worker.global.js?v=${WORKER_ASSET_VERSION}`,
                 verbose: false,
                 fonts: [
                     { filename: 'NotoSansSC-Regular.ttf', data: fontArrayBuffer }
